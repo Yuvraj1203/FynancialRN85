@@ -1,0 +1,85 @@
+{
+  "[json]": {
+    "editor.codeActionsOnSave": {
+      "source.sort.json": "always"
+    },
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.codeActionsOnSave": {
+      "source.sort.json": "never"
+    },
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "better-comments.highlightPlainText": true,
+  "better-comments.tags": [
+    {
+      "backgroundColor": "transparent",
+      "bold": false,
+      "color": "#FF2D00",
+      "italic": false,
+      "strikethrough": false,
+      "tag": "!",
+      "underline": false
+    },
+    {
+      "backgroundColor": "transparent",
+      "bold": false,
+      "color": "#3498DB",
+      "italic": false,
+      "strikethrough": false,
+      "tag": "?",
+      "underline": false
+    },
+    {
+      "backgroundColor": "transparent",
+      "bold": false,
+      "color": "#474747",
+      "italic": false,
+      "strikethrough": true,
+      "tag": "//",
+      "underline": false
+    },
+    {
+      "backgroundColor": "transparent",
+      "bold": false,
+      "color": "#FF8C00",
+      "italic": false,
+      "strikethrough": false,
+      "tag": "todo",
+      "underline": false
+    },
+    {
+      "backgroundColor": "transparent",
+      "bold": false,
+      "color": "#98C379",
+      "italic": false,
+      "strikethrough": false,
+      "tag": "*",
+      "underline": false
+    }
+  ],
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
+  "editor.formatOnSave": true,
+  "files.associations": {
+    "package.json": "jsonc", // do not sort
+    "project.json": "jsonc", // do not sort
+    "settings.json": "json", // sort
+    "tsconfig.app.json": "jsonc", // do not sort
+    "tsconfig.base.json": "jsonc", // do not sort
+    "tsconfig.e2e.json": "jsonc", // do not sort
+    "tsconfig.editor.json": "jsonc", // do not sort
+    "tsconfig.json": "jsonc", // do not sort
+    "tsconfig.lib.json": "jsonc", // do not sort
+    "tsconfig.spec.json": "jsonc" // do not sort
+  },
+  "i18n-ally.keystyle": "nested",
+  "i18n-ally.localesPaths": [
+    "src/translations/tenantTranslations",
+    "src/translations"
+  ],
+  "java.configuration.updateBuildConfiguration": "interactive",
+  "java.compile.nullAnalysis.mode": "automatic"
+}
