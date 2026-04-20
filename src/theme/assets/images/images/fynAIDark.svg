@@ -1,0 +1,86 @@
+<svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Correct V3.8 gradient: bottom to top -->
+    <linearGradient id="bgGradient" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#002012"/>
+      <stop offset="100%" stop-color="#4ec48f"/>
+    </linearGradient>
+
+    <linearGradient id="swirl" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b8a7b"/>
+      <stop offset="50%" stop-color="#4ec48f"/>
+      <stop offset="100%" stop-color="#3b8a7b"/>
+    </linearGradient>
+
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <linearGradient id="gradLeft" x1="0%" y1="0%" x2="100%" y2="0%" gradientUnits="userSpaceOnUse"
+      gradientTransform="translate(-400,0)">
+      <stop offset="0%" stop-color="#4ec48f"/>
+      <stop offset="25%" stop-color="#4ec48f"/>
+      <stop offset="42%" stop-color="#3b8a7b"/>
+      <stop offset="58%" stop-color="#3b8a7b"/>
+      <stop offset="75%" stop-color="#4ec48f"/>
+      <stop offset="100%" stop-color="#4ec48f"/>
+      <animateTransform attributeName="gradientTransform" type="translate" from="-400,0" to="400,0"
+        dur="6s" begin="0s" repeatCount="indefinite"/>
+    </linearGradient>
+
+    <linearGradient id="gradMid" x1="0%" y1="0%" x2="100%" y2="0%" gradientUnits="userSpaceOnUse"
+      gradientTransform="translate(-400,0)">
+      <stop offset="0%" stop-color="#4ec48f"/>
+      <stop offset="25%" stop-color="#4ec48f"/>
+      <stop offset="42%" stop-color="#3b8a7b"/>
+      <stop offset="58%" stop-color="#3b8a7b"/>
+      <stop offset="75%" stop-color="#4ec48f"/>
+      <stop offset="100%" stop-color="#4ec48f"/>
+      <animateTransform attributeName="gradientTransform" type="translate" from="-400,0" to="400,0"
+        dur="6s" begin="6s" repeatCount="indefinite"/>
+    </linearGradient>
+
+    <linearGradient id="gradRight" x1="0%" y1="0%" x2="100%" y2="0%" gradientUnits="userSpaceOnUse"
+      gradientTransform="translate(-400,0)">
+      <stop offset="0%" stop-color="#4ec48f"/>
+      <stop offset="25%" stop-color="#4ec48f"/>
+      <stop offset="42%" stop-color="#3b8a7b"/>
+      <stop offset="58%" stop-color="#3b8a7b"/>
+      <stop offset="75%" stop-color="#4ec48f"/>
+      <stop offset="100%" stop-color="#4ec48f"/>
+      <animateTransform attributeName="gradientTransform" type="translate" from="-400,0" to="400,0"
+        dur="6s" begin="12s" repeatCount="indefinite"/>
+    </linearGradient>
+  </defs>
+
+  <circle cx="200" cy="200" r="95" fill="url(#bgGradient)" />
+
+  <g transform="rotate(0 196 204)">
+    <circle cx="200" cy="200" r="90" fill="none" stroke="url(#swirl)" stroke-width="4" filter="url(#glow)">
+      <animateTransform attributeName="transform" type="rotate" from="0 196 204" to="360 196 204" dur="6s"
+        repeatCount="indefinite"/>
+    </circle>
+  </g>
+  <g transform="rotate(0 204 196)">
+    <circle cx="200" cy="200" r="90" fill="none" stroke="url(#swirl)" stroke-width="4" filter="url(#glow)">
+      <animateTransform attributeName="transform" type="rotate" from="0 204 196" to="-360 204 196" dur="5s"
+        repeatCount="indefinite"/>
+    </circle>
+  </g>
+  <g transform="rotate(0 194 194)">
+    <circle cx="200" cy="200" r="90" fill="none" stroke="url(#swirl)" stroke-width="4" filter="url(#glow)">
+      <animateTransform attributeName="transform" type="rotate" from="0 194 194" to="360 194 194" dur="7s"
+        repeatCount="indefinite"/>
+    </circle>
+  </g>
+
+  <g transform="translate(200,200) scale(0.5) translate(-100.655,-69.825)">
+    <path fill="url(#gradRight)" d="M201.31,0l-29.67,139.65h-41.54L159.91,0h41.4Z"/>
+    <path fill="url(#gradMid)" d="M65.05,139.65l20.78-97.36h41.47l-20.71,97.36h-41.54Z"/>
+    <polygon fill="url(#gradLeft)" points="0 139.65 11.76 84.58 53.3 84.58 41.54 139.65 0 139.65"/>
+  </g>
+</svg>

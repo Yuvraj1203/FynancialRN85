@@ -1,0 +1,63 @@
+export type GetUserChatMessagesModel = {
+  messages?: Messages;
+  status?: string;
+  statusClass?: string;
+};
+
+export type Messages = {
+  items?: UserChatMessageItem[];
+};
+
+export type UserChatMessageItem = {
+  userId?: number;
+  userName?: string;
+  linksSend?: boolean;
+  tenantId?: number;
+  targetUserId?: number;
+  targetTenantId?: number;
+  side?: number;
+  readState?: number;
+  receiverReadState?: number;
+  message?: string;
+  messageType?: string;
+  imageURL?: string;
+  fileURL?: string;
+  link?: any;
+  imageB64?: string;
+  creationTime?: string;
+  creationTimeStr?: string;
+  phoneIdentifier?: any;
+  sharedMessageId?: string;
+  profileImageID?: string;
+  profileImage?: string;
+  initials?: string;
+  creationTimeAgo?: string;
+  metaData?: string;
+  placeOfTrigger?: string;
+  groupId?: string;
+  fullName?: string;
+  colorCode?: string;
+  id?: number | string;
+  fileName?: string;
+  contentType?: string;
+  showProfile?: boolean;
+  imageOrFileId?: string;
+  isImageLoading?: boolean;
+  extensionType?: string;
+  imageS3Url?: string;
+  aspectRatio?: { width: number; height: number };
+  sendFailed?: boolean;
+  isPdfOpening?: boolean;
+  marginTop?: number;
+  animate?: boolean;
+  creationTimeDisplay?: string;
+  fullImagePath?: string;
+  status?: string;
+  textHtmlPreview?: string;
+  text?: string;
+  shorttext?: string;
+  messageAttachment?: string;
+  fileTitle?: string;
+  collapsed?: boolean;
+  linkPreviewHtml?: string;
+};

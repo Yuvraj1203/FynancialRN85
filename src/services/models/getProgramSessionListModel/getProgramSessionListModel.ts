@@ -1,0 +1,50 @@
+export type GetProgramSessionListModel = programSessionList[];
+
+export type programSessionList = {
+  programSessionList?: any[];
+  programSession?: ProgramSessionData;
+  filterText?: any;
+  programName?: string;
+  programType?: any;
+  programTypeID?: number;
+  showStatusName?: any;
+  searchByStatus?: any;
+  previewImageUrl?: string;
+  activeEnrolled?: number;
+  totalEnrolled?: number;
+  isSubscription?: boolean;
+  singleGroupId?: string;
+  singleGroupName?: any;
+  singleGroupCount?: number;
+  roleName?: any;
+  copyCalendar?: any;
+  email?: any;
+  isAssignedToLoginCoach?: boolean;
+  primaryCoachId?: any;
+  isInvited?: boolean;
+  userId?: number;
+  invitedUserID?: string;
+};
+
+export type ProgramSessionData = {
+  sessionURL?: any;
+  sessionName?: string;
+  isMultipleGroup?: boolean;
+  startDate?: string;
+  endDate?: string;
+  isActive?: boolean;
+  programID?: string;
+  programTypeID?: number;
+  strStartDate?: string;
+  strEndDate?: string;
+  id?: string;
+  fromToDate?: any;
+  totalgroups?: number;
+  totalMembers?: any;
+  programDuration?: number;
+  activeInActive?: any;
+  sessionAvailableForSale?: boolean;
+  availableForSale?: any;
+  startDateUTC?: any;
+  lastSignInUtc?: any;
+};

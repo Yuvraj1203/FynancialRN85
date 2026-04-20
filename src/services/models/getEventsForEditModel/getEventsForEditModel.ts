@@ -1,0 +1,43 @@
+export type GetEventsForEditModel = {
+  events?: Events;
+};
+
+export type Events = {
+  eventType?: number;
+  eventTypeName?: string;
+  colorCode?: string;
+  title?: string;
+  description?: string;
+  link?: string;
+  meetingID?: string;
+  passcode?: string;
+  phone?: string;
+  additionalInformation?: string;
+  start_Date?: string;
+  end_Date?: string;
+  start_Time?: string;
+  end_Time?: string;
+  is_Active?: boolean;
+  event_Category_Id?: any;
+  hostUserID?: any;
+  organizer?: string;
+  location?: string;
+  strStartDate?: string;
+  strEndDate?: string;
+  programName?: string;
+  sessionName?: string;
+  programId?: string;
+  sessionId?: string;
+  groupId?: string;
+  groupName?: string;
+  programTypeID?: number;
+  fromGlobalCalendar?: boolean;
+  isPast?: boolean;
+  coverImageUrl?: string;
+  fileToken?: string;
+  fileExt?: string;
+  displayName?: string;
+  coverImage?: string;
+  isRemove?: boolean;
+  id?: string;
+};

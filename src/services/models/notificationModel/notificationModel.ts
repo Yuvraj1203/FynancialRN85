@@ -1,0 +1,28 @@
+export type NotificationModel = {
+  SessionId?: string;
+  SessionName?: string;
+  GroupId?: string;
+  NotiType?: string;
+  PostType?: string;
+  ParentPostId?: string;
+  PostId?: string;
+  SenderId?: string;
+  SenderName?: string;
+  GroupName?: string;
+  PushNotifId?: string;
+  NotifId?: string;
+  ReminderId?: string;
+  NotificationHeader?: string;
+  NotificationContent?: string;
+  fromNotificationScreen?: boolean;
+  NotificationDataType?: string;
+  AppType?: string;
+  AppSubType?: string;
+  ParentOfParentPostId?: string;
+  EventId?: string;
+  AdminId?: string;
+  FolderId?: string;
+  FileId?: string;
+  FileIds?: Array<string>;
+  UserId?: string;
+};

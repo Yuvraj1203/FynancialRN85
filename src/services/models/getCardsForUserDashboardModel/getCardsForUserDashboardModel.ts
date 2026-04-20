@@ -1,0 +1,20 @@
+export type GetCardsForUserDashboardModel = {
+  id?: string | null;
+  tenantId?: null;
+  title?: string;
+  message?: string;
+  isShow?: boolean;
+  sliderTypeId?: number;
+  sliderTypeCode?: string;
+  sliderTypeName?: string;
+  sliderBackgroundImageURL?: string;
+  isPublic?: boolean;
+  functionCode?: string;
+  moduleName?: string;
+  customLink?: string;
+  loading?: boolean;
+  currency?: number;
+  currencySymbol?: string;
+  destination?: string;
+  appId?: string;
+};

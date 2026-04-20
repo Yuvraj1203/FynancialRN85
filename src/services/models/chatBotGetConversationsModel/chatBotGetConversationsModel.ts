@@ -1,0 +1,25 @@
+export type ChatBotGetConversationsModel = {
+  currentCost?: null;
+  userID?: string;
+  botID?: string;
+  title?: string;
+  threadID?: string;
+  vectorStoreID?: null;
+  runID?: string;
+  ipAddress?: string;
+  promptTokens?: null;
+  completionTokens?: null;
+  totalTokens?: null;
+  hasFlag?: null;
+  hasMore?: boolean;
+  isSaved?: null;
+  removedFromHistory?: boolean;
+  messages?: [];
+  metaData?: [];
+  functionCalls?: [];
+  pendingCitations?: [];
+  id?: string;
+  companyId?: string;
+  lastUpdated?: string;
+  createdDate?: string;
+};

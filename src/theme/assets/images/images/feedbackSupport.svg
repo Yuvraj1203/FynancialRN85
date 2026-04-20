@@ -1,0 +1,11 @@
+<svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M19 13C19.2692 13.9692 20.0308 14.7231 21 15" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M19.7402 11.6711L15.5902 15.821C15.4302 15.981 15.2802 16.291 15.2402 16.511L15.0102 18.101C14.9302 18.671 15.3302 19.081 15.9002 18.991L17.4902 18.761C17.7102 18.731 18.0202 18.571 18.1802 18.411L22.3302 14.261C23.0402 13.551 23.3802 12.711 22.3302 11.661C21.2902 10.621 20.4602 10.9511 19.7402 11.6711Z" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.2257 5.0304V24.2959" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M25 19.0853V3.58822C25 2.0365 23.8338 0.907993 22.4044 1.02891H22.3292C19.8088 1.25058 15.9906 2.6411 13.8464 4.07191L13.6395 4.21299C13.301 4.43467 12.7178 4.43467 12.3605 4.21299L12.0596 4.01146C9.93417 2.58065 6.11599 1.23041 3.59562 1.00873C2.16615 0.887821 1 2.03654 1 3.56811V19.0853C1 20.3146 1.94041 21.4834 3.08775 21.6245L3.42629 21.6849C6.0219 22.0477 10.0471 23.4785 12.3417 24.8287L12.3981 24.8489C12.7179 25.0504 13.2445 25.0504 13.5454 24.8489C15.8401 23.4785 19.884 22.0678 22.4984 21.6849L22.8934 21.6245C24.0596 21.4834 25 20.3347 25 19.0853Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 12H19" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M3.5 7H11" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M15.5 7H23" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M3.5 12H11" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M3.5 17H11" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
