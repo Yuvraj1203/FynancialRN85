@@ -14,3 +14,20 @@ IF WONT RUN FIX THIS
 bhai how can i make the files for firebase with "FynancialRN85" this name, now i want package name and bundle id to be ---> "com.fynancialrn85"
 
 if somehow i get into the
+
+<!-- important thing before -->
+
+remove src folder from .gitignore
+
+<!-- breaking changes  -->
+
+    <!-- 0.82 -->
+        1. Old native libraries
+        2. Unmaintained packages
+        3. Custom native code
+
+    <!-- 0.84 -->
+        1. react-native-url-polyfill - i guess no need as URL gets many things
+
+    <!-- 0.85 -->
+        1. use "useNativeDriver: true" in every animation api
