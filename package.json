@@ -10,6 +10,12 @@
     "test": "jest"
   },
   "dependencies": {
+    "@d11/react-native-fast-image": "^8.13.0",
+    "@hookform/resolvers": "^5.2.2",
+    "@legendapp/list": "^2.0.19",
+    "@likashefqet/react-native-image-zoom": "^4.3.0",
+    "@microsoft/signalr": "^10.0.0",
+    "@native-html/iframe-plugin": "^2.6.1",
     "@notifee/react-native": "^9.1.8",
     "@react-native-firebase/analytics": "^24.0.0",
     "@react-native-firebase/app": "^24.0.0",
@@ -19,13 +25,17 @@
     "@react-navigation/drawer": "^7.9.8",
     "@react-navigation/native": "^7.2.2",
     "@react-navigation/native-stack": "^7.14.11",
+    "babel-plugin-module-resolver": "^5.0.3",
     "react": "19.2.3",
+    "react-hook-form": "^7.73.1",
     "react-native": "0.85.1",
     "react-native-gesture-handler": "^2.31.1",
     "react-native-reanimated": "^4.3.0",
+    "react-native-render-html": "^6.3.4",
     "react-native-safe-area-context": "^5.7.0",
     "react-native-screens": "^4.24.0",
     "react-native-url-polyfill": "^3.0.0",
+    "react-native-webview": "^13.16.1",
     "react-native-worklets": "^0.8.1"
   },
   "devDependencies": {
