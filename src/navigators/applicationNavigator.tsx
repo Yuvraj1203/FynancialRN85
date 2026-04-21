@@ -34,7 +34,7 @@ import {
   NavigationContainer,
   useNavigationContainerRef,
 } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useMutation } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -103,12 +103,12 @@ const linking: LinkingOptions<ReactNavigation.RootParamList> = {
  * Added by @Tarun 05-02-2025 -> logic to handle navigation after login or
  * splash (FYN-4204)
  *
- * @param {StackNavigationProp<RootStackParamList>} navigation - useAppNavigation hook
+ * @param {NativeStackNavigationProp<RootStackParamList>} navigation - useAppNavigation hook
  * @param {Function} forwardFunction - function to do something after all checks where done
  * @returns {} returns void
  */
 export const navigateFromApi = (
-  navigation: StackNavigationProp<RootStackParamList>,
+  navigation: NativeStackNavigationProp<RootStackParamList>,
   forwardFunction?: () => void,
 ) => {
   const userDetails = userStore.getState().userDetails;

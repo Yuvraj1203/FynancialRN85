@@ -2,6 +2,8 @@
 #
 .DS_Store
 
+# src/*
+
 # Xcode
 #
 build/
@@ -21,6 +23,9 @@ DerivedData
 *.ipa
 *.xcuserstate
 **/.xcode.env.local
+
+*.dSYM
+*.dSYM.zip
 
 # Android/IntelliJ
 #

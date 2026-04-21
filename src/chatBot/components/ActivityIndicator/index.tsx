@@ -1,8 +1,8 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import {
-  ActivityIndicator as PaperActivityIndicator,
   MD3Theme,
+  ActivityIndicator as PaperActivityIndicator,
   useTheme,
 } from 'react-native-paper';
 
@@ -30,7 +30,7 @@ const ActivityIndicator: React.FC<IActivityIndicatorProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: 'rgba(0, 0, 0, 0.4)',
     justifyContent: 'center',
     alignItems: 'center',

@@ -26,7 +26,7 @@ import {
   showSnackbar,
   stripPreviewUrlFromHtml,
 } from '@/utils/utils';
-import { StackNavigationProp } from '@react-navigation/stack';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useMutation } from '@tanstack/react-query';
 import { memo, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -42,7 +42,7 @@ export enum CommentType {
 type Props = {
   item: GetAllCommentsModel;
   type: CommentType;
-  navigation: StackNavigationProp<RootStackParamList>;
+  navigation: NativeStackNavigationProp<RootStackParamList>;
   onLongPress?: (from?: string) => void;
   onLongPressReply?: (reply?: GetAllCommentsModel, from?: string) => void;
   openLinks?: (url: string) => void;
@@ -181,8 +181,14 @@ function CommentItem({ item, ...props }: Props) {
       ) {
         newData.push({
           ...commentData,
-          detailHTML: stripPreviewUrlFromHtml(updatedHtml?.Content, commentLinkPreviewHtml),
-          shortContent: stripPreviewUrlFromHtml(updatedHtml?.shortContent, commentLinkPreviewHtml),
+          detailHTML: stripPreviewUrlFromHtml(
+            updatedHtml?.Content,
+            commentLinkPreviewHtml,
+          ),
+          shortContent: stripPreviewUrlFromHtml(
+            updatedHtml?.shortContent,
+            commentLinkPreviewHtml,
+          ),
           iFrameList: updatedHtml?.iFrameList,
           linkPreviewHtml: commentLinkPreviewHtml,
           embeddedIframeHtml: commentEmbeddedIframeHtml,

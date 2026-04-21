@@ -65,7 +65,7 @@ import { TenantInfo } from '@/tenantInfo';
 import { Images } from '@/theme/assets/images';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { t } from 'i18next';
 import { useEffect, useState } from 'react';
 import AppBottomTabBar from './appBottomTabBar';
@@ -77,10 +77,10 @@ import {
   RootStackParamList,
 } from './types';
 
-const RootStack = createStackNavigator<RootStackParamList>(); // Root stack of application
+const RootStack = createNativeStackNavigator<RootStackParamList>(); // Root stack of application
 const DrawerStack = createDrawerNavigator<DrawerStackParamList>(); // side drawer stack
 const BottomTabStack = createBottomTabNavigator<BottomTabStackParamList>(); // bottom tab stack which is present in drawer stack
-const ChatBotStack = createStackNavigator<ChatBotStackParamList>();
+const ChatBotStack = createNativeStackNavigator<ChatBotStackParamList>();
 
 // Root Navigator
 export function RootNavigator() {

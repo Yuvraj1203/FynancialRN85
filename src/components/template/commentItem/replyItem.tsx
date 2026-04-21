@@ -9,23 +9,23 @@ import {
   ImageType,
   ResizeModeType,
 } from '@/components/atoms/customImage/customImage';
-import {TextVariants} from '@/components/atoms/customText/customText';
-import {CustomCarousel} from '@/components/molecules';
-import {RootStackParamList} from '@/navigators/types';
-import {GetAllCommentsModel} from '@/services/models';
-import {Images} from '@/theme/assets/images';
-import {CustomTheme, useTheme} from '@/theme/themeProvider/paperTheme';
-import {useAppNavigation} from '@/utils/navigationUtils';
-import {isEmpty} from '@/utils/utils';
-import {StackNavigationProp} from '@react-navigation/stack';
-import {memo} from 'react';
-import {useTranslation} from 'react-i18next';
-import {StyleSheet, View} from 'react-native';
-import {ActivityIndicator} from 'react-native-paper';
+import { TextVariants } from '@/components/atoms/customText/customText';
+import { CustomCarousel } from '@/components/molecules';
+import { RootStackParamList } from '@/navigators/types';
+import { GetAllCommentsModel } from '@/services/models';
+import { Images } from '@/theme/assets/images';
+import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
+import { useAppNavigation } from '@/utils/navigationUtils';
+import { isEmpty } from '@/utils/utils';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { StyleSheet, View } from 'react-native';
+import { ActivityIndicator } from 'react-native-paper';
 
 type Props = {
   item: GetAllCommentsModel;
-  navigation: StackNavigationProp<RootStackParamList>;
+  navigation: NativeStackNavigationProp<RootStackParamList>;
   onLongPress?: () => void;
   openLinks?: (url: string) => void;
   likeClick?: () => void;
@@ -45,14 +45,14 @@ type Props = {
   loading?: boolean;
 };
 
-function ReplyItem({item, ...props}: Props) {
+function ReplyItem({ item, ...props }: Props) {
   const navigation = useAppNavigation(); // navigation
 
   const theme = useTheme(); // theme
 
   const styles = makeStyles(theme); // access StylesSheet with theme implemented
 
-  const {t} = useTranslation(); //translation
+  const { t } = useTranslation(); //translation
 
   const renderCarouselItem = (item: string[]) => (
     <View>
@@ -64,10 +64,11 @@ function ReplyItem({item, ...props}: Props) {
           <View style={styles.imgLay}>
             <Tap
               onPress={() => {
-                props.handleImageClick?.({images: item, index: index});
-              }}>
+                props.handleImageClick?.({ images: item, index: index });
+              }}
+            >
               <CustomImage
-                source={{uri: mediaItem}}
+                source={{ uri: mediaItem }}
                 resizeMode={ResizeModeType.contain}
                 style={styles.img}
               />
@@ -86,11 +87,13 @@ function ReplyItem({item, ...props}: Props) {
             props.onLongPress?.();
           }
         }}
-        style={styles.noPadding}>
+        style={styles.noPadding}
+      >
         <View style={[styles.main]}>
           <Tap
             style={styles.profilePic}
-            onPress={() => props.handleProfileClick?.(item.userID)}>
+            onPress={() => props.handleProfileClick?.(item.userID)}
+          >
             <CustomAvatar
               source={
                 !isEmpty(item.userProfileLocation) && {
@@ -110,7 +113,8 @@ function ReplyItem({item, ...props}: Props) {
               <View style={styles.userName}>
                 <Tap
                   style={styles.noPadding}
-                  onPress={() => props.handleProfileClick?.(item.userID)}>
+                  onPress={() => props.handleProfileClick?.(item.userID)}
+                >
                   <CustomText variant={TextVariants.labelLarge}>
                     {item.userName}
                   </CustomText>
@@ -120,7 +124,8 @@ function ReplyItem({item, ...props}: Props) {
                 onPress={() => {
                   props.likeClick?.();
                 }}
-                style={[styles.noPadding]}>
+                style={[styles.noPadding]}
+              >
                 <CustomImage
                   source={item.likedByUser ? Images.likeFilled : Images.like}
                   style={styles.replyLikeIcon}
@@ -137,10 +142,12 @@ function ReplyItem({item, ...props}: Props) {
                 onPress={() => {
                   props.likeListClick?.(item.postDetailID);
                 }}
-                style={[styles.noPadding]}>
+                style={[styles.noPadding]}
+              >
                 <CustomText
                   variant={TextVariants.labelMedium}
-                  style={styles.likeCount}>{`${
+                  style={styles.likeCount}
+                >{`${
                   item.likeCount && item.likeCount > 0 ? item.likeCount : ''
                 }`}</CustomText>
               </Tap>
@@ -162,7 +169,7 @@ function ReplyItem({item, ...props}: Props) {
                 }
               }}
               handleIframeClick={iframeString => {
-                props.handleImageClick?.({iframe: iframeString});
+                props.handleImageClick?.({ iframe: iframeString });
               }}
             />
             {/* Link preview always rendered outside the text content */}
@@ -177,11 +184,13 @@ function ReplyItem({item, ...props}: Props) {
               onPress={() => {
                 props.handleReplyClick?.(item);
               }}
-              style={styles.replyTap}>
+              style={styles.replyTap}
+            >
               <CustomText
                 variant={TextVariants.labelMedium}
                 color={theme.colors.primary}
-                style={{fontWeight: theme.fonts.labelLarge.fontWeight}}>
+                style={{ fontWeight: theme.fonts.labelLarge.fontWeight }}
+              >
                 {t('Reply')}
               </CustomText>
             </Tap>
@@ -214,8 +223,8 @@ const makeStyles = (theme: CustomTheme) =>
     content: {
       flex: 1,
     },
-    noPadding: {padding: 0},
-    userNameLay: {flexDirection: 'row', gap: 5, alignContent: 'center'},
+    noPadding: { padding: 0 },
+    userNameLay: { flexDirection: 'row', gap: 5, alignContent: 'center' },
     userName: {
       flex: 1,
     },
@@ -239,8 +248,8 @@ const makeStyles = (theme: CustomTheme) =>
       borderRadius: theme.roundness,
       backgroundColor: theme.colors.gradientColorLevel2,
     },
-    commentProfilePic: {height: 35, width: 35, borderRadius: 35},
-    nCommentProfilePic: {height: 25, width: 25, borderRadius: 25},
+    commentProfilePic: { height: 35, width: 35, borderRadius: 35 },
+    nCommentProfilePic: { height: 25, width: 25, borderRadius: 25 },
     replyLikeIcon: {
       height: 15,
       width: 15,
@@ -264,14 +273,14 @@ const makeStyles = (theme: CustomTheme) =>
       borderRadius: theme.roundness,
       backgroundColor: theme.colors.surface,
     },
-    likeCount: {paddingHorizontal: 5},
-    desc: {marginLeft: 5},
+    likeCount: { paddingHorizontal: 5 },
+    desc: { marginLeft: 5 },
     replyLay: {
       borderLeftWidth: 0.5,
       borderColor: theme.colors.border,
       marginTop: 10,
     },
-    viewReplies: {paddingLeft: 30},
+    viewReplies: { paddingLeft: 30 },
     profilePic: {
       alignSelf: 'flex-start',
     },

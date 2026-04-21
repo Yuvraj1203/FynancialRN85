@@ -1,7 +1,7 @@
-import {StackNavigationProp} from '@react-navigation/stack';
-import {RootStackParamList} from './root-stack-param-list';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from './root-stack-param-list';
 
-export type MainScreenNavigationProp = StackNavigationProp<
+export type MainScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
   'Chat'
 >;

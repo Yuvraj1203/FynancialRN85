@@ -31,3 +31,18 @@ remove src folder from .gitignore
 
     <!-- 0.85 -->
         1. use "useNativeDriver: true" in every animation api
+
+<!-- code update -->
+
+1. absoluteFillObject - > absoluteFill
+2. @react-navigation/stack to @react-navigation/native-stack
+   Old (stack) New (native-stack):
+   a. createStackNavigator createNativeStackNavigator
+   b. StackNavigationProp NativeStackNavigationProp
+   c. StackScreenProps NativeStackScreenProps
+
+<!-- after everything must run  -->
+
+1. npx pod-install ios
+2. cd android && ./gradlew clean
+3. cd ios && pod install

@@ -12,7 +12,7 @@ import {
   useNavigation,
   useRoute,
 } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import {
   createContext,
   ReactNode,
@@ -30,7 +30,7 @@ export type SubNavigator<T extends ParamListBase> = {
 };
 
 // global hook to navigate to any screen
-export const useAppNavigation: () => StackNavigationProp<RootStackParamList> =
+export const useAppNavigation: () => NativeStackNavigationProp<RootStackParamList> =
   useNavigation;
 
 // Add all param lists for useRoute to work Properly
@@ -47,7 +47,7 @@ export const useAppRoute = <T extends keyof AllStackParamList>(
 };
 
 export const handleGoBack = async (
-  navigation: StackNavigationProp<RootStackParamList>,
+  navigation: NativeStackNavigationProp<RootStackParamList>,
 ) => {
   if (navigation.canGoBack()) {
     navigation.goBack(); // navigate back

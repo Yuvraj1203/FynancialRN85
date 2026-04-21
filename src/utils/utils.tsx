@@ -29,7 +29,7 @@ import { DdSdkReactNative } from '@datadog/mobile-react-native';
 import { signOut } from '@okta/okta-react-native';
 import NetInfo from '@react-native-community/netinfo';
 import { NavigationProp } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as Sentry from '@sentry/react-native';
 import dayjs, { Dayjs } from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
@@ -1627,7 +1627,7 @@ export const hapticTrigger = (HapticFeedback: HapticFeedbackTypes) => {
 
 //checking the current page is login scren
 export const loginScreenOpened = (
-  navigation: StackNavigationProp<RootStackParamList>,
+  navigation: NativeStackNavigationProp<RootStackParamList>,
 ) => {
   if (navigation.getState() && navigation.getState().routes) {
     const currentRoute = navigation.getState().routes?.at(-1); // Get last route in stack
