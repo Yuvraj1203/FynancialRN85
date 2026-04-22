@@ -52,6 +52,8 @@
     <key>NSFaceIDUsageDescription</key>
     <string>Enabling Face ID allows you quick and secure access to your account.</string>
     <key>NSPhotoLibraryUsageDescription</key>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>We need to save photos</string>
     <string>This app requires access to your photo library to allow photo selection and upload.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
