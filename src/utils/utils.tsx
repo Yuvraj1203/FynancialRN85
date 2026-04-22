@@ -2138,7 +2138,7 @@ export const useLogout = () => {
       cancelNotification({ clearAll: true }); // clear notifications
 
       try {
-        DdSdkReactNative.setUser({});
+        DdSdkReactNative.clearUserInfo();
         Sentry.setUser(null);
       } catch (e) {
         Log('error in removing user from data dog and sentry');
