@@ -46,3 +46,8 @@ remove src folder from .gitignore
 1. npx pod-install ios
 2. cd android && ./gradlew clean
 3. cd ios && pod install
+
+<!-- need to do -->
+
+1. changing kotlin code for blank screen on minmizing app
+2. need to set permission of ios and android
