@@ -78,9 +78,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.fynancialrn85"
+    namespace "com.fynancial.app"
     defaultConfig {
-        applicationId "com.fynancialrn85"
+        applicationId "com.fynancial.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
