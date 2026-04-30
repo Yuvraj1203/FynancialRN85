@@ -1,0 +1,20 @@
+{
+  "AndroidVersionCode": "2",
+  "AndroidVersionName": "0.0.2",
+  "ApiUrl": "https://service.sanctuarywealthapp.com/",
+  "AppName": "Pierstone",
+  "Auth0ClientId": "NiCAE5EM02safD6AyPzpBzIa02a9nZr4",
+  "Auth0Domain": "sanctuarylive.us.auth0.com",
+  "Auth0Organization": "org_NxSD6MY0pyPo8nWn",
+  "BundleId": "com.fynancialapp.partnerfirm",
+  "IosTeamId": "4FV4TQ84C5",
+  "IosVersionCode": "3",
+  "IosVersionName": "0.0.3",
+  "OktaClientId": "",
+  "OktaDomain": "",
+  "OktaTenancyName": "okta-workforce-partnerfirm",
+  "PackageName": "com.fynancialapp.partnerfirm",
+  "SentryDsn": "https://e09fe12de259127700692b10e980e58e@o4509587048038400.ingest.us.sentry.io/4510736497639424",
+  "TenancyName": "samplefirm1",
+  "TenantId": "17"
+}

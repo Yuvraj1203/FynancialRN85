@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "752830247841",
+    "project_id": "curio-wealth",
+    "storage_bucket": "curio-wealth.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:752830247841:android:190a985b70e1a5174611e0",
+        "android_client_info": {
+          "package_name": "com.fynancialapp.curiowealth"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCt1RYCr_VnzEhTh2WWpiRzr4UsRmHzyKs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "504117023160",
+    "project_id": "creidim-wealth",
+    "storage_bucket": "creidim-wealth.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:504117023160:android:88b3e8dd46914d5ae7ff4d",
+        "android_client_info": {
+          "package_name": "com.fynancialapp.creidimwealth"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQxUelTmIcR8bmud1xhbgGbN1lY3Jn_3Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

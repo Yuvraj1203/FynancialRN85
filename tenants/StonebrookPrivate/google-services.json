@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "936670140720",
+    "project_id": "stonebrook-private",
+    "storage_bucket": "stonebrook-private.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:936670140720:android:3875ba3ebf976c28e050f5",
+        "android_client_info": {
+          "package_name": "com.fynancialapp.stonebrookprivate"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDG5uJkkNLIK8L2jnLL3SfOwnhyLzNKqmo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

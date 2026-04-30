@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "923352521366",
+    "project_id": "four-c-financial",
+    "storage_bucket": "four-c-financial.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:923352521366:android:b952a1bef9a3fd454fc0b7",
+        "android_client_info": {
+          "package_name": "com.fynancialapp.fourcfinancial"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBx4ttXyL_8pdfsxjJt2l0PqSZaTZ3mnk0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

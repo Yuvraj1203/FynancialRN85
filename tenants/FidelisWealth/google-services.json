@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "941381085646",
+    "project_id": "fideliswealth-f12dc",
+    "storage_bucket": "fideliswealth-f12dc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:941381085646:android:6cbb2c8ccbe3663eb0e39f",
+        "android_client_info": {
+          "package_name": "com.fynancialapp.fideliswealth"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWPgkaxtioIdG80Z36KP_wR2-NE3xewtU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

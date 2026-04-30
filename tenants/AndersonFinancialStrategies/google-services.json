@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "196008765236",
+    "project_id": "anderson-financial-strategies",
+    "storage_bucket": "anderson-financial-strategies.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:196008765236:android:7865d1ef99465312892761",
+        "android_client_info": {
+          "package_name": "com.fynancialapp.andersonfinancialstrategies"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZpRvkINhppK0BdKosVyEWoN7l0ttq-0o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,20 @@
+{
+  "AndroidVersionCode": "3",
+  "AndroidVersionName": "0.0.3",
+  "ApiUrl": "https://service.sanctuarywealthapp.com/",
+  "AppName": "Dial Square Private Wealth",
+  "Auth0ClientId": "oWIt9TUZKoZjRH6TGWb9cfB1360kgYdR",
+  "Auth0Domain": "sanctuarylive.us.auth0.com",
+  "Auth0Organization": "org_iSB6AC1be5miNd3k",
+  "BundleId": "com.sanctuarywealthapp.dialsquarepw",
+  "IosTeamId": "VTCH6YT732",
+  "IosVersionCode": "3",
+  "IosVersionName": "0.0.3",
+  "OktaClientId": "",
+  "OktaDomain": "",
+  "OktaTenancyName": "okta-workforce-dialsquarepw",
+  "PackageName": "com.sanctuarywealthapp.dialsquarepw",
+  "SentryDsn": "https://ad725cbc78e42fe7d6e60a01c25fdf0f@o4509587048038400.ingest.us.sentry.io/4510339857842176",
+  "TenancyName": "dialsquarepw",
+  "TenantId": "15"
+}

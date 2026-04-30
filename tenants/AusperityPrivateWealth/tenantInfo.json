@@ -1,0 +1,20 @@
+{
+  "AndroidVersionCode": "11",
+  "AndroidVersionName": "0.1.1",
+  "ApiUrl": "https://a.sanctuarywealthapp.com/",
+  "AppName": "Ausperity Private Wealth",
+  "Auth0ClientId": "h83rNxifz8RkhjfiYOnXoZo8wI5Bb6eD",
+  "Auth0Domain": "ausperitypw.us.auth0.com",
+  "Auth0Organization": "",
+  "BundleId": "com.fynancialapp.ausperity",
+  "IosTeamId": "928F4D6QB6",
+  "IosVersionCode": "18",
+  "IosVersionName": "0.1.8",
+  "OktaClientId": "0oa1cualgt8AqQuO4358",
+  "OktaDomain": "noyesnet-poc.okta.com",
+  "OktaTenancyName": "okta-workforce-ausperitypw",
+  "PackageName": "com.fynancialapp.ausperity",
+  "SentryDsn": "https://b815398d9bbf3891e3475699b704a4e7@o4509587048038400.ingest.us.sentry.io/4509587545522176",
+  "TenancyName": "ausperitypw",
+  "TenantId": "7"
+}

@@ -1,0 +1,19 @@
+{
+  "AndroidVersionCode": "1",
+  "AndroidVersionName": "0.0.1",
+  "ApiUrl": "https://a.fynuat.com/",
+  "AppName": "Link Wealth Group",
+  "Auth0ClientId": "gHGths2e71HGNk0ireTgamlHCP4Pu81E",
+  "Auth0Domain": "fynuat.us.auth0.com",
+  "Auth0Organization": "org_ybL6Ga0vurXkZgXT",
+  "BundleId": "com.fynancialapp.linkwealth",
+  "IosTeamId": "4FV4TQ84C5",
+  "IosVersionCode": "2",
+  "IosVersionName": "0.0.2",
+  "OktaClientId": "",
+  "OktaDomain": "",
+  "PackageName": "com.fynancialapp.linkwealth",
+  "SentryDsn": "https://61d08146fbcd423267536750b0f876bf@o4509587048038400.ingest.us.sentry.io/4509587049283584",
+  "TenancyName": "linkwealth",
+  "TenantId": "181"
+}

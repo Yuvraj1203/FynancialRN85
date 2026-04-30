@@ -1,0 +1,20 @@
+{
+  "AndroidVersionCode": "11",
+  "AndroidVersionName": "0.1.1",
+  "ApiUrl": "https://service.fynancial.com/",
+  "AppName": "Solitude FS",
+  "Auth0ClientId": "HEP4SzfeeExF5Nchxx7VssUzhnvDhRR2",
+  "Auth0Domain": "solitudefinancial.us.auth0.com",
+  "Auth0Organization": "",
+  "BundleId": "com.fynancialapp.solitudefinancial",
+  "IosTeamId": "GKHWJT4RTU",
+  "IosVersionCode": "14",
+  "IosVersionName": "0.1.4",
+  "OktaClientId": "",
+  "OktaDomain": "",
+  "OktaTenancyName": "okta-workforce-solitudefinancial",
+  "PackageName": "com.fynancialapp.solitudefinancial",
+  "SentryDsn": "https://b1a0d1925f5bf127d4c3fb4332474cd7@o4509587048038400.ingest.us.sentry.io/4509591824039936",
+  "TenancyName": "solitudefinancial",
+  "TenantId": "42"
+}

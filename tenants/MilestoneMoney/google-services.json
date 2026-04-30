@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "874444945104",
+    "project_id": "milestone-money",
+    "storage_bucket": "milestone-money.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:874444945104:android:f6049ce341d1d7325d10d5",
+        "android_client_info": {
+          "package_name": "com.fynancialapp.milestonemoney"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHn1IfijZcphv6YKj5BKFJ78nyPNGnPd8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

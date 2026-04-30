@@ -4,6 +4,7 @@
 
 # src/*
 
+tenants/*/credentials
 # Xcode
 #
 build/

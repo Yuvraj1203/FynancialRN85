@@ -1,0 +1,20 @@
+{
+  "AndroidVersionCode": "11",
+  "AndroidVersionName": "0.1.1",
+  "ApiUrl": "https://service.fynancial.com/",
+  "AppName": "Mission Forward",
+  "Auth0ClientId": "MPgAFs9S03qpwsu0skXtj4xKHJXzEGI8",
+  "Auth0Domain": "missionwealth.us.auth0.com",
+  "Auth0Organization": "",
+  "BundleId": "com.fynancialapp.missionwealth",
+  "IosTeamId": "UZYP2KQBA4",
+  "IosVersionCode": "19",
+  "IosVersionName": "0.1.5",
+  "OktaClientId": "",
+  "OktaDomain": "",
+  "OktaTenancyName": "okta-workforce-missionwealth",
+  "PackageName": "com.fynancialapp.missionwealth",
+  "SentryDsn": "https://794435ecff0a5ef852ca8414411e351f@o4509587048038400.ingest.us.sentry.io/4509591475912704",
+  "TenancyName": "missionwealth",
+  "TenantId": "21"
+}

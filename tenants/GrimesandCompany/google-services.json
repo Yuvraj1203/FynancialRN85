@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "522590745923",
+    "project_id": "grimes-5c1aa",
+    "storage_bucket": "grimes-5c1aa.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:522590745923:android:d8f531d58c6a9481c6ebf6",
+        "android_client_info": {
+          "package_name": "com.fynancialapp.grimesco"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBoclvWs6KCAP8EY8rlcTtDgsQIkCp5NBE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

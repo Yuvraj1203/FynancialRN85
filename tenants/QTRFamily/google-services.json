@@ -1,0 +1,29 @@
+{
+  "client": [
+    {
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcylfQmK3jyZj6GaUIe5NlA4bsm9wDMtY"
+        }
+      ],
+      "client_info": {
+        "android_client_info": {
+          "package_name": "com.fynancialapp.qtrfamily"
+        },
+        "mobilesdk_app_id": "1:369362088145:android:1883022822cf93fae2d5f0"
+      },
+      "oauth_client": [],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1",
+  "project_info": {
+    "project_id": "qtr-family-wealth-33732",
+    "project_number": "369362088145",
+    "storage_bucket": "qtr-family-wealth-33732.firebasestorage.app"
+  }
+}

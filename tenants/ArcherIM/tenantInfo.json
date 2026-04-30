@@ -1,0 +1,20 @@
+{
+  "AndroidVersionCode": "10",
+  "AndroidVersionName": "0.1.0",
+  "ApiUrl": "https://service.fynancial.com/",
+  "AppName": "Archer IM",
+  "Auth0ClientId": "xbaUAT6DaTBmplORPc0YvGQ1cfc1kKWH",
+  "Auth0Domain": "fynanciallive.us.auth0.com",
+  "Auth0Organization": "org_3teP9WgpMo2lHwAY",
+  "BundleId": "com.fynancialapp.archerim",
+  "IosTeamId": "6Q357TNFNW",
+  "IosVersionCode": "16",
+  "IosVersionName": "0.1.6",
+  "OktaClientId": "",
+  "OktaDomain": "",
+  "OktaTenancyName": "okta-workforce-archerim",
+  "PackageName": "com.fynancialapp.archerim",
+  "SentryDsn": "https://85ecf5105c6e3c64aaf88bf4f6ab4756@o4509587048038400.ingest.us.sentry.io/4509587529596938",
+  "TenancyName": "archerim",
+  "TenantId": "28"
+}

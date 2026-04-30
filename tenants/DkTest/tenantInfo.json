@@ -1,0 +1,20 @@
+{
+  "AndroidVersionCode": "1",
+  "AndroidVersionName": "0.0.1",
+  "ApiUrl": "https://aa.fyntst.com/",
+  "AppName": "DkTest",
+  "Auth0ClientId": "2hewJqCEG4YzE05eZzejGXmYQWpk9FkD",
+  "Auth0Domain": "fynancialtest.us.auth0.com",
+  "Auth0Organization": "org_wF3OpUAIOeQdSyW6",
+  "BundleId": "com.fynancialapp.dktest2",
+  "IosTeamId": "4FV4TQ84C5",
+  "IosVersionCode": "9",
+  "IosVersionName": "0.0.9",
+  "OktaClientId": "0oakotnd39cXHcLPM5d7",
+  "OktaDomain": "dev-43815765.okta.com",
+  "OktaTenancyName": "okta-workforce-dktest2",
+  "PackageName": "com.fynancialapp.dktest2",
+  "SentryDsn": "https://407e6375a24fdf0b49cd5b71148b395d@o4507531159076864.ingest.us.sentry.io/4507531163074560",
+  "TenancyName": "dktest2",
+  "TenantId": "247"
+}

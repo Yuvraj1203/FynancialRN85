@@ -1,0 +1,20 @@
+{
+  "AndroidVersionCode": "8",
+  "AndroidVersionName": "0.0.8",
+  "ApiUrl": "https://service.fynancial.com/",
+  "AppName": "Anderson Financial Strategies",
+  "Auth0ClientId": "IEVoowEL8zWbqO5loCPTSJOUi8NeCDQH",
+  "Auth0Domain": "fynanciallive.us.auth0.com",
+  "Auth0Organization": "org_wrzjqSwoEiv2a6fJ",
+  "BundleId": "com.fynancialapp.andersonfinancialstrategies",
+  "IosTeamId": "QTPM4A37B3",
+  "IosVersionCode": "9",
+  "IosVersionName": "0.0.9",
+  "OktaClientId": "",
+  "OktaDomain": "",
+  "OktaTenancyName": "okta-workforce-andersonfinancialstrategies",
+  "PackageName": "com.fynancialapp.andersonfinancialstrategies",
+  "SentryDsn": "https://cc6f56a9d635ec4bc592b7c6b0fa0486@o4509587048038400.ingest.us.sentry.io/4509587521470464",
+  "TenancyName": "andersonfinancialstrategies",
+  "TenantId": "39"
+}

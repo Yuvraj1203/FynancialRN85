@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "301972895162",
+    "project_id": "stricklerfinancial-356d3",
+    "storage_bucket": "stricklerfinancial-356d3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:301972895162:android:79bc9ec6ac422a812ed983",
+        "android_client_info": {
+          "package_name": "com.fynancialapp.stricklerfinancial"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7tdZKX0MZu7ERrGyQFSGrk8-11WN-DbA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

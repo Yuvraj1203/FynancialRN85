@@ -1,0 +1,20 @@
+{
+  "AndroidVersionCode": "5",
+  "AndroidVersionName": "0.0.5",
+  "ApiUrl": "https://service.fynancial.com/",
+  "AppName": "Team Hewins",
+  "Auth0ClientId": "1B2ouuVKwadFTMRwpCdbSjfN3b4JWfoO",
+  "Auth0Domain": "fynanciallive.us.auth0.com",
+  "Auth0Organization": "org_6vl1wQlOYp23oEGV",
+  "BundleId": "com.fynancialapp.teamhewins",
+  "IosTeamId": "SP4L6DJLJ2",
+  "IosVersionCode": "7",
+  "IosVersionName": "0.0.7",
+  "OktaClientId": "",
+  "OktaDomain": "",
+  "OktaTenancyName": "okta-workforce-teamhewins",
+  "PackageName": "com.fynancialapp.teamhewins",
+  "SentryDsn": "https://843d701a8213068313d4b3ff29a04d21@o4509587048038400.ingest.us.sentry.io/4509591852482560",
+  "TenancyName": "teamhewins",
+  "TenantId": "46"
+}

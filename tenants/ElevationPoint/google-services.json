@@ -1,0 +1,48 @@
+{
+  "client": [
+    {
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdcydBd0cdaOaDB99mOORVgmnJV8hv5b4"
+        }
+      ],
+      "client_info": {
+        "android_client_info": {
+          "package_name": "com.fynancialapp.elevationpoint"
+        },
+        "mobilesdk_app_id": "1:359688956808:android:df50dba66dbc1079bce83d"
+      },
+      "oauth_client": [],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdcydBd0cdaOaDB99mOORVgmnJV8hv5b4"
+        }
+      ],
+      "client_info": {
+        "android_client_info": {
+          "package_name": "com.fynancialapp.elevationpointapp"
+        },
+        "mobilesdk_app_id": "1:359688956808:android:9e2a93647ebde024bce83d"
+      },
+      "oauth_client": [],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1",
+  "project_info": {
+    "project_id": "elevation-point",
+    "project_number": "359688956808",
+    "storage_bucket": "elevation-point.firebasestorage.app"
+  }
+}

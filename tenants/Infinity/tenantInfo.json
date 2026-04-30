@@ -1,0 +1,20 @@
+{
+  "AndroidVersionCode": "1",
+  "AndroidVersionName": "0.0.1",
+  "ApiUrl": "https://aa.fyntst.com/",
+  "AppName": "Infinity",
+  "Auth0ClientId": "qBHHyUGwzssDtlW570JiYDuvQJ7R6YGu",
+  "Auth0Domain": "fynancialtest.us.auth0.com",
+  "Auth0Organization": "org_jhcIvl5dx6oravwS",
+  "BundleId": "com.fynancialapp.infinity",
+  "IosTeamId": "4FV4TQ84C5",
+  "IosVersionCode": "1",
+  "IosVersionName": "0.0.1",
+  "OktaClientId": "",
+  "OktaDomain": "",
+  "OktaTenancyName": "okta-workforce-infinity",
+  "PackageName": "com.fynancialapp.infinity",
+  "SentryDsn": "https://407e6375a24fdf0b49cd5b71148b395d@o4507531159076864.ingest.us.sentry.io/4507531163074560",
+  "TenancyName": "infinity",
+  "TenantId": "311"
+}

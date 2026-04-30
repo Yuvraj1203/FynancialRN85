@@ -1,0 +1,20 @@
+{
+  "AndroidVersionCode": "7",
+  "AndroidVersionName": "0.0.7",
+  "ApiUrl": "https://service.fynancial.com/",
+  "AppName": "Morton Brown FW",
+  "Auth0ClientId": "EDNHyHB141IuEbOUW28cCioTxJyCv29a",
+  "Auth0Domain": "mortonbrownfw.us.auth0.com",
+  "Auth0Organization": "",
+  "BundleId": "com.fynancialapp.mortonbrownfw",
+  "IosTeamId": "G326C8K2FR",
+  "IosVersionCode": "13",
+  "IosVersionName": "0.1.1",
+  "OktaClientId": "",
+  "OktaDomain": "",
+  "OktaTenancyName": "okta-workforce-mortonbrownfw",
+  "PackageName": "com.fynancialapp.mortonbrownfw",
+  "SentryDsn": "https://e716a005c6fd45cbc5489fea6b8fe773@o4509587048038400.ingest.us.sentry.io/4509591492952064",
+  "TenancyName": "mortonbrownfw",
+  "TenantId": "38"
+}

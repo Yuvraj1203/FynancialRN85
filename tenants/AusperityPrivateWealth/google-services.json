@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "607624005866",
+    "project_id": "ausperity-app",
+    "storage_bucket": "ausperity-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:607624005866:android:eb1deda6ce4bf0d2cc6f93",
+        "android_client_info": {
+          "package_name": "com.fynancialapp.ausperity"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDVIoEpxoUKzWogsV9eNRa3Ibbix6tDOQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

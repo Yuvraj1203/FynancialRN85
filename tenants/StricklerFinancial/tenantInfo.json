@@ -1,0 +1,20 @@
+{
+  "AndroidVersionCode": "4",
+  "AndroidVersionName": "0.0.4",
+  "ApiUrl": "https://service.fynancial.com/",
+  "AppName": "Strickler Financial",
+  "Auth0ClientId": "82UgjjN3FGeLp6PdoHmXnXtGnjNMi2xs",
+  "Auth0Domain": "fynanciallive.us.auth0.com",
+  "Auth0Organization": "org_yLlu0ekwQXTvwfgy",
+  "BundleId": "com.fynancialapp.stricklerfinancial",
+  "IosTeamId": "79JWRGPMD9",
+  "IosVersionCode": "7",
+  "IosVersionName": "1.2.7",
+  "OktaClientId": "",
+  "OktaDomain": "",
+  "OktaTenancyName": "okta-workforce-stricklerfinancial",
+  "PackageName": "com.fynancialapp.stricklerfinancial",
+  "SentryDsn": "https://39b50dc17ed363906ae0adc2606f62e2@o4509587048038400.ingest.us.sentry.io/4509602641477632",
+  "TenancyName": "stricklerfinancial",
+  "TenantId": "47"
+}

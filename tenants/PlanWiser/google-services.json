@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "605899606610",
+    "project_id": "planwiserfinancial",
+    "storage_bucket": "planwiserfinancial.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:605899606610:android:3a556f03b47134db38ad8b",
+        "android_client_info": {
+          "package_name": "com.fynancialapp.planwiser"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJyFzZ-91goz9ge-INiyfzp34KqU8smkI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

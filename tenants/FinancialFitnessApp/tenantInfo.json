@@ -1,0 +1,20 @@
+{
+  "AndroidVersionCode": "3",
+  "AndroidVersionName": "0.0.3",
+  "ApiUrl": "https://service.fynancial.com/",
+  "AppName": "Financial Fitness App",
+  "Auth0ClientId": "rxC8qIqLWwx4t2Y9Szc6q2n9rwACIkgI",
+  "Auth0Domain": "fynanciallive.us.auth0.com",
+  "Auth0Organization": "org_XdqOAE9cNBnBw7Ef",
+  "BundleId": "com.fynancialapp.financialfitnessapp",
+  "IosTeamId": "4FV4TQ84C5",
+  "IosVersionCode": "4",
+  "IosVersionName": "0.0.4",
+  "OktaClientId": "",
+  "OktaDomain": "",
+  "OktaTenancyName": "okta-workforce-financialfitnessapp",
+  "PackageName": "com.fynancialapp.financialfitnessapp",
+  "SentryDsn": "https://ceca47ffdb2dd6c22f95926d9ed82159@o4509587048038400.ingest.us.sentry.io/4510470131220480",
+  "TenancyName": "financialfitnessapp",
+  "TenantId": "62"
+}

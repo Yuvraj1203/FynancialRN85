@@ -1,0 +1,20 @@
+{
+  "AndroidVersionCode": "11",
+  "AndroidVersionName": "0.1.1",
+  "ApiUrl": "https://service.fynancial.com/",
+  "AppName": "OneSeven",
+  "Auth0ClientId": "SXke0OYnjn8jSMXgjFpPzCsbzwyGihop",
+  "Auth0Domain": "weareoneseven.us.auth0.com",
+  "Auth0Organization": "",
+  "BundleId": "com.fynancialapp.weareoneseven",
+  "IosTeamId": "G7JKJ967S4",
+  "IosVersionCode": "13",
+  "IosVersionName": "0.1.2",
+  "OktaClientId": "",
+  "OktaDomain": "",
+  "OktaTenancyName": "okta-workforce-weareoneseven",
+  "PackageName": "com.fynancialapp.weareonesevenapp",
+  "SentryDsn": "https://eb20204bba5379ef21c740ee30b0fa5f@o4509587048038400.ingest.us.sentry.io/4509587089981440",
+  "TenancyName": "weareoneseven",
+  "TenantId": "36"
+}

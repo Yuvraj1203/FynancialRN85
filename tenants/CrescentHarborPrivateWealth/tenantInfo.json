@@ -1,0 +1,20 @@
+{
+  "AndroidVersionCode": "10",
+  "AndroidVersionName": "0.1.0",
+  "ApiUrl": "https://service.sanctuarywealthapp.com/",
+  "AppName": "Crescent Harbor Private Wealth",
+  "Auth0ClientId": "x4ZEYmDMp8zWbIzdo25OSohsYdkRCQzb",
+  "Auth0Domain": "crescentharborpw.us.auth0.com",
+  "Auth0Organization": "",
+  "BundleId": "com.sanctuarywealthapp.crescentharborpw",
+  "IosTeamId": "4FV4TQ84C5",
+  "IosVersionCode": "14",
+  "IosVersionName": "0.1.4",
+  "OktaClientId": "0oa1cualgt8AqQuO4358",
+  "OktaDomain": "noyesnet-poc.okta.com",
+  "OktaTenancyName": "okta-workforce-crescentharborpw",
+  "PackageName": "com.sanctuarywealthapp.crescentharborpw",
+  "SentryDsn": "https://27248294de6a7356b5016e06beb163a1@o4509587048038400.ingest.us.sentry.io/4509587676790784",
+  "TenancyName": "crescentharborpw",
+  "TenantId": "8"
+}

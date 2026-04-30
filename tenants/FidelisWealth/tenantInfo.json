@@ -1,0 +1,20 @@
+{
+  "AndroidVersionCode": "8",
+  "AndroidVersionName": "0.0.8",
+  "ApiUrl": "https://service.fynancial.com/",
+  "AppName": "Fidelis Wealth",
+  "Auth0ClientId": "aIV2TaFASY4cg9S2x3SJRrDWcXMdFZF8",
+  "Auth0Domain": "fynanciallive.us.auth0.com",
+  "Auth0Organization": "org_2J7GegsCYFzTAeRj",
+  "BundleId": "com.fynancialapp.fideliswealth",
+  "IosTeamId": "R72S36LG6S",
+  "IosVersionCode": "9",
+  "IosVersionName": "0.0.9",
+  "OktaClientId": "",
+  "OktaDomain": "",
+  "OktaTenancyName": "okta-workforce-fidelis-wealth",
+  "PackageName": "com.fynancialapp.fideliswealth",
+  "SentryDsn": "https://9de0be80411e02af71c7fe3436bc3f4c@o4509587048038400.ingest.us.sentry.io/4509591844552704",
+  "TenancyName": "fidelis-wealth",
+  "TenantId": "45"
+}

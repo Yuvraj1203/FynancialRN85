@@ -1,0 +1,20 @@
+{
+  "AndroidVersionCode": "13",
+  "AndroidVersionName": "0.1.1",
+  "ApiUrl": "https://service.sanctuarywealthapp.com/",
+  "AppName": "Auric Capital",
+  "Auth0ClientId": "mPJs76oEjEqlYgEfF8fNpEnDuEk4REuI",
+  "Auth0Domain": "auriccapital.us.auth0.com",
+  "Auth0Organization": "",
+  "BundleId": "com.fynancialapp.auriccapital",
+  "IosTeamId": "CBR96TY5Y3",
+  "IosVersionCode": "20",
+  "IosVersionName": "0.1.1",
+  "OktaClientId": "0oa1cualgt8AqQuO4358",
+  "OktaDomain": "noyesnet-poc.okta.com",
+  "OktaTenancyName": "okta-workforce-auriccapital",
+  "PackageName": "com.fynancialapp.auriccapital",
+  "SentryDsn": "https://fd0557b4af70902b00ceaa1368faceaf@o4509587048038400.ingest.us.sentry.io/4509587538182144",
+  "TenancyName": "auriccapital",
+  "TenantId": "3"
+}

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "921748728602",
+    "project_id": "bridlewood-76b44",
+    "storage_bucket": "bridlewood-76b44.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:921748728602:android:9efb4b7f24fbfe6cff9aa3",
+        "android_client_info": {
+          "package_name": "com.fynancialapp.bridlewoodprivatewealth"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBl8_Zi3ASwkQ-EX8lt1yYGB-iCwmOGiU0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:921748728602:android:5a09fee0246dda2eff9aa3",
+        "android_client_info": {
+          "package_name": "com.fynancialapp.bridlewoodprivatewealthapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBl8_Zi3ASwkQ-EX8lt1yYGB-iCwmOGiU0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

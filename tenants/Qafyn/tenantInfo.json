@@ -1,0 +1,20 @@
+{
+  "AndroidVersionCode": "1",
+  "AndroidVersionName": "0.0.1",
+  "ApiUrl": "https://aa.fyndev.com/",
+  "AppName": "Qafyn",
+  "Auth0ClientId": "8RkS95bjucdwbI9sSj7PpO06sV7fyRND",
+  "Auth0Domain": "fyndev.us.auth0.com",
+  "Auth0Organization": "org_onaZW77mLfJfpnKj",
+  "BundleId": "com.fynancialapp.qa",
+  "IosTeamId": "4FV4TQ84C5",
+  "IosVersionCode": "1",
+  "IosVersionName": "0.0.1",
+  "OktaClientId": "0oai6u6jv9J5B3zrj1d7",
+  "OktaDomain": "sanctuarywealth.oktapreview.com",
+  "OktaTenancyName": "okta-workforce-qa",
+  "PackageName": "com.fynancialapp.qa",
+  "SentryDsn": "https://407e6375a24fdf0b49cd5b71148b395d@o4507531159076864.ingest.us.sentry.io/4507531163074560",
+  "TenancyName": "qa",
+  "TenantId": "299"
+}

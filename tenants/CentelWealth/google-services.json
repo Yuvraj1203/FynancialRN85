@@ -1,0 +1,48 @@
+{
+  "client": [
+    {
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbyYcMEr9NGK-KlcqDhZ9P3isgRbmEPao"
+        }
+      ],
+      "client_info": {
+        "android_client_info": {
+          "package_name": "com.fynancialapp.centelwealth"
+        },
+        "mobilesdk_app_id": "1:812090512160:android:2be2ea3ec5477fc0c27d45"
+      },
+      "oauth_client": [],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbyYcMEr9NGK-KlcqDhZ9P3isgRbmEPao"
+        }
+      ],
+      "client_info": {
+        "android_client_info": {
+          "package_name": "com.sanctuarywealthapp.centelwealth"
+        },
+        "mobilesdk_app_id": "1:812090512160:android:1d43f7e47462f84bc27d45"
+      },
+      "oauth_client": [],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1",
+  "project_info": {
+    "project_id": "centelwealth",
+    "project_number": "812090512160",
+    "storage_bucket": "centelwealth.firebasestorage.app"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "AndroidVersionCode": "1",
+  "AndroidVersionName": "0.0.1",
+  "ApiUrl": "https://a.fyndev.com/",
+  "AppName": "Gks",
+  "Auth0ClientId": "",
+  "Auth0Domain": "",
+  "Auth0Organization": "",
+  "BundleId": "com.thoroughbred.fynancial",
+  "IosTeamId": "4FV4TQ84C5",
+  "IosVersionCode": "1",
+  "IosVersionName": "0.0.1",
+  "OktaClientId": "",
+  "OktaDomain": "",
+  "PackageName": "com.thoroughbred.fynancial",
+  "SentryDsn": "https://61d08146fbcd423267536750b0f876bf@o4509587048038400.ingest.us.sentry.io/4509587049283584",
+  "TenancyName": "Gks",
+  "TenantId": "317"
+}

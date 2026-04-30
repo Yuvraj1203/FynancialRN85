@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyB9bId6ISRUDsNzI3Cb8q8YWLDgw7GTdJQ</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1051565918732</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.sanctuarywealthapp.alluvialprivatewealth</string>
+	<key>PROJECT_ID</key>
+	<string>alluvial-ba795</string>
+	<key>STORAGE_BUCKET</key>
+	<string>alluvial-ba795.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1051565918732:ios:d18e108edcfade0cc1bc29</string>
+</dict>
+</plist>

@@ -1,0 +1,20 @@
+{
+  "AndroidVersionCode": "15",
+  "AndroidVersionName": "0.1.2",
+  "ApiUrl": "https://service.sanctuarywealthapp.com/",
+  "AppName": "Concenture Wealth Management",
+  "Auth0ClientId": "XNxTrDxiRxHEuOh7UU1nrhhyaLJfChn7",
+  "Auth0Domain": "concenturewealth.us.auth0.com",
+  "Auth0Organization": "",
+  "BundleId": "com.thoroughbred.concenturewealth",
+  "IosTeamId": "739NVR4A97",
+  "IosVersionCode": "17",
+  "IosVersionName": "1.1.7",
+  "OktaClientId": "0oa1cualgt8AqQuO4358",
+  "OktaDomain": "noyesnet-poc.okta.com",
+  "OktaTenancyName": "okta-workforce-concenturewealth",
+  "PackageName": "com.thoroughbred.concenturewealth",
+  "SentryDsn": "https://be98e2e8dbbf25fb3a18d2a81aa777d0@o4509587048038400.ingest.us.sentry.io/4509587620429824",
+  "TenancyName": "concenturewealth",
+  "TenantId": "2"
+}

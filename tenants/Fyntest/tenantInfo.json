@@ -1,0 +1,20 @@
+{
+  "AndroidVersionCode": "1",
+  "AndroidVersionName": "0.0.1",
+  "ApiUrl": "https://aa.fyntst.com/",
+  "AppName": "Fyntest",
+  "Auth0ClientId": "h5mePzgchy688DeKIZzRYrf27JybKuQB",
+  "Auth0Domain": "fynancialtest.us.auth0.com",
+  "Auth0Organization": "org_wdMJz6sey8bIICKr",
+  "BundleId": "com.thoroughbred.fyntest",
+  "IosTeamId": "4FV4TQ84C5",
+  "IosVersionCode": "4",
+  "IosVersionName": "0.0.4",
+  "OktaClientId": "",
+  "OktaDomain": "",
+  "OktaTenancyName": "okta-workforce-onsite",
+  "PackageName": "com.thoroughbred.fyntest",
+  "SentryDsn": "https://407e6375a24fdf0b49cd5b71148b395d@o4507531159076864.ingest.us.sentry.io/4507531163074560",
+  "TenancyName": "onsite",
+  "TenantId": "278"
+}

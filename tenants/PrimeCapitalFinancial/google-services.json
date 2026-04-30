@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "322246887579",
+    "project_id": "prime-capital-financial",
+    "storage_bucket": "prime-capital-financial.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:322246887579:android:c6930717eddef821cf1e3e",
+        "android_client_info": {
+          "package_name": "com.fynancialapp.primecapital"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKDB_drmOVPLCWw7tyh_eKRXez9SU2DC0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

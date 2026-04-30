@@ -1,0 +1,20 @@
+{
+  "AndroidVersionCode": "2",
+  "AndroidVersionName": "0.0.2",
+  "ApiUrl": "https://service.fynancial.com/",
+  "AppName": "QTR Family",
+  "Auth0ClientId": "fHJ090o1ZXDEXmQiFh9jj4t1wv5ffZFf",
+  "Auth0Domain": "fynanciallive.us.auth0.com",
+  "Auth0Organization": "org_SrM8S6bthPG8l2xC",
+  "BundleId": "com.fynancialapp.qtrfamily",
+  "IosTeamId": "8X8TFZQY9M",
+  "IosVersionCode": "3",
+  "IosVersionName": "1.0.2",
+  "OktaClientId": "",
+  "OktaDomain": "",
+  "OktaTenancyName": "okta-workforce-qtrfamily",
+  "PackageName": "com.fynancialapp.qtrfamily",
+  "SentryDsn": "https://407e6375a24fdf0b49cd5b71148b395d@o4507531159076864.ingest.us.sentry.io/4507531163074560",
+  "TenancyName": "qtrfamily",
+  "TenantId": "51"
+}

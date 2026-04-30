@@ -1,0 +1,20 @@
+{
+  "AndroidVersionCode": "6",
+  "AndroidVersionName": "0.0.6",
+  "ApiUrl": "https://service.fynancial.com/",
+  "AppName": "Elevation Point",
+  "Auth0ClientId": "0Gr7VpjyB1cYerOAxS9XDOEumtpvxtrP",
+  "Auth0Domain": "elevationpoint.us.auth0.com",
+  "Auth0Organization": "",
+  "BundleId": "com.fynancialapp.elevationpoint",
+  "IosTeamId": "C9H65A69GV",
+  "IosVersionCode": "16",
+  "IosVersionName": "0.1.5",
+  "OktaClientId": "",
+  "OktaDomain": "",
+  "OktaTenancyName": "okta-workforce-elevationpoint",
+  "PackageName": "com.fynancialapp.elevationpointapp",
+  "SentryDsn": "https://4dc0af1de28ba6489ef1749ef7dc389d@o4509587048038400.ingest.us.sentry.io/4509587728498688",
+  "TenancyName": "elevationpoint",
+  "TenantId": "23"
+}

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "337790667820",
+    "project_id": "acm-wealth",
+    "storage_bucket": "acm-wealth.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:337790667820:android:eea43cc9db930b327ed589",
+        "android_client_info": {
+          "package_name": "com.fynancialapp.acmwealth"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxkG9HU2tDolpe81bPJHmeUzJ2HuVe64A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:337790667820:android:a76dcf19d75b41287ed589",
+        "android_client_info": {
+          "package_name": "com.fynancialapp.acmwealthdemo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxkG9HU2tDolpe81bPJHmeUzJ2HuVe64A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

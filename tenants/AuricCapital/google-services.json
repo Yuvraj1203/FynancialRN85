@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "39097197897",
+    "project_id": "auric-capital",
+    "storage_bucket": "auric-capital.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:39097197897:android:07276a53eba217148f2698",
+        "android_client_info": {
+          "package_name": "com.fynancialapp.auriccapital"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAcsIJwMnEqeTtN1uewBjDu-OWM2koaMKU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

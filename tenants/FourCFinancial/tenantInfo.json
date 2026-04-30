@@ -1,0 +1,20 @@
+{
+  "AndroidVersionCode": "11",
+  "AndroidVersionName": "0.1.1",
+  "ApiUrl": "https://service.fynancial.com/",
+  "AppName": "Four C Financial",
+  "Auth0ClientId": "ZfpAcrVnOWr4Oq5LppMgM9sARBaq2L9R",
+  "Auth0Domain": "fourcfinancial.us.auth0.com",
+  "Auth0Organization": "",
+  "BundleId": "com.fynancialapp.fourcfinancial",
+  "IosTeamId": "5RR7Q46XNQ",
+  "IosVersionCode": "12",
+  "IosVersionName": "0.1.2",
+  "OktaClientId": "",
+  "OktaDomain": "",
+  "OktaTenancyName": "okta-workforce-fourcfinancial",
+  "PackageName": "com.fynancialapp.fourcfinancial",
+  "SentryDsn": "https://6772fa3d580a169c6ce0344e48fb8fe4@o4509587048038400.ingest.us.sentry.io/4509591397203968",
+  "TenancyName": "fourcfinancial",
+  "TenantId": "31"
+}
