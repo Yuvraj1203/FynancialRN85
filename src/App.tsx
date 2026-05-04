@@ -7,7 +7,7 @@ import { LogBox, NativeModules } from 'react-native';
 import { Auth0Provider } from 'react-native-auth0';
 import 'react-native-gesture-handler';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { MMKV } from 'react-native-mmkv';
+import { createMMKV } from 'react-native-mmkv';
 import { StateStorage } from 'zustand/middleware';
 import DatadogWrapper from './DatadogWrapper';
 import ApplicationNavigator from './navigators/applicationNavigator';
@@ -39,7 +39,7 @@ Sentry.init({
   },
 });
 
-export const storage = new MMKV(); /* local storage in React native 
+export const storage = createMMKV(); /* local storage in React native 
                                     uses key value Pair(https://github.com/mrousavy/react-native-mmkv) */
 
 /* State Management library Zustand(https://github.com/pmndrs/zustand) START */
@@ -52,7 +52,7 @@ export const zustandStorage: StateStorage = {
     return value ?? null;
   },
   removeItem: name => {
-    return storage.delete(name);
+    return storage.remove(name);
   },
 };
 /* State Management library Zustand(https://github.com/pmndrs/zustand) END */
@@ -73,8 +73,7 @@ function App() {
     LogBox.ignoreAllLogs(true);
   }
   /* Logging for debug apk END */
-
-  DdSdkReactNative.setAttributes({
+  DdSdkReactNative.addAttributes({
     client_id: TenantInfo.TenancyName,
     app_build_version: AppVersion,
   });

@@ -1,0 +1,21 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "node_modules/@react-native-vector-icons/material-design-icons/fonts/MaterialDesignIcons.ttf",
+      "sha1": "4f51a4dc75a68d3e57321c448efddea23c8a9db0"
+    },
+    {
+      "path": "src/theme/assets/fonts/AppFont/Quicksand-Bold.ttf",
+      "sha1": "07ca4486c80653a7f3abc18145c2f251d5c9989b"
+    },
+    {
+      "path": "src/theme/assets/fonts/AppFont/Quicksand-Light.ttf",
+      "sha1": "0d6fe8746125375ffd3ea4de6ecf062643a65c52"
+    },
+    {
+      "path": "src/theme/assets/fonts/AppFont/Quicksand-SemiBold.ttf",
+      "sha1": "339f8d3e09ad271ff12727eef33a99f7a066eee3"
+    }
+  ]
+}

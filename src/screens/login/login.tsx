@@ -54,7 +54,6 @@ import {
 } from '@/utils/utils';
 import { DdSdkReactNative } from '@datadog/mobile-react-native';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { signOut } from '@okta/okta-react-native';
 import * as Sentry from '@sentry/react-native';
 import { useMutation } from '@tanstack/react-query';
 import { jwtDecode } from 'jwt-decode';
@@ -197,7 +196,7 @@ function Login() {
 
   const logo = () => {
     //clearSession();
-    signOut();
+    // signOut();
   };
   /**
    * Added by @Tarun 05-02-2025 -> to know if any api call is ongoing (FYN-4204)

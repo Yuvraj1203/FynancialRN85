@@ -1,7 +1,7 @@
 apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
-apply plugin: 'com.google.gms.google-services'
+apply plugin: "com.google.gms.google-services"  //added for firebase
 
 /**
  * This is the configuration block to customize your React Native Android app.
@@ -78,15 +78,19 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.fynancial.app"
+    namespace "com.fynancialapp"
     defaultConfig {
-        applicationId "com.fynancial.app"
+        applicationId "com.fynancialapp.developers"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
-        manifestPlaceholders = [auth0Domain: "YOUR_AUTH0_DOMAIN", auth0Scheme: "${applicationId}.auth0"]
-        buildConfigField "String", "app_name", "\"Fynancial\""
+        versionCode 2
+        versionName "0.0.2"
+        manifestPlaceholders = [
+            auth0Domain: "fyndev.us.auth0.com",
+            auth0Scheme: "${applicationId}.auth0",
+            appAuthRedirectScheme: "${applicationId}"
+        ]
+        buildConfigField "String", "app_name", "\"Developers\""
     }
     signingConfigs {
         debug {
@@ -98,15 +102,20 @@ android {
     }
     buildTypes {
         debug {
+            resValue "string", "app_name", "Developers"
             signingConfig signingConfigs.debug
         }
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
+            resValue "string", "app_name", "Developers"
             signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
+    }
+    buildFeatures {
+        buildConfig = true
     }
 }
 

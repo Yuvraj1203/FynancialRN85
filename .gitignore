@@ -5,6 +5,7 @@
 # src/*
 
 tenants/*/credentials
+*/GoogleServiceAccountKey.json
 # Xcode
 #
 build/

@@ -28,7 +28,6 @@ import {
   useLogout,
 } from '@/utils/utils';
 import notifee from '@notifee/react-native';
-import { createConfig } from '@okta/okta-react-native';
 import { useMutation } from '@tanstack/react-query';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -136,15 +135,15 @@ function Splash() {
   });
 
   const initializeOkta = async () => {
-    await createConfig({
-      issuer: `https://${TenantInfo.OktaDomain}/oauth2/default`,
-      clientId: TenantInfo.OktaClientId,
-      redirectUri: `${TenantInfo.PackageName}:/callback`,
-      endSessionRedirectUri: `${TenantInfo.PackageName}:/logout`,
-      discoveryUri: `https://${TenantInfo.OktaDomain}/oauth2/default`,
-      scopes: ['openid', 'profile', 'email', 'offline_access'],
-      requireHardwareBackedKeyStore: true,
-    });
+    // await createConfig({
+    //   issuer: `https://${TenantInfo.OktaDomain}/oauth2/default`,
+    //   clientId: TenantInfo.OktaClientId,
+    //   redirectUri: `${TenantInfo.PackageName}:/callback`,
+    //   endSessionRedirectUri: `${TenantInfo.PackageName}:/logout`,
+    //   discoveryUri: `https://${TenantInfo.OktaDomain}/oauth2/default`,
+    //   scopes: ['openid', 'profile', 'email', 'offline_access'],
+    //   requireHardwareBackedKeyStore: true,
+    // });
   };
 
   const forceLogout = async () => {

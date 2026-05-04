@@ -1,5 +1,5 @@
 {
-  "name": "FynancialRN85",
+  "name": "developers",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -8,7 +8,19 @@
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "release": "react-native run-android --mode=release",
+    "release-ios": "react-native run-ios --mode=Release",
+    "android:clean": "cd android && ./gradlew clean && cd ../",
+    "ios:clean": "cd ios && pod install && cd ..",
+    "android:cache": "yarn cache clean --force && yarn install",
+    "postandroid:cache": "yarn run android:clean && npx react-native start --reset-cache",
+    "ios:cache": "yarn cache clean --force && yarn install",
+    "postios:cache": "yarn run ios:clean && npx react-native start --reset-cache",
+    "update-tenant": "node update_tenant.js",
+    "postupdate-tenant": "npx react-native-asset && yarn cache clean --force",
+    "android:build": "react-native build-android --mode=release",
+    "releaseApk": "cd android && ./gradlew assembleRelease && cd ../"
   },
   "dependencies": {
     "@d11/react-native-fast-image": "^8.13.0",
@@ -37,7 +49,7 @@
     "@react-navigation/native": "^7.2.2",
     "@react-navigation/native-stack": "^7.14.11",
     "@sbaiahmed1/react-native-biometrics": "^0.15.0",
-    "@sentry/react-native": "^8.8.0",
+    "@sentry/react-native": "8.9.1",
     "@shopify/flash-list": "^2.3.1",
     "@shopify/react-native-skia": "^2.6.2",
     "@tanstack/react-query": "^5.99.2",
@@ -94,6 +106,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
+    "@babel/plugin-transform-export-namespace-from": "^7.27.1",
     "@babel/preset-env": "^7.25.3",
     "@babel/runtime": "^7.25.0",
     "@react-native-community/cli": "20.1.0",

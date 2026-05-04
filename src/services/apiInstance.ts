@@ -26,7 +26,7 @@ const baseUrl = TenantInfo.ApiUrl; // Uat
 
 /* Ky to make API Call (https://github.com/sindresorhus/ky) START */
 export const apiInstance = ky.extend({
-  prefixUrl: baseUrl,
+  prefix: baseUrl,
   headers: {
     Accept: 'application/json',
   },
@@ -176,10 +176,10 @@ async function makeRequestInternal<T>({
 
   // Create API instance with the selected base URL
   const apiCallInstance = apiInstance.extend({
-    prefixUrl: apiBaseUrl,
+    prefix: apiBaseUrl,
     hooks: {
       afterResponse: [
-        async (request, options, response) => {
+        async ({ request, options, response }) => {
           const result = await response.text();
 
           if (

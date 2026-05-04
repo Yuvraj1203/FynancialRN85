@@ -26,7 +26,6 @@ import { UserBiometricOption } from '@/store/biometricStore/biometricStore.ts';
 import useSignalRStore from '@/store/signalRStore/signalRStore.ts';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
 import { DdSdkReactNative } from '@datadog/mobile-react-native';
-import { signOut } from '@okta/okta-react-native';
 import NetInfo from '@react-native-community/netinfo';
 import { NavigationProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -2094,7 +2093,7 @@ export const useLogout = () => {
         //   await clearSession();
         // }
       } else if (loginWith === LoginWith.okta) {
-        await signOut();
+        // await signOut();
       }
     } catch (error: any) {
       Log('Logout service error => ' + JSON.stringify(error));
@@ -2119,7 +2118,7 @@ export const useLogout = () => {
         'failedMessageStorage',
         'FaceIdSettings',
         'FcmToken',
-      ].forEach(key => storage.delete(key));
+      ].forEach(key => storage.remove(key));
 
       userStore.getState().clearAll();
       useFailedMessageStore.getState().clearAll();
