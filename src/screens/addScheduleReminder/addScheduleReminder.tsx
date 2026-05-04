@@ -1037,13 +1037,13 @@ const makeStyles = (theme: CustomTheme) =>
       marginTop: 20,
     },
     sendNowButton: {
-      borderRadius: 5,
+      borderRadius: theme.roundness,
       marginBottom: 15,
       marginTop: 20,
       width: 'auto',
     },
     saveButton: {
-      borderRadius: 5,
+      borderRadius: theme.roundness,
       marginBottom: 25,
       marginTop: 20,
       width: 'auto',

@@ -248,8 +248,16 @@ const makeStyles = (theme: CustomTheme) =>
       borderRadius: theme.roundness,
       backgroundColor: theme.colors.gradientColorLevel2,
     },
-    commentProfilePic: { height: 35, width: 35, borderRadius: 35 },
-    nCommentProfilePic: { height: 25, width: 25, borderRadius: 25 },
+    commentProfilePic: {
+      height: 35,
+      width: 35,
+      borderRadius: theme.extraRoundness,
+    },
+    nCommentProfilePic: {
+      height: 25,
+      width: 25,
+      borderRadius: theme.roundness,
+    },
     replyLikeIcon: {
       height: 15,
       width: 15,
@@ -264,7 +272,7 @@ const makeStyles = (theme: CustomTheme) =>
     skeletonReplyProfile: {
       height: 20,
       width: 20,
-      borderRadius: 20,
+      borderRadius: theme.extraRoundness,
       backgroundColor: theme.colors.surface,
     },
     skeletonReplyName: {

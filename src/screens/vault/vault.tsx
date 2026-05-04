@@ -1023,14 +1023,14 @@ const makeStyles = (theme: CustomTheme) =>
       backgroundColor: theme.colors.surface,
       width: '73%',
       height: 33,
-      borderRadius: 5,
+      borderRadius: theme.roundness,
       marginLeft: 25,
     },
     skeletonFileIcon: {
       backgroundColor: theme.colors.surface,
       width: 35,
       height: 40,
-      borderRadius: 3,
+      borderRadius: theme.roundness,
     },
     heading: {
       flexDirection: 'row',

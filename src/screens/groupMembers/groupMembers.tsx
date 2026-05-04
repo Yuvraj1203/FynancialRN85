@@ -368,7 +368,7 @@ const makeStyles = (theme: CustomTheme) =>
     skeletonName: {
       height: 30,
       width: '65%',
-      borderRadius: 5,
+      borderRadius: theme.roundness,
       backgroundColor: theme.colors.surface,
     },
   });

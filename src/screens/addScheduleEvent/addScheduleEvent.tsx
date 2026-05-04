@@ -1287,7 +1287,7 @@ const makeStyles = (theme: CustomTheme) =>
     },
     nextButton: {
       paddingHorizontal: 20,
-      borderRadius: 5,
+      borderRadius: theme.roundness,
       marginBottom: 25,
       marginTop: 20,
     },

@@ -245,7 +245,7 @@ const makeStyles = (theme: CustomTheme) =>
     cardMain: {
       flex: 1,
       backgroundColor: theme.colors.assetCardBg,
-      borderRadius: 5,
+      borderRadius: theme.roundness,
     },
     bdAssetLay: {
       flex: 1,

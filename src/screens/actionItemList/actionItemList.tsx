@@ -1,4 +1,5 @@
 import {
+  CustomCheckBox,
   CustomFlatList,
   CustomImage,
   CustomText,
@@ -49,7 +50,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
-import { ActivityIndicator, Checkbox } from 'react-native-paper';
+import { ActivityIndicator } from 'react-native-paper';
 import { DashBoardProps } from '../dashboard/dashboard';
 
 export type ActionItemListProps = {
@@ -305,9 +306,9 @@ function ActionItemList() {
           {actionItemLoading == item.id ? (
             <ActivityIndicator style={styles.actionItemLoading} />
           ) : (
-            <Checkbox.Android
-              status={item.status ? 'checked' : 'unchecked'}
-              onPress={() => handleActionItems(item)}
+            <CustomCheckBox
+              value={item.status ? true : false}
+              onClick={() => handleActionItems(item)}
             />
           )}
           <View style={styles.actionItemTitleLay}>

@@ -606,6 +606,7 @@ function CreatePost() {
   };
 
   const renderImageItem = (item: Asset, index: number) => {
+    Log('resource type=>' + item.type);
     return item.uri == Images.addSquare ? (
       <Tap
         onPress={() => {
@@ -620,19 +621,25 @@ function CreatePost() {
           style={styles.selectedImg}
         />
       </Tap>
-    ) : item.type == types.pdf ? (
+    ) : item.type === types.pdf || item.type === 'application/pdf' ? (
       <Tap
         onPress={() => {
           showImagePopup({ pdfUrl: item.uri });
         }}
         style={styles.selectedImgTap}
       >
-        <View style={{ flex: 1 }}>
-          <CustomImage
-            source={Images.pdf}
-            type={ImageType.svg}
-            style={styles.selectedImg}
-          />
+        <View
+          style={{
+            flex: 1,
+          }}
+        >
+          <View style={styles.pdfLay}>
+            <CustomImage
+              source={Images.pdf}
+              type={ImageType.svg}
+              style={styles.selectedImg}
+            />
+          </View>
           <Tap
             onPress={() => {
               const updatedMediaList = mediaList.filter(
@@ -1235,13 +1242,13 @@ const makeStyles = (theme: CustomTheme) =>
     selectedImgTap: {
       height: 80,
       width: 80,
-      borderRadius: theme.roundness,
+      borderRadius: theme.lightRoundness,
       marginRight: 5,
     },
     selectedImg: {
       height: '100%',
       width: '100%',
-      borderRadius: theme.roundness,
+      borderRadius: theme.lightRoundness,
     },
     selectedImgDeleteTap: {
       position: 'absolute',
@@ -1249,8 +1256,8 @@ const makeStyles = (theme: CustomTheme) =>
       left: 0,
       right: 0,
       backgroundColor: theme.colors.error,
-      borderBottomLeftRadius: theme.roundness,
-      borderBottomRightRadius: theme.roundness,
+      borderBottomLeftRadius: theme.lightRoundness,
+      borderBottomRightRadius: theme.lightRoundness,
       alignItems: 'center',
       padding: 3,
     },
@@ -1267,7 +1274,7 @@ const makeStyles = (theme: CustomTheme) =>
     cameraLay: {
       alignContent: 'center',
       justifyContent: 'center',
-      width: 50,
+      width: 40,
       height: 40,
       marginTop: 3,
       marginHorizontal: 2,
@@ -1280,7 +1287,7 @@ const makeStyles = (theme: CustomTheme) =>
     cameraLayDisabled: {
       alignContent: 'center',
       justifyContent: 'center',
-      width: 50,
+      width: 40,
       height: 40,
       marginTop: 3,
       marginHorizontal: 2,
@@ -1338,6 +1345,17 @@ const makeStyles = (theme: CustomTheme) =>
     resourceRemoveIcon: {
       width: 20,
       height: 20,
+    },
+    pdfLay: {
+      flex: 1,
+      borderTopWidth: 1,
+      borderLeftWidth: 1,
+      borderRightWidth: 1,
+      borderColor: theme.colors.border,
+      borderRadius: theme.lightRoundness,
+      paddingHorizontal: 10,
+      paddingTop: 5,
+      paddingBottom: 20,
     },
   });
 

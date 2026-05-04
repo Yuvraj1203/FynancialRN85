@@ -1,6 +1,12 @@
-import {CustomTheme, useTheme} from '@/theme/themeProvider/paperTheme';
+import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
 import React from 'react';
-import {ScrollView, StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
+import {
+  ScrollView,
+  StyleProp,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from 'react-native';
 import Skeleton from './skeleton';
 
 type Props = {
@@ -10,7 +16,7 @@ type Props = {
   skeletonStyle?: StyleProp<ViewStyle>;
 };
 
-function SkeletonList({count = 4, ...props}: Props) {
+function SkeletonList({ count = 4, ...props }: Props) {
   const theme = useTheme(); //theme
 
   const styles = makeStyles(theme); // access StylesSheet with theme implemented
@@ -78,33 +84,33 @@ const makeStyles = (theme: CustomTheme) =>
       paddingVertical: 10,
       marginTop: 10,
     },
-    skeletonHeader: {flexDirection: 'row'},
+    skeletonHeader: { flexDirection: 'row' },
     skeletonProfilePic: {
       borderRadius: 50,
       height: 50,
       width: 50,
       backgroundColor: theme.colors.surface,
     },
-    skeletonTitleLay: {flex: 1, marginLeft: 10},
+    skeletonTitleLay: { flex: 1, marginLeft: 10 },
     skeletonHeading: {
       backgroundColor: theme.colors.surface,
       width: '60%',
       height: 15,
-      borderRadius: 5,
+      borderRadius: theme.lightRoundness,
       marginTop: 5,
     },
     skeletonTitle: {
       backgroundColor: theme.colors.surface,
       width: '40%',
       height: 10,
-      borderRadius: 5,
+      borderRadius: theme.lightRoundness,
       marginTop: 5,
     },
     skeletonSubtitle: {
       backgroundColor: theme.colors.surface,
       width: '25%',
       height: 10,
-      borderRadius: 5,
+      borderRadius: theme.lightRoundness,
       marginTop: 5,
     },
     skeletonDescLay: {

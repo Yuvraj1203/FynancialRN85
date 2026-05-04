@@ -722,7 +722,7 @@ const makeStyles = (theme: CustomTheme) =>
       backgroundColor: theme.colors.surface,
       width: '20%',
       height: 15,
-      borderRadius: 15,
+      borderRadius: theme.roundness,
       marginTop: 10,
     },
     skeletonImg: {

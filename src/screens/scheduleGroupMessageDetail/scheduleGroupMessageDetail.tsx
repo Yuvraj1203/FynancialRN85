@@ -394,7 +394,7 @@ const makeStyles = (theme: CustomTheme) =>
     skeletonIcon: {
       height: 20,
       width: 20,
-      borderRadius: 6,
+      borderRadius: theme.roundness,
       backgroundColor: theme.colors.surface,
     },
 

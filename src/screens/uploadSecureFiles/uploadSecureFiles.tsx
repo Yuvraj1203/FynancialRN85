@@ -353,7 +353,7 @@ const makeStyles = (theme: CustomTheme) =>
       flex: 1,
       // margin: 10,
       padding: 10,
-      borderRadius: 8,
+      borderRadius: theme.roundness,
       backgroundColor: theme.colors.teamCard,
       margin: 8,
       width: 160,

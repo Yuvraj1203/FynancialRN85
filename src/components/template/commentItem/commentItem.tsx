@@ -128,7 +128,7 @@ function CommentItem({ item, ...props }: Props) {
   }, []);
 
   const renderCarouselItem = (item: string[]) => (
-    <View>
+    <View style={{ marginTop: 5 }}>
       <CustomCarousel
         data={item}
         aspectRatio={1}
@@ -486,6 +486,10 @@ function CommentItem({ item, ...props }: Props) {
               />
             )}
 
+            {item.postImageLocation &&
+              item.postImageLocation?.length > 0 &&
+              renderCarouselItem(item.postImageLocation)}
+
             <View style={styles.directionRowAndSpace}>
               <Tap
                 onPress={() => {
@@ -558,10 +562,6 @@ function CommentItem({ item, ...props }: Props) {
                 </View>
               )}
             </View>
-
-            {item.postImageLocation &&
-              item.postImageLocation?.length > 0 &&
-              renderCarouselItem(item.postImageLocation)}
 
             {item.allCommentsReplies && item.allCommentsReplies.length > 0 && (
               <View style={styles.replyLay}>
@@ -741,7 +741,7 @@ const makeStyles = (theme: CustomTheme) =>
     skeletonReplyProfile: {
       height: 20,
       width: 20,
-      borderRadius: 20,
+      borderRadius: theme.extraRoundness,
       backgroundColor: theme.colors.surface,
     },
     skeletonReplyName: {

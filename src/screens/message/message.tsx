@@ -790,7 +790,8 @@ const Message = () => {
           <View style={styles.heading}>
             <View style={styles.profileLay}>
               <CustomAvatar
-                viewStyle={styles.profileAvatar}
+                viewStyle={styles.profileAvatarLay}
+                imageStyle={styles.profileAvatar}
                 source={
                   !isEmpty(item.targetProfilePicture)
                     ? { uri: item.targetProfilePicture }
@@ -838,14 +839,14 @@ const Message = () => {
               <CustomText
                 ellipsis={TextEllipsis.tail}
                 maxLines={1}
-                variant={TextVariants.titleMedium}
+                variant={TextVariants.bodyLarge}
               >
                 {item.userFullName}
               </CustomText>
               <CustomText
                 ellipsis={TextEllipsis.tail}
                 maxLines={1}
-                variant={TextVariants.titleSmall}
+                variant={TextVariants.bodySmall}
               >
                 {item.groupId ? `${item.groupMemberCount}` : item.emailAddress}
               </CustomText>
@@ -1052,10 +1053,10 @@ const makeStyles = (theme: CustomTheme) =>
     },
     groupIconLay: {
       position: 'absolute',
-      left: 32,
-      top: 30,
+      right: 0,
+      bottom: 0,
       backgroundColor: theme.colors.primary,
-      borderRadius: 20, // Circular shape
+      borderRadius: theme.roundness, // Circular shape
       padding: 4, // Adjust padding for proper sizing
       width: 20, // Ensure size consistency
       height: 20,
@@ -1064,12 +1065,12 @@ const makeStyles = (theme: CustomTheme) =>
     },
     outOfOffcIconLay: {
       position: 'absolute',
-      left: 32,
-      top: 30,
-      borderRadius: 20, // Circular shape
+      right: 0,
+      bottom: 0,
+      borderRadius: theme.roundness, // Circular shape
       padding: 4, // Adjust padding for proper sizing
-      width: 20, // Ensure size consistency
-      height: 20,
+      width: 18, // Ensure size consistency
+      height: 18,
       backgroundColor: theme.dark
         ? theme.colors.onSurface
         : theme.colors.surface,
@@ -1078,9 +1079,9 @@ const makeStyles = (theme: CustomTheme) =>
     },
     statusIconLay: {
       position: 'absolute',
-      left: 35,
-      top: 35,
-      borderRadius: 20, // Circular shape
+      right: 5,
+      bottom: 2,
+      borderRadius: theme.roundness, // Circular shape
       padding: 4, // Adjust padding for proper sizing
       width: 12, // Ensure size consistency
       height: 12,
@@ -1089,7 +1090,7 @@ const makeStyles = (theme: CustomTheme) =>
     },
     unreadBadgeStyle: {
       backgroundColor: theme.colors.tertiary,
-      borderRadius: 20, // Circular shape
+      borderRadius: theme.roundness, // Circular shape
       width: 21, // Ensure size consistency
       height: 21,
       alignItems: 'center',
@@ -1111,7 +1112,7 @@ const makeStyles = (theme: CustomTheme) =>
     skeletonName: {
       height: 30,
       width: '65%',
-      borderRadius: 5,
+      borderRadius: theme.roundness,
       backgroundColor: theme.colors.surface,
     },
 
@@ -1128,7 +1129,7 @@ const makeStyles = (theme: CustomTheme) =>
     skeletonNewGroupName: {
       height: 30,
       width: '65%',
-      borderRadius: 5,
+      borderRadius: theme.roundness,
       backgroundColor: theme.colors.surface,
     },
     searchInput: {
@@ -1139,15 +1140,22 @@ const makeStyles = (theme: CustomTheme) =>
       position: 'relative',
       marginRight: 13,
     },
-
+    profileAvatarLay: {
+      height: 55,
+      width: 55,
+      borderRadius: theme.extraRoundness,
+      borderColor: theme.colors.outline,
+      borderWidth: 1,
+    },
     profileAvatar: {
-      height: 45,
-      width: 45,
+      height: 53,
+      width: 53,
+      borderRadius: theme.extraRoundness,
     },
 
     unreadBadge: {
       backgroundColor: 'darkblue',
-      borderRadius: 10,
+      borderRadius: theme.roundness,
       paddingVertical: 3,
       paddingHorizontal: 8,
     },

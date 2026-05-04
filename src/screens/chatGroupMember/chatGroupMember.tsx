@@ -1,6 +1,7 @@
 import {
   CustomAvatar,
   CustomButton,
+  CustomCheckBox,
   CustomFlatList,
   CustomImage,
   CustomText,
@@ -58,7 +59,7 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Asset } from 'react-native-image-picker';
-import { Checkbox, Divider } from 'react-native-paper';
+import { Divider } from 'react-native-paper';
 import { z } from 'zod';
 import { ChatReturnProp } from '../chat/chat';
 import { MessageReturnProp } from '../message/message';
@@ -771,6 +772,8 @@ const ChatGroupMember = () => {
           <View style={styles.memberInfo}>
             <View style={{ position: 'relative' }}>
               <CustomAvatar
+                viewStyle={styles.profileAvatarLay}
+                imageStyle={styles.profileAvatar}
                 source={
                   !isEmpty(item.targetProfilePicture)
                     ? { uri: item.targetProfilePicture }
@@ -916,14 +919,9 @@ const ChatGroupMember = () => {
               </CustomText>
             </View>
           </View>
-
-          <Checkbox.Item
-            mode="android"
-            label={''}
-            status={item.isSelected ? 'checked' : 'unchecked'}
-            onPress={() => {
-              handleMemberSelection(item);
-            }}
+          <CustomCheckBox
+            value={item.isSelected ? true : false}
+            onClick={() => handleMemberSelection(item)}
           />
           <Divider />
         </View>
@@ -1368,7 +1366,7 @@ const makeStyles = (theme: CustomTheme) =>
       borderWidth: 1,
       position: 'absolute',
       backgroundColor: theme.colors.primary,
-      borderRadius: 20,
+      borderRadius: theme.extraRoundness,
       padding: 8,
       top: 110,
       left: 115,
@@ -1379,7 +1377,7 @@ const makeStyles = (theme: CustomTheme) =>
       left: 125,
       backgroundColor: theme.colors.error,
       bottom: 125,
-      borderRadius: 20,
+      borderRadius: theme.extraRoundness,
       padding: 4,
     },
     groupDetailWrapper: {
@@ -1438,12 +1436,13 @@ const makeStyles = (theme: CustomTheme) =>
       //borderRadius: 50,
     },
     adminLabel: {
-      height: 18,
-      width: 63,
+      // height: 18,
+      // width: 63,
       alignSelf: 'center',
       borderRadius: theme.roundness,
       backgroundColor: theme.colors.userMessage,
-      paddingLeft: 13,
+      paddingHorizontal: 10,
+      paddingVertical: 2,
       marginTop: 5,
     },
     saveCancelButton: {
@@ -1472,9 +1471,9 @@ const makeStyles = (theme: CustomTheme) =>
     },
     statusIconLay: {
       position: 'absolute',
-      left: 32,
-      top: 32,
-      borderRadius: 20, // Circular shape
+      right: 5,
+      bottom: 2,
+      borderRadius: theme.extraRoundness, // Circular shape
       padding: 4, // Adjust padding for proper sizing
       width: 12, // Ensure size consistency
       height: 12,
@@ -1499,12 +1498,12 @@ const makeStyles = (theme: CustomTheme) =>
       backgroundColor: theme.colors.surface,
       width: '80%',
       height: 35,
-      borderRadius: 5,
+      borderRadius: theme.roundness,
       marginTop: 8,
     },
     skeletonCheckBox: {
       backgroundColor: theme.colors.surface,
-      borderRadius: 30,
+      borderRadius: theme.roundness,
       width: '5%',
       height: 25,
       marginTop: 11,
@@ -1516,9 +1515,9 @@ const makeStyles = (theme: CustomTheme) =>
     },
     outOfOffcIconLay: {
       position: 'absolute',
-      left: 30,
-      top: 30,
-      borderRadius: 20, // Circular shape
+      right: 0,
+      bottom: 0,
+      borderRadius: theme.extraRoundness, // Circular shape
       padding: 4, // Adjust padding for proper sizing
       width: 15, // Ensure size consistency
       height: 15,
@@ -1527,6 +1526,18 @@ const makeStyles = (theme: CustomTheme) =>
         : theme.colors.surface,
       justifyContent: 'center',
       alignItems: 'center',
+    },
+    profileAvatarLay: {
+      height: 55,
+      width: 55,
+      borderRadius: theme.extraRoundness,
+      borderColor: theme.colors.outline,
+      borderWidth: 1,
+    },
+    profileAvatar: {
+      height: 53,
+      width: 53,
+      borderRadius: theme.extraRoundness,
     },
   });
 

@@ -712,7 +712,7 @@ const makeStyles = (theme: CustomTheme) =>
       flex: 1,
       height: 250,
       marginTop: 20,
-      borderRadius: 10,
+      borderRadius: theme.roundness,
     },
     imgLay: {
       marginRight: 20,
@@ -766,7 +766,7 @@ const makeStyles = (theme: CustomTheme) =>
     commentProfilePic: {
       height: 20,
       width: 20,
-      //  borderRadius: 20
+      //  borderRadius: theme.extraRoundness
     },
     commentLikeIcon: {
       height: 12,

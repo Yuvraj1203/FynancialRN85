@@ -164,9 +164,12 @@ export const normalizeTagWrappers = (html?: string) => {
 };
 
 //added by shivang for ' symbol handling
+// NFC (canonical composition) handles combining accent chars (e + ◌́ → é).
+// Do NOT use NFKC — it maps Mathematical Alphanumeric Symbols (𝘪𝘵𝘢𝘭𝘪𝘤, 𝙞𝙩𝙖𝙡𝙞𝙘…)
+// to plain ASCII, destroying stylised Unicode text typed by users.
 export const normalizeApostrophe = (s: string) =>
   (s ?? '')
-    .normalize('NFKC')
+    .normalize('NFC')
     // common apostrophe variants → plain '
     .replace(/[\u2018\u2019\u02BC\uFF07]/g, "'");
 
@@ -312,6 +315,9 @@ export function showSnackbar(
       type: type,
       floating: true,
       ...(delay ? { duration: delay } : {}),
+      titleProps: {
+        allowFontScaling: false,
+      },
     });
   }
 }
@@ -1873,13 +1879,22 @@ export function smartSplit(input: string): string[] {
 
     // Plain text → further split by spaces and punctuation
     if (text) {
+      // Protect full URLs (which may contain & in query strings) before entity splitting.
+      // e.g. "https://example.com?a=1&b=2" must not be split at &
+      const urlPlaceholders: string[] = [];
+      const protectedText = text.replace(/https?:\/\/[^\s<]*/gi, match => {
+        const idx = urlPlaceholders.length;
+        urlPlaceholders.push(match);
+        return `\x00URL${idx}\x00`;
+      });
+
       // First, split text into HTML entities, bare ampersands, and non-entity chunks
       //    e.g. "Hi&nbsp;there &gt; test" → ["Hi", "&nbsp;", "there", " ", "&gt;", " ", "test"]
       //    e.g. "me&He" → ["me", "&", "He"]
       const entityRegex = /(&[a-zA-Z0-9#]+;)|(&)|([^&]+)/g;
       let subMatch;
 
-      while ((subMatch = entityRegex.exec(text)) !== null) {
+      while ((subMatch = entityRegex.exec(protectedText)) !== null) {
         const [fullChunk, entity, literalAmp, nonEntity] = subMatch;
 
         if (entity) {
@@ -1893,7 +1908,11 @@ export function smartSplit(input: string): string[] {
           // keep spaces so we preserve original spacing, then normalize at the end
           const splitText = nonEntity
             .split(/(\s+|[,;!])/g)
-            .filter(t => t !== '');
+            .filter(t => t !== '')
+            .map(t =>
+              // Restore any URL placeholders after splitting
+              t.replace(/\x00URL(\d+)\x00/g, (_, idx) => urlPlaceholders[+idx]),
+            );
 
           tokens.push(...splitText);
         }
@@ -2092,8 +2111,6 @@ export const useLogout = () => {
         // } else {
         //   await clearSession();
         // }
-      } else if (loginWith === LoginWith.okta) {
-        // await signOut();
       }
     } catch (error: any) {
       Log('Logout service error => ' + JSON.stringify(error));

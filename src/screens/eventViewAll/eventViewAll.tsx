@@ -925,7 +925,7 @@ const EventViewAll = () => {
                 maxLines={1}
                 color={theme.colors.primary}
                 style={styles.main}
-                variant={TextVariants.titleMedium}
+                variant={TextVariants.bodyLarge}
               >
                 {item?.uiTitle}
               </CustomText>
@@ -957,7 +957,7 @@ const EventViewAll = () => {
             />
             <CustomText
               color={theme.colors.outline}
-              variant={TextVariants.bodyLarge}
+              variant={TextVariants.bodyMedium}
             >
               {`${item.appStartDate} ${item.appStartTime} ${
                 item.scheduleTaskTypeId == 2 && !item.sameDayEvent
@@ -979,7 +979,7 @@ const EventViewAll = () => {
             <CustomText
               maxLines={2}
               color={theme.colors.outline}
-              variant={TextVariants.bodyLarge}
+              variant={TextVariants.bodyMedium}
               style={styles.width95}
             >
               {`${item?.userTags ? item?.userTags + ' ' : ''}${

@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-import { CustomText, Skeleton, Tap } from '@/components/atoms';
+import { CustomCheckBox, CustomText, Skeleton, Tap } from '@/components/atoms';
 import { TextVariants } from '@/components/atoms/customText/customText';
 import {
   CustomBottomPopup,
@@ -28,7 +28,6 @@ import {
 } from '@/services/models/getResourceFoldersForDropdownModel/getResourceFoldersForDropdownModel';
 import { GetResourceTypesModel } from '@/services/models/getResourceTypesModel/getResourceTypesModel';
 import { t } from 'i18next';
-import { Checkbox } from 'react-native-paper';
 
 type Props = {
   shown: boolean;
@@ -307,10 +306,8 @@ export default function DocumentSelectorPopup({
                 {[...Array(7)].map((_, i) => (
                   <View style={styles.MainCheckBoxSkeletonView}>
                     <View style={styles.CheckBoxSekeletonView} />
-                    <Checkbox
-                      status={CheckBoxStatus.unchecked}
-                      onPress={() => {}}
-                      color={theme.colors.primary}
+                    <CustomCheckBox
+                      value={CheckBoxStatus.unchecked ? true : false}
                     />
                   </View>
                 ))}

@@ -499,7 +499,7 @@ function ContactListing() {
                     style={styles.main}
                     maxLines={1}
                     ellipsis={TextEllipsis.tail}
-                    variant={TextVariants.titleLarge}
+                    variant={TextVariants.bodyLarge}
                   >
                     {item.userName}
                   </CustomText>
@@ -518,7 +518,9 @@ function ContactListing() {
                     />
                   </Tap>
                 </View>
-                <CustomText>{item.emailAddress}</CustomText>
+                <CustomText variant={TextVariants.bodySmall}>
+                  {item.emailAddress}
+                </CustomText>
                 <View
                   style={{
                     ...styles.active,
@@ -1073,8 +1075,8 @@ const makeStyles = (theme: CustomTheme) =>
     contactTileHeader: {
       flexDirection: 'row',
       padding: 10,
-      gap: 20,
-      alignItems: 'center',
+      gap: 15,
+      //alignItems: 'center',
       borderRadius: theme.roundness,
     },
     contactNameContainer: {
@@ -1176,7 +1178,8 @@ const makeStyles = (theme: CustomTheme) =>
       paddingBottom: 5,
     },
     active: {
-      padding: 5,
+      paddingTop: Platform.OS == 'ios' ? 3 : 1,
+      paddingBottom: 2,
       paddingHorizontal: 8,
       textAlignVertical: 'center',
       marginTop: 5,

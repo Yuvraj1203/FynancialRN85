@@ -134,18 +134,6 @@ function Splash() {
     }
   });
 
-  const initializeOkta = async () => {
-    // await createConfig({
-    //   issuer: `https://${TenantInfo.OktaDomain}/oauth2/default`,
-    //   clientId: TenantInfo.OktaClientId,
-    //   redirectUri: `${TenantInfo.PackageName}:/callback`,
-    //   endSessionRedirectUri: `${TenantInfo.PackageName}:/logout`,
-    //   discoveryUri: `https://${TenantInfo.OktaDomain}/oauth2/default`,
-    //   scopes: ['openid', 'profile', 'email', 'offline_access'],
-    //   requireHardwareBackedKeyStore: true,
-    // });
-  };
-
   const forceLogout = async () => {
     // cleanup
     retryCountRef.current = 0;
@@ -253,7 +241,6 @@ function Splash() {
     }
 
     if (data?.isOktaEnabled) {
-      initializeOkta();
       /** Added by @Tarun 31-01-2025 -> store tenant details in store (FYN-4204) */
       tenantDetail.setTenantDetails({ ...data, isOktaEnabled: true });
     } else {

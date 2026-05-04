@@ -4,6 +4,7 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import React, { forwardRef, useImperativeHandle, useRef } from 'react';
 import {
   NativeSyntheticEvent,
+  PixelRatio,
   Platform,
   StyleProp,
   View,
@@ -62,6 +63,12 @@ const CustomHtmlEditor = forwardRef<CustomHtmlEditorRef, Props>(
     const initialHtmlSent = useRef(false);
     const lastHtml = useRef<string | undefined>(undefined);
     const pendingHtmlRequests = useRef<Record<string, (s: string) => void>>({});
+
+    const androidFontSize = 16 / PixelRatio.getFontScale();
+    const iosFontSize =
+      16 / PixelRatio.getFontScale() > 16 ? 16 / PixelRatio.getFontScale() : 16;
+
+    const fixedFontSize = Platform.OS === 'ios' ? iosFontSize : androidFontSize;
 
     const injectJS = (jsBody: string) => {
       const js = `
@@ -223,8 +230,8 @@ const CustomHtmlEditor = forwardRef<CustomHtmlEditorRef, Props>(
   word-break: break-word;
   overflow-wrap: break-word;
   white-space: pre-wrap;
-   font-family: inherit;
-  font-size: 16px;
+  font-family: inherit;
+  font-size: ${fixedFontSize}px;
   line-height: 20px;
    color: ${
      theme.dark ? theme.colors.onSurfaceVariant : theme.colors.onSurface
@@ -715,6 +722,8 @@ function placeCaretAtEnd(el) {
       <View style={[{ flex: 1 }, style]}>
         <WebView
           ref={webviewRef}
+          androidLayerType="hardware"
+          scalesPageToFit={false}
           originWhitelist={['*']}
           javaScriptEnabled
           domStorageEnabled

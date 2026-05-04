@@ -258,7 +258,10 @@ function AddScheduleMessage() {
 
   /** Added by @Yuvraj 14-04-2025 -> on selecting new picture from local device (FYN-6549) */
   const handleMediaList = (mediaList: Asset[]) => {
-    if (mediaList.at(0)?.type == types.pdf) {
+    if (
+      mediaList.at(0)?.type == types.pdf ||
+      mediaList.at(0)?.type === 'application/pdf'
+    ) {
       if (
         mediaList.at(0)?.fileSize &&
         bytesToMB(mediaList.at(0)?.fileSize!)! > 30
@@ -415,7 +418,11 @@ function AddScheduleMessage() {
       UploadFileListToS3Api.mutate({
         sendData: formData,
         name: mediaList?.at(0)?.fileName,
-        type: mediaList?.at(0)?.type == types.pdf ? 'pdf' : 'photo',
+        type:
+          mediaList?.at(0)?.type == types.pdf ||
+          mediaList.at(0)?.type === 'application/pdf'
+            ? 'pdf'
+            : 'photo',
         isSendNow: isSendNow,
         text: data.description,
       });
@@ -1037,7 +1044,10 @@ function AddScheduleMessage() {
                 <View style={styles.mediaLayView}>
                   <Tap
                     onPress={() => {
-                      if (mediaList.at(0)?.type == types.pdf) {
+                      if (
+                        mediaList.at(0)?.type == types.pdf ||
+                        mediaList.at(0)?.type === 'application/pdf'
+                      ) {
                         showImagePopup({
                           pdfUrl: mediaList.at(0)?.uri,
                         });
@@ -1053,25 +1063,42 @@ function AddScheduleMessage() {
                   >
                     <>
                       <View style={styles.selectedImgs}>
-                        <CustomImage
-                          source={
-                            mediaList.at(0)?.type == types.pdf
-                              ? Images.pdf
-                              : { uri: mediaList?.at(0)?.uri }
+                        <View
+                          style={
+                            mediaList.at(0)?.type == types.pdf ||
+                            mediaList.at(0)?.type === 'application/pdf'
+                              ? styles.pdfLay
+                              : { flex: 1 }
                           }
-                          resizeMode={ResizeModeType.cover}
-                          style={styles.selectedImgs}
-                          type={
-                            mediaList.at(0)?.type == types.pdf
-                              ? ImageType.svg
-                              : undefined
-                          }
-                          color={
-                            mediaList.at(0)?.type == types.pdf
-                              ? theme.colors.outline
-                              : undefined
-                          }
-                        />
+                        >
+                          <CustomImage
+                            source={
+                              mediaList.at(0)?.type == types.pdf ||
+                              mediaList.at(0)?.type === 'application/pdf'
+                                ? Images.pdf
+                                : { uri: mediaList?.at(0)?.uri }
+                            }
+                            resizeMode={ResizeModeType.cover}
+                            style={
+                              mediaList.at(0)?.type == types.pdf ||
+                              mediaList.at(0)?.type === 'application/pdf'
+                                ? styles.selectedPdf
+                                : styles.selectedImgs
+                            }
+                            type={
+                              mediaList.at(0)?.type == types.pdf ||
+                              mediaList.at(0)?.type === 'application/pdf'
+                                ? ImageType.svg
+                                : undefined
+                            }
+                            color={
+                              mediaList.at(0)?.type == types.pdf ||
+                              mediaList.at(0)?.type === 'application/pdf'
+                                ? theme.colors.outline
+                                : undefined
+                            }
+                          />
+                        </View>
                         <Tap
                           onPress={() => {
                             setMediaList([]);
@@ -1485,7 +1512,7 @@ const makeStyles = (theme: CustomTheme) =>
     selectedImgs: {
       height: 80,
       width: 80,
-      borderRadius: theme.roundness,
+      borderRadius: theme.lightRoundness,
     },
     filename: {
       marginTop: 5,
@@ -1497,13 +1524,13 @@ const makeStyles = (theme: CustomTheme) =>
     selectedImgTap: {
       height: 80,
       width: 80,
-      borderRadius: theme.roundness,
+      borderRadius: theme.lightRoundness,
       marginRight: 5,
     },
     selectedImg: {
       height: '100%',
       width: '100%',
-      borderRadius: theme.roundness,
+      borderRadius: theme.lightRoundness,
     },
     selectedImgDeleteTap: {
       position: 'absolute',
@@ -1511,8 +1538,8 @@ const makeStyles = (theme: CustomTheme) =>
       left: 0,
       right: 0,
       backgroundColor: theme.colors.error,
-      borderBottomLeftRadius: theme.roundness,
-      borderBottomRightRadius: theme.roundness,
+      borderBottomLeftRadius: theme.lightRoundness,
+      borderBottomRightRadius: theme.lightRoundness,
       alignItems: 'center',
     },
     selectedImgDelete: {
@@ -1625,6 +1652,22 @@ const makeStyles = (theme: CustomTheme) =>
       marginBottom: Platform.OS === 'ios' ? 2 : 0, // Apply marginTop only for iOS
     },
     mediaLayView: { flexDirection: 'row', marginTop: 10 },
+    pdfLay: {
+      flex: 1,
+      borderTopWidth: 1,
+      borderLeftWidth: 1,
+      borderRightWidth: 1,
+      borderColor: theme.colors.border,
+      borderRadius: theme.lightRoundness,
+      paddingHorizontal: 10,
+      paddingTop: 5,
+      paddingBottom: 25,
+    },
+    selectedPdf: {
+      height: '100%',
+      width: '100%',
+      borderRadius: theme.lightRoundness,
+    },
   });
 
 export default AddScheduleMessage;

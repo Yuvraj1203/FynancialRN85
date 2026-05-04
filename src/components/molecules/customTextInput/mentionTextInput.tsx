@@ -63,6 +63,7 @@ type Props<T> = {
   extraPreviewHeight?: number;
   showErrorMsg?: (error?: string) => void;
   hidePreview?: boolean;
+  isAttachmentAdded?: boolean;
 };
 
 function MentionTextInput<T>({
@@ -71,6 +72,7 @@ function MentionTextInput<T>({
   showLinkPreviewOutside = false,
   resetPreview = false,
   hidePreview = true,
+  isAttachmentAdded = false,
   ...props
 }: Props<T>) {
   const theme = useTheme(); // Theme
@@ -91,7 +93,7 @@ function MentionTextInput<T>({
   const LINE_HEIGHT = 20;
   const PADDING_VERTICAL = 0;
 
-  const MIN_HEIGHT = 48;
+  const MIN_HEIGHT = isAttachmentAdded ? 40 : 48;
   const MAX_HEIGHT = MAX_LINES * LINE_HEIGHT + PADDING_VERTICAL;
 
   const [editorHeight, setEditorHeight] = useState(MIN_HEIGHT);
@@ -362,8 +364,8 @@ function MentionTextInput<T>({
                 ? {
                     position: 'absolute',
                     bottom: editorHeight + (props.extraPreviewHeight || 0),
-                    left: 0,
-                    right: 0,
+                    left: isAttachmentAdded ? 50 : 0,
+                    right: isAttachmentAdded ? 10 : 0,
                   }
                 : { marginVertical: 5 }
             }

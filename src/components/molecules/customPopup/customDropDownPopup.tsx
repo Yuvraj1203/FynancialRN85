@@ -1,5 +1,10 @@
-import { CustomButton, CustomFlatList, SkeletonList } from '@/components/atoms';
-import { CheckBoxStatus } from '@/components/atoms/customCheckBox/customCheckBox';
+import {
+  CustomButton,
+  CustomCheckBox,
+  CustomFlatList,
+  SkeletonList,
+  Tap,
+} from '@/components/atoms';
 import { keyboardShouldPersistTapsType } from '@/components/atoms/customFlatList/customFlatList';
 import { ImageType } from '@/components/atoms/customImage/customImage';
 import CustomText, {
@@ -11,7 +16,7 @@ import { FlashListRef } from '@shopify/flash-list';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
-import { Checkbox, Divider, RadioButton } from 'react-native-paper';
+import { Divider, RadioButton } from 'react-native-paper';
 import CustomTextInput from '../customTextInput/customTextInput';
 import { InputReturnKeyType } from '../customTextInput/formTextInput';
 import CustomBottomPopup from './customBottomPopup';
@@ -105,17 +110,26 @@ function CustomDropDownPopup<T>({
 
   const renderDropDownItem = (item: T) => {
     return (
-      <RadioButton.Item
-        label={String(item[props.displayKey])}
-        labelVariant={TextVariants.labelLarge}
-        value={String(item[props.idKey])}
-        status={
-          props.selectedItem?.[props.idKey] === item[props.idKey]
-            ? 'checked'
-            : 'unchecked'
-        }
+      <Tap
+        style={styles.checkboxContainer}
         onPress={() => handleSingleSelection(item)}
-      />
+      >
+        <>
+          <CustomText style={styles.flexOne} variant={TextVariants.bodyLarge}>
+            {String(item[props.displayKey])}
+          </CustomText>
+
+          <RadioButton.Android
+            style={styles.flexOne}
+            value={String(item[props.idKey])}
+            status={
+              props.selectedItem?.[props.idKey] === item[props.idKey]
+                ? 'checked'
+                : 'unchecked'
+            }
+          />
+        </>
+      </Tap>
     );
   };
 
@@ -140,11 +154,12 @@ function CustomDropDownPopup<T>({
       props.onMultipleItemSelected?.(newList);
     };
     return (
-      <Checkbox.Item
+      <CustomCheckBox
         label={String(item[props.displayKey])}
-        status={isSelected ? CheckBoxStatus.checked : CheckBoxStatus.unchecked}
-        onPress={handleOnPress}
+        labelVariant={TextVariants.bodyLarge}
+        value={isSelected ? true : false}
         color={theme.colors.primary}
+        onClick={handleOnPress}
       />
     );
   };
@@ -266,12 +281,12 @@ const makeStyles = (theme: CustomTheme) =>
       backgroundColor: theme.colors.surface,
       width: '80%',
       height: 25,
-      borderRadius: 5,
+      borderRadius: theme.roundness,
       marginTop: 5,
     },
     skeletonOptionsItem4: {
       backgroundColor: theme.colors.surface,
-      borderRadius: 30,
+      borderRadius: theme.extraRoundness,
       width: '5%',
       height: 25,
       marginTop: 5,
@@ -283,6 +298,15 @@ const makeStyles = (theme: CustomTheme) =>
     error: {
       marginHorizontal: 12,
       marginTop: 12,
+    },
+    checkboxContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingHorizontal: 15,
+    },
+    flexOne: {
+      flex: 1,
     },
   });
 

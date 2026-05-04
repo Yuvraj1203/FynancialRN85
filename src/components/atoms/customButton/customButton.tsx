@@ -1,6 +1,6 @@
-import {CustomTheme, useTheme} from '@/theme/themeProvider/paperTheme';
-import {hideKeyboard} from '@/utils/utils';
-import {useMemo} from 'react';
+import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
+import { hideKeyboard } from '@/utils/utils';
+import { useMemo } from 'react';
 import {
   GestureResponderEvent,
   ImageSourcePropType,
@@ -10,7 +10,7 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import {Button} from 'react-native-paper';
+import { Button } from 'react-native-paper';
 import CustomImage, {
   ImageType,
   ResizeModeType,
@@ -80,12 +80,12 @@ function CustomButton(props: Props) {
 
   const memoizedIcon = useMemo(() => {
     if (!props.icon) return undefined;
-    return ({size, color}: {size: number; color: string}) => (
-      <View style={{height: size, width: size}}>
+    return ({ size, color }: { size: number; color: string }) => (
+      <View style={{ height: size, width: size }}>
         <CustomImage
           source={props.icon?.source}
           type={props.icon?.type}
-          style={{height: size, width: size}}
+          style={{ height: size, width: size }}
           color={color}
         />
       </View>
@@ -108,7 +108,9 @@ function CustomButton(props: Props) {
             props.icon?.direction == Direction.right ? 'row-reverse' : 'row',
         },
       ]}
-      icon={memoizedIcon}>
+      maxFontSizeMultiplier={1}
+      icon={memoizedIcon}
+    >
       {props.children}
     </Button>
   );

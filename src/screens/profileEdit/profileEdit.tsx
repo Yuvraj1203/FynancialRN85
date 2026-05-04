@@ -1249,6 +1249,8 @@ const makeStyles = (theme: CustomTheme) =>
     saveButtonContainer: {
       borderTopWidth: 1,
       borderTopColor: theme.colors.surfaceVariant,
+      borderBottomEndRadius: 0,
+      borderBottomStartRadius: 0,
     },
     scrollContainer: {
       paddingVertical: 0,

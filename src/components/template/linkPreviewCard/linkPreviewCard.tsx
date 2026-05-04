@@ -132,7 +132,7 @@ const makeStyles = (theme: CustomTheme) =>
     image: {
       width: 80,
       height: 80,
-      borderRadius: 8,
+      borderRadius: theme.roundness,
       overflow: 'hidden',
       justifyContent: 'center',
       alignItems: 'center',

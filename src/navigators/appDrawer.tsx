@@ -190,7 +190,12 @@ function AppDrawer(props: any) {
       image: Images.myGroup,
       imageType: ImageType.svg,
       onPress: () => {
-        navigation.navigate('EventViewAll');
+        navigation.navigate('DrawerRoutes', {
+          screen: 'BottomBarRoutes',
+          params: {
+            screen: 'EventViewAll',
+          },
+        });
       },
     },
     {
@@ -198,7 +203,13 @@ function AppDrawer(props: any) {
       image: Images.aboutMe,
       imageType: ImageType.svg,
       onPress: () => {
-        navigation.navigate('Profile');
+        navigation.navigate('DrawerRoutes', {
+          screen: 'BottomBarRoutes',
+          params: {
+            screen: 'AdvisorProfile',
+          },
+        });
+        // navigation.navigate('Profile');
       },
     },
     {
@@ -398,7 +409,7 @@ const makeStyles = (
     dot: {
       height: 5,
       width: 5,
-      borderRadius: 5,
+      borderRadius: theme.roundness,
       backgroundColor: theme.colors.completed,
       marginTop: 5,
     },

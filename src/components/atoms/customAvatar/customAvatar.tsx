@@ -1,13 +1,13 @@
-import {CustomTheme, useTheme} from '@/theme/themeProvider/paperTheme';
-import {ImageStyle} from '@d11/react-native-fast-image';
+import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
+import { ImageStyle } from '@d11/react-native-fast-image';
 import React from 'react';
-import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
-import {SvgProps} from 'react-native-svg';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import { SvgProps } from 'react-native-svg';
 import CustomImage, {
   ImageType,
   ResizeModeType,
 } from '../customImage/customImage';
-import CustomText, {TextVariants} from '../customText/customText';
+import CustomText, { TextVariants } from '../customText/customText';
 type Props = {
   source?: any;
   text?: string;
@@ -44,7 +44,7 @@ type Props = {
  * @returns {JSX.Element} The avatar component that displays either an image or text.
  */
 function CustomAvatar({
-  initialVariant = TextVariants.titleLarge,
+  initialVariant = TextVariants.bodyLarge,
   ...props
 }: Props) {
   /** Added by @Akshita 13-02-2025 -> to access app theme(colors, roundness, fonts, etc) (FYN-4846) */
@@ -74,13 +74,15 @@ function CustomAvatar({
         {
           backgroundColor: props.fillColor
             ? props.fillColor
-            : theme.colors.outlineVariant,
+            : theme.colors.border,
         },
-      ]}>
+      ]}
+    >
       {props.text ? (
         <CustomText
           color={props.color}
-          variant={initialVariant ? initialVariant : TextVariants.bodyMedium}>
+          variant={initialVariant ? initialVariant : TextVariants.bodyMedium}
+        >
           {getInitials(props.text)}
         </CustomText>
       ) : (
@@ -101,10 +103,12 @@ const makeStyles = (theme: CustomTheme) =>
     main: {
       height: 40,
       width: 40,
-      borderRadius: theme.roundness,
-      backgroundColor: theme.colors.outlineVariant,
+      backgroundColor: theme.colors.border,
       justifyContent: 'center',
       alignItems: 'center',
+      borderRadius: theme.extraRoundness,
+      borderColor: theme.colors.outline,
+      borderWidth: 1,
     },
     img: {
       height: 40,

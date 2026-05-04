@@ -16,6 +16,7 @@ import {
   GetCardsForUserDashboardModel,
   GetClientBasicNetworthModel,
   GetClientBlackDiamondModel,
+  GetClientGoalsModel,
   GetClientNitrogenModel,
   GetClientTamaracModel,
   GetClientTotalNetworthModel,
@@ -54,6 +55,7 @@ import BlackDiamond from './cards/blackDiamond';
 import BlackDiamondAsset from './cards/blackDiamondAsset';
 import CustomDashboardCard from './cards/customDashboardCard';
 import EMBasicNetWorthCard from './cards/eMBasicNetWorthCard';
+import EMGoal from './cards/eMGoal';
 import EMTotalNetWorthCard from './cards/eMTotalNetWorthCard';
 import Nitrogen from './cards/nitrogen';
 import OrionAsset from './cards/orionAsset';
@@ -118,6 +120,8 @@ function DashboardCards(props: Props) {
 
   const [getClientTotalNetworth, setGetClientTotalNetworth] =
     useState<GetClientTotalNetworthModel>();
+
+  const [getClientGoals, setGetClientGoals] = useState<GetClientGoalsModel>();
 
   const [getClientBasicNetworth, setGetClientBasicNetworth] =
     useState<GetClientBasicNetworthModel>();
@@ -314,6 +318,34 @@ function DashboardCards(props: Props) {
             }
           } else {
             setGetClientTotalNetworth(undefined);
+            return { ...card, loading: true };
+          }
+        } else if (card.sliderTypeCode == 'emgoals') {
+          if (
+            dashboardCardsData.eMoneyClientGoal &&
+            dashboardCardsData.eMoneyClientGoal.appDate &&
+            parseDate({
+              date: dashboardCardsData.eMoneyClientGoal.appDate,
+              parseFormat: DateFormats.parseDateFormat,
+            })
+          ) {
+            if (
+              checkIntervalTime(
+                parseDate({
+                  date: dashboardCardsData.eMoneyClientGoal.appDate!,
+                  parseFormat: DateFormats.parseDateFormat,
+                })!.getTime(),
+                { hr: 2 },
+              )
+            ) {
+              setGetClientGoals(undefined);
+              return { ...card, loading: true };
+            } else {
+              setGetClientGoals(dashboardCardsData.eMoneyClientGoal);
+              return { ...card };
+            }
+          } else {
+            setGetClientGoals(undefined);
             return { ...card, loading: true };
           }
         } else if (card.sliderTypeCode == 'embasicnetworth') {
@@ -823,6 +855,10 @@ function DashboardCards(props: Props) {
         getClientTotalNetworthApi.mutate({
           CallPoint: 'app',
         });
+      } else if (cardData.sliderTypeCode == 'emgoals') {
+        getClientGoalApi.mutate({
+          CallPoint: 'app',
+        });
       } else if (cardData.sliderTypeCode == 'embasicnetworth') {
         getClientBasicNetworthApi.mutate({
           CallPoint: 'app',
@@ -1176,6 +1212,46 @@ function DashboardCards(props: Props) {
     onError(error, variables, context) {
       // Error Response
       setGetClientBasicNetworth(undefined);
+    },
+  });
+
+  const getClientGoalApi = useMutation({
+    mutationFn: (sendData: Record<string, any>) => {
+      return makeRequest<GetClientGoalsModel>({
+        endpoint: ApiConstants.GetClientGoals,
+        method: HttpMethodApi.Get,
+        data: sendData,
+      }); // API Call
+    },
+    onSettled(data, error, variables, context) {
+      setCardsList(prev =>
+        prev.map(item =>
+          item.sliderTypeCode == 'emgoals' ? { ...item, loading: false } : item,
+        ),
+      );
+    },
+    onSuccess(data, variables, context) {
+      // Success Response
+      if (data.result) {
+        if (data.result) {
+          Log('6] embasicnetworth getClientBasicNetworthApi ');
+
+          dashboardCardsData.setEMoneyClientGoal({
+            ...data.result,
+            appDate: formatDate({
+              date: new Date(),
+              returnFormat: DateFormats.parseDateFormat,
+            }),
+          });
+        }
+        setGetClientGoals(data.result);
+      } else {
+        setGetClientGoals(undefined);
+      }
+    },
+    onError(error, variables, context) {
+      // Error Response
+      setGetClientGoals(undefined);
     },
   });
 
@@ -1639,6 +1715,12 @@ function DashboardCards(props: Props) {
                     <EMBasicNetWorthCard
                       cardData={item}
                       data={getClientBasicNetworth}
+                      isPrimary={isPrimary}
+                    />
+                  ) : item.sliderTypeCode == 'emgoals' && getClientGoals ? (
+                    <EMGoal
+                      cardData={item}
+                      data={getClientGoals}
                       isPrimary={isPrimary}
                     />
                   ) : item.sliderTypeCode == 'bdiamond' &&

@@ -1,20 +1,20 @@
-import {viewDocument} from '@react-native-documents/viewer';
-import React, {useState} from 'react';
-import {StyleSheet, View} from 'react-native';
-import RNFS, {DownloadResult} from 'react-native-fs';
-import {ActivityIndicator, Icon, IconButton} from 'react-native-paper';
-import {URL} from 'react-native-url-polyfill';
+import { viewDocument } from '@react-native-documents/viewer';
+import React, { useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import RNFS, { DownloadResult } from 'react-native-fs';
+import { ActivityIndicator, Icon, IconButton } from 'react-native-paper';
+import { URL } from 'react-native-url-polyfill';
 
-import {CustomText, Tap} from '@/components/atoms';
+import { CustomText, Tap } from '@/components/atoms';
 import CustomImage, {
   ResizeModeType,
 } from '@/components/atoms/customImage/customImage';
-import {CustomTheme, useTheme} from '@/theme/themeProvider/paperTheme';
-import {EImageFileTypes} from '../../common/models/enums/image-file-types';
-import {ESnackbarTypes} from '../../common/models/enums/snackbar-types';
-import {IUploadFileData} from '../../common/models/interfaces/upload-file-data';
-import {ISnackbarContext, useSnackbar} from '../../contexts/SnackbarProvider';
-import {getMimeType} from '../../utils/getFileMimeType';
+import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
+import { EImageFileTypes } from '../../common/models/enums/image-file-types';
+import { ESnackbarTypes } from '../../common/models/enums/snackbar-types';
+import { IUploadFileData } from '../../common/models/interfaces/upload-file-data';
+import { ISnackbarContext, useSnackbar } from '../../contexts/SnackbarProvider';
+import { getMimeType } from '../../utils/getFileMimeType';
 
 interface IFileCardProps {
   selectedFile: IUploadFileData;
@@ -32,7 +32,7 @@ const FileCard: React.FC<IFileCardProps> = ({
   const theme = useTheme(); // theme
 
   const styles = makeStyles(theme); // styling
-  const {showSnackbar}: ISnackbarContext = useSnackbar();
+  const { showSnackbar }: ISnackbarContext = useSnackbar();
   const [isFileDownloading, setFileDownloading] = useState<boolean>(false);
 
   const handleOpenFilePreview = async () => {
@@ -87,7 +87,7 @@ const FileCard: React.FC<IFileCardProps> = ({
     if (isImage) {
       return (
         <CustomImage
-          source={{uri: selectedFile.uri}}
+          source={{ uri: selectedFile.uri }}
           style={styles.previewImage}
           resizeMode={ResizeModeType.cover}
         />
@@ -104,7 +104,7 @@ const FileCard: React.FC<IFileCardProps> = ({
   };
 
   return (
-    <View style={(styles.previewContainer, {display: 'none'})}>
+    <View style={(styles.previewContainer, { display: 'none' })}>
       <Tap style={styles.touchableContainer} onPress={handleOpenFilePreview}>
         <View style={styles.containerUploadedFile}>
           {getFileIcon()}
@@ -141,7 +141,7 @@ const makeStyles = (theme: CustomTheme) =>
       justifyContent: 'space-between',
       backgroundColor: theme.colors.background,
       padding: 6,
-      borderRadius: 10,
+      borderRadius: theme.roundness,
       borderWidth: 0.5,
       borderStyle: 'dashed',
       borderColor: theme.colors.onBackground,
@@ -174,7 +174,7 @@ const makeStyles = (theme: CustomTheme) =>
       width: 30,
       height: 30,
       marginRight: 6,
-      borderRadius: 2,
+      borderRadius: theme.roundness,
     },
   });
 

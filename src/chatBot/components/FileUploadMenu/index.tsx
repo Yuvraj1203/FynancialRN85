@@ -3,20 +3,20 @@ import {
   pick,
   types,
 } from '@react-native-documents/picker';
-import React, {Dispatch} from 'react';
-import {StyleSheet} from 'react-native';
+import React, { Dispatch } from 'react';
+import { StyleSheet } from 'react-native';
 import {
   Asset,
   ImagePickerResponse,
   launchImageLibrary,
 } from 'react-native-image-picker';
-import {Menu} from 'react-native-paper';
+import { Menu } from 'react-native-paper';
 
-import {CustomTheme, useTheme} from '@/theme/themeProvider/paperTheme';
-import {ESnackbarTypes} from '../../common/models/enums/snackbar-types';
-import {ICoordinates} from '../../common/models/interfaces/coordinates';
-import {IUploadFileData} from '../../common/models/interfaces/upload-file-data';
-import {ISnackbarContext, useSnackbar} from '../../contexts/SnackbarProvider';
+import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
+import { ESnackbarTypes } from '../../common/models/enums/snackbar-types';
+import { ICoordinates } from '../../common/models/interfaces/coordinates';
+import { IUploadFileData } from '../../common/models/interfaces/upload-file-data';
+import { ISnackbarContext, useSnackbar } from '../../contexts/SnackbarProvider';
 
 const MAX_FILE_SIZE_MB = 35;
 
@@ -38,7 +38,7 @@ const FileUploadMenu: React.FC<IFileUploadMenuProps> = ({
   const theme = useTheme(); // theme
 
   const styles = makeStyles(theme); // styling
-  const {showSnackbar}: ISnackbarContext = useSnackbar();
+  const { showSnackbar }: ISnackbarContext = useSnackbar();
 
   const handleTakeFromPhotoLibrary = async () => {
     handleAttachFileMenuClose();
@@ -141,7 +141,8 @@ const FileUploadMenu: React.FC<IFileUploadMenuProps> = ({
       style={styles.menu}
       onDismiss={handleAttachFileMenuClose}
       anchor={menuAnchor}
-      contentStyle={styles.menuContent}>
+      contentStyle={styles.menuContent}
+    >
       <Menu.Item
         onPress={handleTakeFromPhotoLibrary}
         title={'Photos'}
@@ -170,10 +171,10 @@ const makeStyles = (theme: CustomTheme) =>
       backgroundColor: theme.colors.surface,
       borderColor: theme.colors.onSurfaceVariant,
       borderWidth: 0.5,
-      borderRadius: 10,
+      borderRadius: theme.roundness,
       elevation: 4,
       shadowColor: theme.colors.onBackground,
-      shadowOffset: {width: 0, height: 3},
+      shadowOffset: { width: 0, height: 3 },
       shadowOpacity: 0.1,
       shadowRadius: 5,
     },

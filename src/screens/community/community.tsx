@@ -564,10 +564,14 @@ function Community() {
     const updatedPosts = data.map(postData => {
       const updatedReplies = postData.commentsReplies
         ? postData.commentsReplies.map(replyData => {
-            const { cleanHtml: cleanReplyHtml, linkPreviewHtml: replyLinkPreviewHtml } =
-              extractLinkPreviewHtml(replyData.commentDetailHTML ?? '');
-            const { cleanHtml: cleanReplyHtmlNoIframes, embeddedIframeHtml: replyEmbeddedIframeHtml } =
-              extractEmbeddedIframes(cleanReplyHtml);
+            const {
+              cleanHtml: cleanReplyHtml,
+              linkPreviewHtml: replyLinkPreviewHtml,
+            } = extractLinkPreviewHtml(replyData.commentDetailHTML ?? '');
+            const {
+              cleanHtml: cleanReplyHtmlNoIframes,
+              embeddedIframeHtml: replyEmbeddedIframeHtml,
+            } = extractEmbeddedIframes(cleanReplyHtml);
             const updatedHtml = processHtmlContent({
               html: cleanReplyHtmlNoIframes,
               maxWords: 50,
@@ -576,8 +580,14 @@ function Community() {
             });
             return {
               ...replyData,
-              commentDetailHTML: stripPreviewUrlFromHtml(updatedHtml?.Content, replyLinkPreviewHtml),
-              shortContent: stripPreviewUrlFromHtml(updatedHtml?.shortContent, replyLinkPreviewHtml),
+              commentDetailHTML: stripPreviewUrlFromHtml(
+                updatedHtml?.Content,
+                replyLinkPreviewHtml,
+              ),
+              shortContent: stripPreviewUrlFromHtml(
+                updatedHtml?.shortContent,
+                replyLinkPreviewHtml,
+              ),
               iFrameList: updatedHtml?.iFrameList,
               linkPreviewHtml: replyLinkPreviewHtml,
               embeddedIframeHtml: replyEmbeddedIframeHtml,
@@ -591,16 +601,21 @@ function Community() {
         extractEmbeddedIframes(cleanPostHtml);
       const updatedHtml = processHtmlContent({
         html: cleanPostHtmlNoIframes,
-        maxWords: 50,
         linkColor: theme.colors.links,
-        showMore: false,
+        showMore: true,
       });
 
       return {
         ...postData,
         commentsReplies: updatedReplies,
-        detailHTML: stripPreviewUrlFromHtml(updatedHtml?.Content, linkPreviewHtml),
-        shortContent: stripPreviewUrlFromHtml(updatedHtml?.shortContent, linkPreviewHtml),
+        detailHTML: stripPreviewUrlFromHtml(
+          updatedHtml?.Content,
+          linkPreviewHtml,
+        ),
+        shortContent: stripPreviewUrlFromHtml(
+          updatedHtml?.shortContent,
+          linkPreviewHtml,
+        ),
         iFrameList: updatedHtml?.iFrameList,
         linkPreviewHtml,
         embeddedIframeHtml,
@@ -765,10 +780,14 @@ function Community() {
 
         //comment replies
         const updatedComments = newPostData.commentsReplies?.map(reply => {
-          const { cleanHtml: cleanReplyHtml, linkPreviewHtml: replyLinkPreviewHtml } =
-            extractLinkPreviewHtml(reply.commentDetailHTML ?? '');
-          const { cleanHtml: cleanReplyHtmlNoIframes, embeddedIframeHtml: replyEmbeddedIframeHtml } =
-            extractEmbeddedIframes(cleanReplyHtml);
+          const {
+            cleanHtml: cleanReplyHtml,
+            linkPreviewHtml: replyLinkPreviewHtml,
+          } = extractLinkPreviewHtml(reply.commentDetailHTML ?? '');
+          const {
+            cleanHtml: cleanReplyHtmlNoIframes,
+            embeddedIframeHtml: replyEmbeddedIframeHtml,
+          } = extractEmbeddedIframes(cleanReplyHtml);
           const parsedReplyHtml = processHtmlContent({
             html: cleanReplyHtmlNoIframes,
             maxWords: 50,
@@ -778,8 +797,14 @@ function Community() {
 
           return {
             ...reply,
-            commentDetailHTML: stripPreviewUrlFromHtml(parsedReplyHtml?.Content, replyLinkPreviewHtml),
-            shortContent: stripPreviewUrlFromHtml(parsedReplyHtml?.shortContent, replyLinkPreviewHtml),
+            commentDetailHTML: stripPreviewUrlFromHtml(
+              parsedReplyHtml?.Content,
+              replyLinkPreviewHtml,
+            ),
+            shortContent: stripPreviewUrlFromHtml(
+              parsedReplyHtml?.shortContent,
+              replyLinkPreviewHtml,
+            ),
             iFrameList: parsedReplyHtml?.iFrameList,
             linkPreviewHtml: replyLinkPreviewHtml,
             embeddedIframeHtml: replyEmbeddedIframeHtml,
@@ -787,10 +812,16 @@ function Community() {
         });
 
         //existing
-        const { cleanHtml: cleanForumPostHtml, linkPreviewHtml: forumPostLinkPreviewHtml } =
-          extractLinkPreviewHtml(newPostData?.detailHTML || newPostData?.detail || '');
-        const { cleanHtml: cleanForumPostHtmlNoIframes, embeddedIframeHtml: forumPostEmbeddedIframeHtml } =
-          extractEmbeddedIframes(cleanForumPostHtml);
+        const {
+          cleanHtml: cleanForumPostHtml,
+          linkPreviewHtml: forumPostLinkPreviewHtml,
+        } = extractLinkPreviewHtml(
+          newPostData?.detailHTML || newPostData?.detail || '',
+        );
+        const {
+          cleanHtml: cleanForumPostHtmlNoIframes,
+          embeddedIframeHtml: forumPostEmbeddedIframeHtml,
+        } = extractEmbeddedIframes(cleanForumPostHtml);
         const parsedPostHtml = processHtmlContent({
           html: cleanForumPostHtmlNoIframes,
           maxWords: 50,
@@ -802,8 +833,14 @@ function Community() {
         const normalizedPost: CommunityModel = {
           ...newPostData,
           commentsReplies: updatedComments, // processed comments
-          detailHTML: stripPreviewUrlFromHtml(parsedPostHtml?.Content, forumPostLinkPreviewHtml),
-          shortContent: stripPreviewUrlFromHtml(parsedPostHtml?.shortContent, forumPostLinkPreviewHtml),
+          detailHTML: stripPreviewUrlFromHtml(
+            parsedPostHtml?.Content,
+            forumPostLinkPreviewHtml,
+          ),
+          shortContent: stripPreviewUrlFromHtml(
+            parsedPostHtml?.shortContent,
+            forumPostLinkPreviewHtml,
+          ),
           iFrameList: parsedPostHtml?.iFrameList,
           linkPreviewHtml: forumPostLinkPreviewHtml,
           embeddedIframeHtml: forumPostEmbeddedIframeHtml,
@@ -998,13 +1035,18 @@ function Community() {
             prev?.map(item => {
               if (item.postDetailID != data.result?.feedDetail?.id) return item;
 
-              const { cleanHtml: cleanEditHtml, linkPreviewHtml: editLinkPreviewHtml } =
-                extractLinkPreviewHtml(
-                  data.result?.feedDetail?.detailHTML ||
-                  data.result?.feedDetail?.detail || '',
-                );
-              const { cleanHtml: cleanEditHtmlNoIframes, embeddedIframeHtml: editEmbeddedIframeHtml } =
-                extractEmbeddedIframes(cleanEditHtml);
+              const {
+                cleanHtml: cleanEditHtml,
+                linkPreviewHtml: editLinkPreviewHtml,
+              } = extractLinkPreviewHtml(
+                data.result?.feedDetail?.detailHTML ||
+                  data.result?.feedDetail?.detail ||
+                  '',
+              );
+              const {
+                cleanHtml: cleanEditHtmlNoIframes,
+                embeddedIframeHtml: editEmbeddedIframeHtml,
+              } = extractEmbeddedIframes(cleanEditHtml);
               const updatedHtml = processHtmlContent({
                 html: cleanEditHtmlNoIframes,
                 maxWords: 50,
@@ -1014,8 +1056,14 @@ function Community() {
 
               return {
                 ...item,
-                detailHTML: stripPreviewUrlFromHtml(updatedHtml?.Content, editLinkPreviewHtml),
-                shortContent: stripPreviewUrlFromHtml(updatedHtml?.shortContent, editLinkPreviewHtml),
+                detailHTML: stripPreviewUrlFromHtml(
+                  updatedHtml?.Content,
+                  editLinkPreviewHtml,
+                ),
+                shortContent: stripPreviewUrlFromHtml(
+                  updatedHtml?.shortContent,
+                  editLinkPreviewHtml,
+                ),
                 iFrameList: updatedHtml?.iFrameList,
                 linkPreviewHtml: editLinkPreviewHtml,
                 embeddedIframeHtml: editEmbeddedIframeHtml,
@@ -1593,7 +1641,7 @@ const makeStyles = (theme: CustomTheme) =>
       width: 50, // size of the button
       height: 50, // size of the button
       backgroundColor: theme.colors.primary, // color of the FAB
-      borderRadius: 30, // round button
+      borderRadius: theme.roundness, // round button
       justifyContent: 'center', // center the icon
       alignItems: 'center', // center the icon
     },

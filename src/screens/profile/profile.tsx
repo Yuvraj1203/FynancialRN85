@@ -485,9 +485,11 @@ function Profile() {
       });
     } else if (userDetails?.isAdvisor && !route?.params?.userId) {
       getCurrentStatusApi.mutate({});
-      getAllUserCertificatesApiCall.mutate({
-        Id: userDetails?.userID,
-      });
+      if (userDetails?.role !== UserRoleEnum.ContentEditor) {
+        getAllUserCertificatesApiCall.mutate({
+          Id: userDetails?.userID,
+        });
+      }
       GetUserPersonalInfoApi.mutate({
         userId: userDetails?.userID,
       });
@@ -1747,7 +1749,7 @@ function Profile() {
             <RefreshControl
               refreshing={loadingButtons == 'screenRefresh'}
               onRefresh={() => {
-                setAccordianTab('personal');
+                setAccordianTab('');
                 if (route?.params?.userId) {
                   triggerRefreshForContact();
                 } else {

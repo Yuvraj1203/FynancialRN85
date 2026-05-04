@@ -9,6 +9,7 @@ import { CustomTextInput } from '@/components/molecules';
 import { openImageCropperManual } from '@/components/molecules/customImagePicker/customImagePicker';
 import PdfPreview from '@/components/molecules/pdfPreview/pdfPreview';
 import { SafeScreen } from '@/components/template';
+import { GetLinkPreviewHTMLModel } from '@/services/models';
 import { userStore } from '@/store';
 import { Images } from '@/theme/assets/images';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
@@ -59,6 +60,9 @@ function ChatImageUpload() {
   const [message, setMessage] = useState(route?.message ?? '');
 
   const [mediaList, setMediaList] = useState<Asset[]>(route?.media ?? []);
+  const [linkPreviewResult, setLinkPreviewResult] = useState<
+    GetLinkPreviewHTMLModel | undefined
+  >(undefined);
 
   const openInAppBrowser = useCustomInAppBrowser();
 
@@ -68,6 +72,7 @@ function ChatImageUpload() {
     sendDataBack('Chat', {
       media: cancel ? [] : mediaList,
       message: cancel ? ' ' : message,
+      preview: cancel ? undefined : linkPreviewResult,
     } as ChatReturnProp);
     if (navigation.canGoBack()) {
       navigation.goBack();
@@ -159,6 +164,9 @@ function ChatImageUpload() {
                 text={message}
                 onChangeText={(text: string) => {
                   setMessage(text);
+                }}
+                onLinkPreviewChange={data => {
+                  setLinkPreviewResult(data);
                 }}
                 showLabel={false}
                 showError={false}
@@ -254,7 +262,7 @@ const makeStyles = (theme: CustomTheme) =>
     sendIconTap: {
       position: 'absolute',
       backgroundColor: theme.colors.primary,
-      borderRadius: 35,
+      borderRadius: theme.extraRoundness,
       right: 5,
       bottom: 7, // Apply marginTop only for iOS
       alignSelf: 'flex-end',

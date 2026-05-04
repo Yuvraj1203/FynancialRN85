@@ -237,7 +237,7 @@ const makeStyles = (theme: CustomTheme) =>
     actionDivider: {
       width: 0.54,
       marginVertical: 8,
-      borderRadius: 10,
+      borderRadius: theme.roundness,
       backgroundColor: theme.colors.outlineVariant,
     },
     positiveBtn: {

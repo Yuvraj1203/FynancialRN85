@@ -190,14 +190,6 @@ function Login() {
     resolver: zodResolver(schema),
   });
 
-  // useEffect(() => {
-  //   logo();
-  // }, []);
-
-  const logo = () => {
-    //clearSession();
-    // signOut();
-  };
   /**
    * Added by @Tarun 05-02-2025 -> to know if any api call is ongoing (FYN-4204)
    */
@@ -982,6 +974,7 @@ function Login() {
         endpoint: ApiConstants.CreateOrEdit,
         method: HttpMethodApi.Post,
         data: sendData.apiPayload,
+        byPassRefresh: true,
       }); // API Call
     },
     onSettled(data, error, variables, context) {

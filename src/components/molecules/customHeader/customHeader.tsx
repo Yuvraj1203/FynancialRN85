@@ -231,7 +231,7 @@ function CustomHeader({
                             styles.statusIconLay,
                             {
                               backgroundColor: props.statusIcon?.color,
-                              borderRadius: 20,
+                              borderRadius: theme.extraRoundness,
                             },
                           ]}
                         ></View>
@@ -254,7 +254,6 @@ function CustomHeader({
                   <View>
                     <CustomText
                       ellipsis={TextEllipsis.tail}
-                      allowFontScaling={true}
                       maxLines={1}
                       variant={TextVariants.titleLarge}
                       style={styles.title}
@@ -264,7 +263,6 @@ function CustomHeader({
                     {props.subtitle && (
                       <CustomText
                         color={props.subtitleColor}
-                        allowFontScaling={true}
                         variant={TextVariants.titleSmall}
                         style={styles.title}
                       >
@@ -444,7 +442,7 @@ const makeStyles = (theme: CustomTheme) =>
       position: 'absolute',
       right: 0,
       bottom: 6,
-      borderRadius: 20, // Circular shape
+      borderRadius: theme.extraRoundness, // Circular shape
       padding: 4, // Adjust padding for proper sizing
       width: 12, // Ensure size consistency
       height: 12,
@@ -513,7 +511,7 @@ const makeStyles = (theme: CustomTheme) =>
       position: 'absolute',
       left: 30,
       top: 30,
-      borderRadius: 20, // Circular shape
+      borderRadius: theme.extraRoundness, // Circular shape
       padding: 4, // Adjust padding for proper sizing
       width: 20, // Ensure size consistency
       height: 20,

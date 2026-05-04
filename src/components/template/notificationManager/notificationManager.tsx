@@ -26,7 +26,6 @@ import {
 } from '@/store';
 import { Images } from '@/theme/assets/images';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
-import { getFirebaseMessaging } from '@/utils/firebase';
 import { getAccessTokenFromKeychain } from '@/utils/keychainUtils';
 import Log from '@/utils/logger';
 import {
@@ -51,7 +50,9 @@ import notifee, {
   AuthorizationStatus,
   EventType,
 } from '@notifee/react-native';
+import { getApp } from '@react-native-firebase/app';
 import {
+  getMessaging,
   getToken,
   onMessage,
   onTokenRefresh,
@@ -134,7 +135,8 @@ function NotificationManager() {
 
   const biometricCompleted = biometricStore(state => state.biometricCompleted);
 
-  const messaging = getFirebaseMessaging();
+  const app = getApp();
+  const messaging = getMessaging(app);
   const [showAllowNotiReminderPopup, setShowAllowNotiReminderPopup] =
     useState(false); // show Allow Notification Reminder dialog
 
@@ -148,34 +150,32 @@ function NotificationManager() {
     }, 3000);
 
     // receive foreground notification
-    const foregroundNotificationListener = messaging
-      ? onMessage(messaging, message => {
-          // if (navigation.getState() && navigation.getState().routes) {
-          const currentRoute = navigation.getState().routes?.at(-1); // Get last route in stack
-          if (currentRoute?.name == 'Chat') {
-            //const signalRMessageReceived = useSignalRStore.getState().messageList;
-            const params = currentRoute?.params as ChatProps;
+    const foregroundNotificationListener = onMessage(messaging, message => {
+      // if (navigation.getState() && navigation.getState().routes) {
+      const currentRoute = navigation.getState().routes?.at(-1); // Get last route in stack
+      if (currentRoute?.name == 'Chat') {
+        //const signalRMessageReceived = useSignalRStore.getState().messageList;
+        const params = currentRoute?.params as ChatProps;
 
-            const notifData: NotificationModel =
-              message.data?.action && JSON.parse(message.data?.action as string);
+        const notifData: NotificationModel =
+          message.data?.action && JSON.parse(message.data?.action as string);
 
-            if (
-              message.data?.type != 'silent' &&
-              isNotificationForCurrentChat({
-                userChatData: params?.userChatData,
-                notifData,
-              })
-            ) {
-              return;
-            }
-          }
+        if (
+          message.data?.type != 'silent' &&
+          isNotificationForCurrentChat({
+            userChatData: params?.userChatData,
+            notifData,
+          })
+        ) {
+          return;
+        }
+      }
 
-          return onMessageReceived(message, 'foreground');
-          // } else {
-          //   return onMessageReceived(message, 'foreground');
-          // }
-        })
-      : () => {};
+      return onMessageReceived(message, 'foreground');
+      // } else {
+      //   return onMessageReceived(message, 'foreground');
+      // }
+    });
 
     // foregorund notification event
     const foregroundNotificationEvent = notifee.onForegroundEvent(
@@ -197,22 +197,20 @@ function NotificationManager() {
       },
     );
 
-    const tokenRefresh = messaging
-      ? onTokenRefresh(messaging, async newToken => {
-          Log('FCM Token Refreshed=>' + newToken);
-          if (storage.getString('FcmToken')) {
-            if (storage.getString('FcmToken') != newToken) {
-              Log('FCM Token Refreshed stored=>' + newToken);
-              storage.set('FcmToken', newToken);
+    const tokenRefresh = onTokenRefresh(messaging, async newToken => {
+      Log('FCM Token Refreshed=>' + newToken);
+      if (storage.getString('FcmToken')) {
+        if (storage.getString('FcmToken') != newToken) {
+          Log('FCM Token Refreshed stored=>' + newToken);
+          storage.set('FcmToken', newToken);
 
-              // if user allowed notification and user is logged in then call api to save fcm token on server
-              if (userDetails) {
-                callCreateOrEditApi();
-              }
-            }
+          // if user allowed notification and user is logged in then call api to save fcm token on server
+          if (userDetails) {
+            callCreateOrEditApi();
           }
-        })
-      : () => {};
+        }
+      }
+    });
 
     // unsubscribe listener when component dismount
     return () => {
@@ -336,13 +334,8 @@ function NotificationManager() {
     storage.set('notificationPermissionAsked', -1);
 
     // Get the token
-    let token: string | undefined;
-    if (messaging) {
-      await registerDeviceForRemoteMessages(messaging);
-      token = await getToken(messaging);
-    } else {
-      Log('Firebase messaging is unavailable. Skipping FCM token registration.');
-    }
+    await registerDeviceForRemoteMessages(messaging);
+    const token = await getToken(messaging);
 
     // storing fcm token
     Log('FCM Token=>' + token);
@@ -1083,6 +1076,7 @@ const makeStyles = (theme: CustomTheme) =>
     },
     btn: {
       marginTop: 10,
+      marginBottom: 30,
     },
     reminderMsg: {
       textAlign: 'center',

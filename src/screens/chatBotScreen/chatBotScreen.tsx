@@ -749,7 +749,7 @@ const ChatBotScreen = () => {
                 marginBottom: Platform.OS === 'ios' ? 10 : 2,
               }}
               height={50}
-              borderRadius={15}
+              borderRadius={theme.roundness}
               maxLines={5}
               prefixIcon={{
                 source: Images.attachment,
@@ -876,7 +876,7 @@ const makeStyles = (theme: CustomTheme) =>
     sendIconTap: {
       position: 'absolute',
       backgroundColor: theme.colors.primary,
-      borderRadius: 35,
+      borderRadius: theme.extraRoundness,
       right: 5,
       bottom: 8, // Apply marginTop only for iOS
       alignSelf: 'flex-end',
@@ -952,7 +952,7 @@ const makeStyles = (theme: CustomTheme) =>
       backgroundColor: theme.colors.surface,
       width: '60%',
       height: 14,
-      borderRadius: 5,
+      borderRadius: theme.roundness,
       marginTop: 15,
       marginHorizontal: 15,
     },
@@ -960,7 +960,7 @@ const makeStyles = (theme: CustomTheme) =>
       backgroundColor: theme.colors.surface,
       width: '40%',
       height: 9,
-      borderRadius: 5,
+      borderRadius: theme.roundness,
       marginTop: 15,
       marginHorizontal: 15,
     },

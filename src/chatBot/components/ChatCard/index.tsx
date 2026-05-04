@@ -4,10 +4,10 @@ import {
   UseMutationResult,
   useQueryClient,
 } from '@tanstack/react-query';
-import React, {memo, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import React, { memo, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import Markdown from 'react-native-markdown-display';
-import {Card, Icon, IconButton} from 'react-native-paper';
+import { Card, Icon, IconButton } from 'react-native-paper';
 import Animated, {
   SharedValue,
   useAnimatedStyle,
@@ -15,19 +15,19 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-import {CustomText} from '@/components/atoms';
-import {TextVariants} from '@/components/atoms/customText/customText';
-import {CustomTheme, useTheme} from '@/theme/themeProvider/paperTheme';
-import {EFeedbackType} from '../../common/models/enums/feedback-type';
+import { CustomText } from '@/components/atoms';
+import { TextVariants } from '@/components/atoms/customText/customText';
+import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
+import { EFeedbackType } from '../../common/models/enums/feedback-type';
 import {
   IChatHistory,
   IChatHistoryMessage,
   ICitation,
 } from '../../common/models/interfaces/chat-history';
-import {ISubmitFeedbackPayload} from '../../common/models/interfaces/submit-feedback-payload';
-import {ISubmitFeedbackResponse} from '../../common/models/interfaces/submit-feedback-response';
-import {IAskChatContext, useAskChat} from '../../contexts/AskChatProvider';
-import {QUERY_KEY as CHAT_HISTORY_QUERY_KEY} from '../../hooks/useChatHistory';
+import { ISubmitFeedbackPayload } from '../../common/models/interfaces/submit-feedback-payload';
+import { ISubmitFeedbackResponse } from '../../common/models/interfaces/submit-feedback-response';
+import { IAskChatContext, useAskChat } from '../../contexts/AskChatProvider';
+import { QUERY_KEY as CHAT_HISTORY_QUERY_KEY } from '../../hooks/useChatHistory';
 import useSubmitFeedback from '../../hooks/useSubmitFeedback';
 import {
   IChatState,
@@ -43,7 +43,7 @@ interface IChatCardProps {
   messageData: IChatHistoryMessage;
 }
 
-const ChatCard = ({isUser, messageData}: IChatCardProps) => {
+const ChatCard = ({ isUser, messageData }: IChatCardProps) => {
   const theme = useTheme();
   /**
    * Added by  @Shivang 02-04-25 -> Creating styles using theme (FYN-4065 )
@@ -53,11 +53,11 @@ const ChatCard = ({isUser, messageData}: IChatCardProps) => {
   const queryClient: QueryClient = useQueryClient();
   const checkIconOpacity: SharedValue<number> = useSharedValue(0);
   const copyIconOpacity: SharedValue<number> = useSharedValue(1);
-  const {selectedChat} = useChatStore((state: IChatState) => ({
+  const { selectedChat } = useChatStore((state: IChatState) => ({
     selectedChat: state.selectedChat,
   }));
 
-  const {aiMessageId}: IAskChatContext = useAskChat();
+  const { aiMessageId }: IAskChatContext = useAskChat();
 
   const submitFeedbackMutation: UseMutationResult<
     ISubmitFeedbackResponse,
@@ -99,7 +99,7 @@ const ChatCard = ({isUser, messageData}: IChatCardProps) => {
         return {
           ...oldData,
           messages: oldData.messages.map((message: IChatHistoryMessage) =>
-            message.id === messageData.id ? {...message, feedback} : message,
+            message.id === messageData.id ? { ...message, feedback } : message,
           ),
         };
       },
@@ -112,12 +112,12 @@ const ChatCard = ({isUser, messageData}: IChatCardProps) => {
     Clipboard.setString(messageData.text);
     setCheckIcon(true);
 
-    copyIconOpacity.value = withTiming(0, {duration: ANIMATION_DURATION});
-    checkIconOpacity.value = withTiming(1, {duration: ANIMATION_DURATION});
+    copyIconOpacity.value = withTiming(0, { duration: ANIMATION_DURATION });
+    checkIconOpacity.value = withTiming(1, { duration: ANIMATION_DURATION });
 
     setTimeout(() => {
-      checkIconOpacity.value = withTiming(0, {duration: ANIMATION_DURATION});
-      copyIconOpacity.value = withTiming(1, {duration: ANIMATION_DURATION});
+      checkIconOpacity.value = withTiming(0, { duration: ANIMATION_DURATION });
+      copyIconOpacity.value = withTiming(1, { duration: ANIMATION_DURATION });
       setCheckIcon(false);
     }, CHECK_ICON_TIMEOUT);
   };
@@ -171,7 +171,8 @@ const ChatCard = ({isUser, messageData}: IChatCardProps) => {
         ))}
       <Card
         mode={'contained'}
-        style={[styles.chatCardContainer, !isUser && styles.aiCardTransparent]}>
+        style={[styles.chatCardContainer, !isUser && styles.aiCardTransparent]}
+      >
         <Card.Content style={isUser ? styles.userMessage : styles.aiMessage}>
           {isUser ? (
             <CustomText variant={TextVariants.bodyMedium}>
@@ -180,8 +181,9 @@ const ChatCard = ({isUser, messageData}: IChatCardProps) => {
           ) : (
             <Markdown
               style={{
-                body: {color: theme.colors.onBackground},
-              }}>
+                body: { color: theme.colors.onBackground },
+              }}
+            >
               {messageData.text}
             </Markdown>
           )}
@@ -231,7 +233,7 @@ const makeStyles = (theme: CustomTheme) =>
     },
     aiCardTransparent: {
       shadowColor: theme.colors.background,
-      shadowOffset: {width: 0, height: 0},
+      shadowOffset: { width: 0, height: 0 },
       shadowOpacity: 0,
       shadowRadius: 0,
     },
@@ -240,7 +242,7 @@ const makeStyles = (theme: CustomTheme) =>
       maxWidth: '80%',
       backgroundColor: theme.colors.background,
       borderWidth: 1,
-      borderRadius: 10,
+      borderRadius: theme.extraRoundness,
       paddingVertical: 16,
       marginTop: 6,
 

@@ -5,6 +5,7 @@ export { default as ClickRotateIcon } from './clickRotateIcon/ClickRotateIcon';
 export { default as CustomAvatar } from './customAvatar/customAvatar';
 export { default as CustomButton } from './customButton/customButton';
 export { default as CustomCheckBox } from './customCheckBox/customCheckBox';
+export { default as CustomFormCheckBox } from './customCheckBox/customFormCheckBox';
 export { default as CustomChips } from './customChips/customChips';
 export { default as CustomFlatList } from './customFlatList/customFlatList';
 export { default as CustomImage } from './customImage/customImage';

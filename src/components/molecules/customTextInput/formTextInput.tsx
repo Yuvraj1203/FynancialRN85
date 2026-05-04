@@ -398,6 +398,7 @@ const FormTextInput = forwardRef<RNTextInput, Props>(
                 theme={{
                   colors: { onSurfaceVariant: theme.colors.labelLight },
                 }}
+                maxFontSizeMultiplier={1}
               />
               {props.prefixIcon != null && (
                 <Tap onPress={props.prefixIcon.tap} style={styles.prefixIcon}>

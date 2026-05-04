@@ -261,7 +261,7 @@ const makeStyles = (theme: CustomTheme) =>
       backgroundColor: theme.colors.surface,
       width: '50%',
       height: 30,
-      borderRadius: 5,
+      borderRadius: theme.roundness,
       marginTop: 20,
       marginBottom: 30,
     },
@@ -269,7 +269,7 @@ const makeStyles = (theme: CustomTheme) =>
       backgroundColor: theme.colors.surface,
       width: '90%',
       height: 15,
-      borderRadius: 3,
+      borderRadius: theme.lightRoundness,
       marginTop: 15,
     },
     contactUsItem: {

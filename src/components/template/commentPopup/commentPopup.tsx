@@ -36,9 +36,9 @@ import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
 import Log from '@/utils/logger';
 import { useAppNavigation } from '@/utils/navigationUtils';
 import {
-  formatMentions,
   extractEmbeddedIframes,
   extractLinkPreviewHtml,
+  formatMentions,
   formatMentionsInsideHtml,
   getFileInfoWithMime,
   getImageSize,
@@ -85,6 +85,12 @@ export type CommentPopupProps = {
   fromNotificationItem?: FromNotificationObject;
   userId?: number;
 };
+
+// Holds transient drafts, reply state, and edit states for comment popups across unmount/mount cycles.
+const commentDrafts = new Map<string, string>();
+const replyStates = new Map<string, GetAllCommentsModel>();
+const editingComments = new Map<string, GetAllCommentsModel>();
+const editCommentDetails = new Map<string, GetPostDetailsForEditModel>();
 
 function CommentPopup(props: CommentPopupProps) {
   const theme = useTheme();
@@ -149,6 +155,18 @@ function CommentPopup(props: CommentPopupProps) {
     props.fromNotificationItem?.commentId ? true : false,
   );
 
+  const MAX_LINES = 6;
+
+  // must match HTML editor CSS:
+  // font-size: 16px; line-height: 20px; padding: 10px;
+  const LINE_HEIGHT = 20;
+  const PADDING_VERTICAL = 0;
+
+  const MIN_HEIGHT = 40;
+  const MAX_HEIGHT = MAX_LINES * LINE_HEIGHT + PADDING_VERTICAL;
+
+  const [editorHeight, setEditorHeight] = useState(MIN_HEIGHT);
+
   useEffect(() => {
     // If nothing typed, reset suggestions to full master list
 
@@ -183,40 +201,94 @@ function CommentPopup(props: CommentPopupProps) {
   }, [comment, userTeamListForTagMaster]);
 
   useEffect(() => {
-    setResetPreviewKey(false);
-    setReplyComment(undefined);
-    setEditingComment(undefined);
-    setComment('');
-    props.setEditCommentId?.(undefined);
-    //if (userDetails && props.shown && props.post.postDetailID != postId) {
-    if (userDetails && props.shown) {
-      setPostCommentList(undefined);
-      //setPostId(props.post.postDetailID);
-      if (props.post?.postDetailID) {
-        callGetAllCommentsApi(1);
-      }
-      if (props.imageList) {
-        setMediaList([...props.imageList]);
+    if (props.shown) {
+      const postKey = props.post?.postDetailID ?? '';
+      const draft = postKey ? commentDrafts.get(postKey) : undefined;
+      const savedReply = postKey ? replyStates.get(postKey) : undefined;
+      const savedEditingComment = postKey
+        ? editingComments.get(postKey)
+        : undefined;
+      const savedEditCommentDetail = postKey
+        ? editCommentDetails.get(postKey)
+        : undefined;
+      setResetPreviewKey(false);
+      setReplyComment(savedReply);
+      setEditingComment(savedEditingComment);
+      setEditComment(savedEditCommentDetail);
+      setComment(draft ?? '');
+      if (!draft) {
+        props.setEditCommentId?.(undefined);
       }
 
-      //disable the mention list for 2.0.3 version
-      if (props.moduleType == 'feed') {
-        getUserTeamListForTagApi.mutate({
-          apiPayload: {
-            UserId: userDetails?.isAdvisor ? props.userId : userDetails?.userID,
-          },
-        });
-      } else if (props.moduleType == 'community') {
-        getMemberListForCommunityTaggingApi.mutate({
-          apiPayload: {
-            programId: templateData.selectedTemplate?.programID,
-            sessionId: templateData.selectedTemplate?.programSessionID,
-            groupId: templateData.selectedTemplate?.groupID,
-          },
-        });
+      if (userDetails) {
+        setPostCommentList(undefined);
+        if (props.post?.postDetailID) {
+          callGetAllCommentsApi(1);
+        }
+        if (props.imageList) {
+          setMediaList([...props.imageList]);
+        }
+
+        if (props.moduleType == 'feed') {
+          getUserTeamListForTagApi.mutate({
+            apiPayload: {
+              UserId: userDetails?.isAdvisor
+                ? props.userId
+                : userDetails?.userID,
+            },
+          });
+        } else if (props.moduleType == 'community') {
+          getMemberListForCommunityTaggingApi.mutate({
+            apiPayload: {
+              programId: templateData.selectedTemplate?.programID,
+              sessionId: templateData.selectedTemplate?.programSessionID,
+              groupId: templateData.selectedTemplate?.groupID,
+            },
+          });
+        }
       }
+    } else {
+      setResetPreviewKey(false);
+      setComment('');
+      props.setEditCommentId?.(undefined);
     }
   }, [props.shown]);
+
+  useEffect(() => {
+    if (props.post?.postDetailID && comment && comment.length > 0) {
+      commentDrafts.set(props.post?.postDetailID ?? '', comment);
+    }
+  }, [comment, props.post]);
+
+  useEffect(() => {
+    if (props.post?.postDetailID) {
+      if (replyComment) {
+        replyStates.set(props.post?.postDetailID ?? '', replyComment);
+      } else {
+        replyStates.delete(props.post?.postDetailID ?? '');
+      }
+    }
+  }, [replyComment, props.post]);
+
+  useEffect(() => {
+    if (props.post?.postDetailID) {
+      if (editingComment) {
+        editingComments.set(props.post?.postDetailID ?? '', editingComment);
+      } else {
+        editingComments.delete(props.post?.postDetailID ?? '');
+      }
+    }
+  }, [editingComment, props.post]);
+
+  useEffect(() => {
+    if (props.post?.postDetailID) {
+      if (editComment) {
+        editCommentDetails.set(props.post?.postDetailID ?? '', editComment);
+      } else {
+        editCommentDetails.delete(props.post?.postDetailID ?? '');
+      }
+    }
+  }, [editComment, props.post]);
 
   useEffect(() => {
     if (userDetails && props.deleteCommentId) {
@@ -285,6 +357,12 @@ function CommentPopup(props: CommentPopupProps) {
   /** Added by @Yuvraj 01-05-25 -> remove stale comment */
   const handleBackPress = () => {
     if (props.shown) {
+      if (props.post?.postDetailID) {
+        commentDrafts.delete(props.post?.postDetailID ?? '');
+        replyStates.delete(props.post?.postDetailID ?? '');
+        editingComments.delete(props.post?.postDetailID ?? '');
+        editCommentDetails.delete(props.post?.postDetailID ?? '');
+      }
       setEditComment(undefined);
       setEditingComment(undefined);
       setComment('');
@@ -386,10 +464,14 @@ function CommentPopup(props: CommentPopupProps) {
         const formattedReplies: CommentsReplies[] = [];
         for (let j = 0; j < commentData.commentsReplies.length; j++) {
           const replyData = commentData.commentsReplies[j];
-          const { cleanHtml: cleanReplyHtml, linkPreviewHtml: replyLinkPreviewHtml } =
-            extractLinkPreviewHtml(replyData.commentDetailHTML ?? '');
-          const { cleanHtml: cleanReplyHtmlNoIframes, embeddedIframeHtml: replyEmbeddedIframeHtml } =
-            extractEmbeddedIframes(cleanReplyHtml);
+          const {
+            cleanHtml: cleanReplyHtml,
+            linkPreviewHtml: replyLinkPreviewHtml,
+          } = extractLinkPreviewHtml(replyData.commentDetailHTML ?? '');
+          const {
+            cleanHtml: cleanReplyHtmlNoIframes,
+            embeddedIframeHtml: replyEmbeddedIframeHtml,
+          } = extractEmbeddedIframes(cleanReplyHtml);
           const updatedHtml = processHtmlContent({
             html: cleanReplyHtmlNoIframes,
             maxWords: 50,
@@ -398,8 +480,14 @@ function CommentPopup(props: CommentPopupProps) {
           });
           formattedReplies.push({
             ...replyData,
-            commentDetailHTML: stripPreviewUrlFromHtml(updatedHtml?.Content, replyLinkPreviewHtml),
-            shortContent: stripPreviewUrlFromHtml(updatedHtml?.shortContent, replyLinkPreviewHtml),
+            commentDetailHTML: stripPreviewUrlFromHtml(
+              updatedHtml?.Content,
+              replyLinkPreviewHtml,
+            ),
+            shortContent: stripPreviewUrlFromHtml(
+              updatedHtml?.shortContent,
+              replyLinkPreviewHtml,
+            ),
             iFrameList: updatedHtml?.iFrameList,
             linkPreviewHtml: replyLinkPreviewHtml,
             embeddedIframeHtml: replyEmbeddedIframeHtml,
@@ -408,10 +496,14 @@ function CommentPopup(props: CommentPopupProps) {
         commentData.commentsReplies = formattedReplies;
       }
 
-      const { cleanHtml: cleanCommentHtml, linkPreviewHtml: commentLinkPreviewHtml } =
-        extractLinkPreviewHtml(commentData.detailHTML ?? '');
-      const { cleanHtml: cleanCommentHtmlNoIframes, embeddedIframeHtml: commentEmbeddedIframeHtml } =
-        extractEmbeddedIframes(cleanCommentHtml);
+      const {
+        cleanHtml: cleanCommentHtml,
+        linkPreviewHtml: commentLinkPreviewHtml,
+      } = extractLinkPreviewHtml(commentData.detailHTML ?? '');
+      const {
+        cleanHtml: cleanCommentHtmlNoIframes,
+        embeddedIframeHtml: commentEmbeddedIframeHtml,
+      } = extractEmbeddedIframes(cleanCommentHtml);
       const updatedHtml = processHtmlContent({
         html: cleanCommentHtmlNoIframes,
         maxWords: 50,
@@ -423,8 +515,14 @@ function CommentPopup(props: CommentPopupProps) {
       ) {
         newData.push({
           ...commentData,
-          detailHTML: stripPreviewUrlFromHtml(updatedHtml?.Content, commentLinkPreviewHtml),
-          shortContent: stripPreviewUrlFromHtml(updatedHtml?.shortContent, commentLinkPreviewHtml),
+          detailHTML: stripPreviewUrlFromHtml(
+            updatedHtml?.Content,
+            commentLinkPreviewHtml,
+          ),
+          shortContent: stripPreviewUrlFromHtml(
+            updatedHtml?.shortContent,
+            commentLinkPreviewHtml,
+          ),
           iFrameList: updatedHtml?.iFrameList,
           linkPreviewHtml: commentLinkPreviewHtml,
           embeddedIframeHtml: commentEmbeddedIframeHtml,
@@ -493,10 +591,14 @@ function CommentPopup(props: CommentPopupProps) {
     for (let i = 0; i < data.length; i++) {
       const commentData = data[i];
 
-      const { cleanHtml: cleanRepliesHtml, linkPreviewHtml: repliesLinkPreviewHtml } =
-        extractLinkPreviewHtml(commentData.detailHTML ?? '');
-      const { cleanHtml: cleanRepliesHtmlNoIframes, embeddedIframeHtml: repliesEmbeddedIframeHtml } =
-        extractEmbeddedIframes(cleanRepliesHtml);
+      const {
+        cleanHtml: cleanRepliesHtml,
+        linkPreviewHtml: repliesLinkPreviewHtml,
+      } = extractLinkPreviewHtml(commentData.detailHTML ?? '');
+      const {
+        cleanHtml: cleanRepliesHtmlNoIframes,
+        embeddedIframeHtml: repliesEmbeddedIframeHtml,
+      } = extractEmbeddedIframes(cleanRepliesHtml);
       const updatedHtml = processHtmlContent({
         html: cleanRepliesHtmlNoIframes,
         maxWords: 50,
@@ -508,8 +610,14 @@ function CommentPopup(props: CommentPopupProps) {
       ) {
         newData.push({
           ...commentData,
-          detailHTML: stripPreviewUrlFromHtml(updatedHtml?.Content, repliesLinkPreviewHtml),
-          shortContent: stripPreviewUrlFromHtml(updatedHtml?.shortContent, repliesLinkPreviewHtml),
+          detailHTML: stripPreviewUrlFromHtml(
+            updatedHtml?.Content,
+            repliesLinkPreviewHtml,
+          ),
+          shortContent: stripPreviewUrlFromHtml(
+            updatedHtml?.shortContent,
+            repliesLinkPreviewHtml,
+          ),
           iFrameList: updatedHtml?.iFrameList,
           linkPreviewHtml: repliesLinkPreviewHtml,
           embeddedIframeHtml: repliesEmbeddedIframeHtml,
@@ -839,6 +947,11 @@ function CommentPopup(props: CommentPopupProps) {
             Log('itemShivang---->' + JSON.stringify(item));
             Log('FROMVALUE--->' + from);
             props.setEditCommentId?.({ ...item });
+            if (props.post?.postDetailID ?? '') {
+              commentDrafts.delete(props.post?.postDetailID ?? '');
+              editingComments.delete(props.post?.postDetailID ?? '');
+              editCommentDetails.delete(props.post?.postDetailID ?? '');
+            }
             setComment('');
             setReplyComment(undefined);
             setEditingComment({
@@ -863,7 +976,11 @@ function CommentPopup(props: CommentPopupProps) {
           // Reply Edit click
           if (from === 'edit') {
             props.setEditCommentId?.({ ...value });
-
+            if (props.post?.postDetailID ?? '') {
+              commentDrafts.delete(props.post?.postDetailID ?? '');
+              editingComments.delete(props.post?.postDetailID ?? '');
+              editCommentDetails.delete(props.post?.postDetailID ?? '');
+            }
             setReplyComment(undefined); // important: reply mode off
 
             // show "Editing ..." header using same state
@@ -1040,8 +1157,10 @@ function CommentPopup(props: CommentPopupProps) {
               userTeamListForTagMaster,
             )
           : commentDetail?.feedDetail?.detailHTML!;
-        const { cleanHtml: cleanDetailHtml, linkPreviewHtml: detailLinkPreviewHtml } =
-          extractLinkPreviewHtml(rawDetailHtml ?? '');
+        const {
+          cleanHtml: cleanDetailHtml,
+          linkPreviewHtml: detailLinkPreviewHtml,
+        } = extractLinkPreviewHtml(rawDetailHtml ?? '');
         const updatedHtml = processHtmlContent({
           html: cleanDetailHtml,
           maxWords: 50,
@@ -1064,7 +1183,7 @@ function CommentPopup(props: CommentPopupProps) {
         if (!variables.refreshPost) {
           textInputRef.current?.insertHtml(
             variables.editComment
-              ? (editInputHtml ?? '')
+              ? editInputHtml ?? ''
               : commentDetail.feedDetail?.detailHTML!,
           ); //inserting because of cursor issue
           if (variables.editComment) {
@@ -1113,9 +1232,18 @@ function CommentPopup(props: CommentPopupProps) {
                     ...item,
                     feedReplyID: commentDetail?.feedDetail?.feedReplyID,
                     postDetailID: commentDetail?.feedDetail?.id,
-                    detail: stripPreviewUrlFromHtml(updatedHtml?.Content, detailLinkPreviewHtml),
-                    detailHTML: stripPreviewUrlFromHtml(updatedHtml?.Content, detailLinkPreviewHtml),
-                    shortContent: stripPreviewUrlFromHtml(updatedHtml?.shortContent, detailLinkPreviewHtml),
+                    detail: stripPreviewUrlFromHtml(
+                      updatedHtml?.Content,
+                      detailLinkPreviewHtml,
+                    ),
+                    detailHTML: stripPreviewUrlFromHtml(
+                      updatedHtml?.Content,
+                      detailLinkPreviewHtml,
+                    ),
+                    shortContent: stripPreviewUrlFromHtml(
+                      updatedHtml?.shortContent,
+                      detailLinkPreviewHtml,
+                    ),
                     iFrameList: updatedHtml?.iFrameList,
                     likeCount: commentDetail?.feedDetail?.likeCount,
                     commentCount: commentDetail?.feedDetail?.commentCount,
@@ -1142,9 +1270,18 @@ function CommentPopup(props: CommentPopupProps) {
                       if (reply.postDetailID == commentDetail?.feedDetail?.id) {
                         const updatedReply = {
                           ...reply,
-                          detail: stripPreviewUrlFromHtml(updatedHtml?.Content, detailLinkPreviewHtml),
-                          detailHTML: stripPreviewUrlFromHtml(updatedHtml?.Content, detailLinkPreviewHtml),
-                          shortContent: stripPreviewUrlFromHtml(updatedHtml?.shortContent, detailLinkPreviewHtml),
+                          detail: stripPreviewUrlFromHtml(
+                            updatedHtml?.Content,
+                            detailLinkPreviewHtml,
+                          ),
+                          detailHTML: stripPreviewUrlFromHtml(
+                            updatedHtml?.Content,
+                            detailLinkPreviewHtml,
+                          ),
+                          shortContent: stripPreviewUrlFromHtml(
+                            updatedHtml?.shortContent,
+                            detailLinkPreviewHtml,
+                          ),
                           iFrameList: updatedHtml?.iFrameList,
                           postImageLocation:
                             commentDetail?.feedDetail?.postImageLocation,
@@ -1404,10 +1541,16 @@ function CommentPopup(props: CommentPopupProps) {
                 } else {
                   const firstReply = commentListLatest?.at(0);
 
-                  const { cleanHtml: cleanFirstReplyHtml, linkPreviewHtml: firstReplyLinkPreviewHtml } =
-                    extractLinkPreviewHtml(firstReply?.detailHTML ?? firstReply?.detail ?? '');
-                  const { cleanHtml: cleanFirstReplyHtmlNoIframes, embeddedIframeHtml: firstReplyEmbeddedIframeHtml } =
-                    extractEmbeddedIframes(cleanFirstReplyHtml);
+                  const {
+                    cleanHtml: cleanFirstReplyHtml,
+                    linkPreviewHtml: firstReplyLinkPreviewHtml,
+                  } = extractLinkPreviewHtml(
+                    firstReply?.detailHTML ?? firstReply?.detail ?? '',
+                  );
+                  const {
+                    cleanHtml: cleanFirstReplyHtmlNoIframes,
+                    embeddedIframeHtml: firstReplyEmbeddedIframeHtml,
+                  } = extractEmbeddedIframes(cleanFirstReplyHtml);
                   const updatedHtml = processHtmlContent({
                     html: cleanFirstReplyHtmlNoIframes,
                   });
@@ -1416,8 +1559,14 @@ function CommentPopup(props: CommentPopupProps) {
                     newList = [
                       {
                         ...firstReply,
-                        detailHTML: stripPreviewUrlFromHtml(updatedHtml?.Content, firstReplyLinkPreviewHtml),
-                        shortContent: stripPreviewUrlFromHtml(updatedHtml?.shortContent, firstReplyLinkPreviewHtml),
+                        detailHTML: stripPreviewUrlFromHtml(
+                          updatedHtml?.Content,
+                          firstReplyLinkPreviewHtml,
+                        ),
+                        shortContent: stripPreviewUrlFromHtml(
+                          updatedHtml?.shortContent,
+                          firstReplyLinkPreviewHtml,
+                        ),
                         iFrameList: updatedHtml?.iFrameList,
                         linkPreviewHtml: firstReplyLinkPreviewHtml,
                         embeddedIframeHtml: firstReplyEmbeddedIframeHtml,
@@ -1468,10 +1617,16 @@ function CommentPopup(props: CommentPopupProps) {
               } else {
                 const firstReply = commentListLatest?.at(0);
 
-                const { cleanHtml: cleanFallbackReplyHtml, linkPreviewHtml: fallbackReplyLinkPreviewHtml } =
-                  extractLinkPreviewHtml(firstReply?.detailHTML ?? firstReply?.detail ?? '');
-                const { cleanHtml: cleanFallbackReplyHtmlNoIframes, embeddedIframeHtml: fallbackReplyEmbeddedIframeHtml } =
-                  extractEmbeddedIframes(cleanFallbackReplyHtml);
+                const {
+                  cleanHtml: cleanFallbackReplyHtml,
+                  linkPreviewHtml: fallbackReplyLinkPreviewHtml,
+                } = extractLinkPreviewHtml(
+                  firstReply?.detailHTML ?? firstReply?.detail ?? '',
+                );
+                const {
+                  cleanHtml: cleanFallbackReplyHtmlNoIframes,
+                  embeddedIframeHtml: fallbackReplyEmbeddedIframeHtml,
+                } = extractEmbeddedIframes(cleanFallbackReplyHtml);
                 const updatedHtml = processHtmlContent({
                   html: cleanFallbackReplyHtmlNoIframes,
                 });
@@ -1480,8 +1635,14 @@ function CommentPopup(props: CommentPopupProps) {
                   newList = [
                     {
                       ...firstReply,
-                      detailHTML: stripPreviewUrlFromHtml(updatedHtml?.Content, fallbackReplyLinkPreviewHtml),
-                      shortContent: stripPreviewUrlFromHtml(updatedHtml?.shortContent, fallbackReplyLinkPreviewHtml),
+                      detailHTML: stripPreviewUrlFromHtml(
+                        updatedHtml?.Content,
+                        fallbackReplyLinkPreviewHtml,
+                      ),
+                      shortContent: stripPreviewUrlFromHtml(
+                        updatedHtml?.shortContent,
+                        fallbackReplyLinkPreviewHtml,
+                      ),
                       iFrameList: updatedHtml?.iFrameList,
                       linkPreviewHtml: fallbackReplyLinkPreviewHtml,
                       embeddedIframeHtml: fallbackReplyEmbeddedIframeHtml,
@@ -1591,10 +1752,19 @@ function CommentPopup(props: CommentPopupProps) {
     },
     onSuccess(data) {
       if (data?.success) {
+        if (props.post?.postDetailID ?? '') {
+          commentDrafts.delete(props.post?.postDetailID ?? '');
+          replyStates.delete(props.post?.postDetailID ?? '');
+          editingComments.delete(props.post?.postDetailID ?? '');
+          editCommentDetails.delete(props.post?.postDetailID ?? '');
+        }
         textInputRef.current?.setHtml(''); //emptying the data
         setComment('');
         setMediaList([]);
         props.setImageList?.([]);
+        setReplyComment(undefined);
+        setEditingComment(undefined);
+        setEditComment(undefined);
 
         props.commentCountUpdate?.();
 
@@ -1664,18 +1834,6 @@ function CommentPopup(props: CommentPopupProps) {
       showSnackbar(error.message, 'danger');
     },
   });
-  const MAX_LINES = 6;
-
-  // must match HTML editor CSS:
-  // font-size: 16px; line-height: 20px; padding: 10px;
-  const LINE_HEIGHT = 20;
-  const PADDING_VERTICAL = 0;
-
-  const MIN_HEIGHT = 40;
-  const MAX_HEIGHT = MAX_LINES * LINE_HEIGHT + PADDING_VERTICAL;
-
-  const [editorHeight, setEditorHeight] = useState(MIN_HEIGHT);
-
   const onContentSizeChange = (e: any) => {
     const h = e?.nativeEvent?.contentSize?.height ?? MIN_HEIGHT;
 
@@ -1781,6 +1939,10 @@ function CommentPopup(props: CommentPopupProps) {
                     </View>
                     <Tap
                       onPress={() => {
+                        if (props.post?.postDetailID ?? '') {
+                          commentDrafts.delete(props.post?.postDetailID ?? '');
+                          replyStates.delete(props.post?.postDetailID ?? '');
+                        }
                         setComment('');
                         setReplyComment(undefined);
                       }}
@@ -1814,14 +1976,16 @@ function CommentPopup(props: CommentPopupProps) {
                     </View>
                     <Tap
                       onPress={() => {
-                        // props.setEditCommentId?.(undefined);
-                        // setEditingComment(undefined);
-                        // setComment('');
-                        // setMediaList([]);
-                        // props.setImageList?.([]);
-                        // textInputRef.current?.setContentHTML('');
-
-                        //  clear editing mode completely
+                        // clear editing mode completely
+                        if (props.post?.postDetailID ?? '') {
+                          commentDrafts.delete(props.post?.postDetailID ?? '');
+                          editingComments.delete(
+                            props.post?.postDetailID ?? '',
+                          );
+                          editCommentDetails.delete(
+                            props.post?.postDetailID ?? '',
+                          );
+                        }
                         setEditingComment(undefined);
                         setEditComment(undefined);
                         setEditLoading(false); // safe reset
@@ -1918,6 +2082,7 @@ function CommentPopup(props: CommentPopupProps) {
                       extraPreviewHeight={20}
                       showErrorMsg={value => handleMsgShow(value, 'danger')}
                       hidePreview={false}
+                      isAttachmentAdded={true}
                     />
 
                     <Tap
@@ -2072,13 +2237,13 @@ const makeStyles = (theme: CustomTheme) =>
     selectedImgTap: {
       height: 80,
       width: 80,
-      borderRadius: 10,
+      borderRadius: theme.lightRoundness,
       marginRight: 5,
     },
     selectedImg: {
       height: '100%',
       width: '100%',
-      borderRadius: 10,
+      borderRadius: theme.lightRoundness,
     },
     selectedImgDeleteTap: {
       position: 'absolute',
@@ -2086,8 +2251,8 @@ const makeStyles = (theme: CustomTheme) =>
       left: 0,
       right: 0,
       backgroundColor: theme.colors.error || '#ff0000',
-      borderBottomLeftRadius: 10,
-      borderBottomRightRadius: 10,
+      borderBottomLeftRadius: theme.lightRoundness,
+      borderBottomRightRadius: theme.lightRoundness,
       alignItems: 'center',
       padding: 3,
     },
@@ -2132,21 +2297,21 @@ const makeStyles = (theme: CustomTheme) =>
       backgroundColor: theme.colors.surface,
       width: '60%',
       height: 15,
-      borderRadius: 5,
+      borderRadius: theme.roundness,
       marginTop: 5,
     },
     skeletonTitle: {
       backgroundColor: theme.colors.surface,
       width: '40%',
       height: 10,
-      borderRadius: 5,
+      borderRadius: theme.roundness,
       marginTop: 5,
     },
     skeletonSubtitle: {
       backgroundColor: theme.colors.surface,
       width: '25%',
       height: 10,
-      borderRadius: 5,
+      borderRadius: theme.roundness,
       marginTop: 5,
     },
     skeletonOptionsItem4: {

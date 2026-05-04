@@ -473,7 +473,7 @@ const makeStyles = (theme: CustomTheme) =>
       padding: 10,
       backgroundColor: theme.colors.secondaryContainer,
       marginBottom: 10,
-      borderRadius: 10,
+      borderRadius: theme.extraRoundness,
     },
     startNewchat: { alignItems: 'center', flex: 1 },
     chatText: {

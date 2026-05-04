@@ -1,5 +1,5 @@
-import {UseMutationResult} from '@tanstack/react-query';
-import React, {useEffect, useMemo, useRef, useState} from 'react';
+import { UseMutationResult } from '@tanstack/react-query';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   GestureResponderEvent,
   LogBox,
@@ -7,30 +7,30 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import {TextInput} from 'react-native-paper';
+import { TextInput } from 'react-native-paper';
 
-import {CustomTheme, useTheme} from '@/theme/themeProvider/paperTheme';
-import {t} from 'i18next';
-import {EMessageType} from '../../common/models/enums/message-type';
-import {ESnackbarTypes} from '../../common/models/enums/snackbar-types';
-import {IAgentInfo} from '../../common/models/interfaces/agent-info';
-import {IBotSuggestion} from '../../common/models/interfaces/bot-suggestion';
-import {ICoordinates} from '../../common/models/interfaces/coordinates';
-import {ICreateChatPayload} from '../../common/models/interfaces/create-chat-payload';
-import {ICreateChatResponse} from '../../common/models/interfaces/create-chat-response';
-import {IUploadFileData} from '../../common/models/interfaces/upload-file-data';
-import {IUploadFileToChatPayload} from '../../common/models/interfaces/upload-file-to-chat-payload';
-import {IUploadFileToChatResponse} from '../../common/models/interfaces/upload-file-to-chat-response';
-import {IAgentsContext, useAgents} from '../../contexts/AgentsProvider';
-import {IAskChatContext, useAskChat} from '../../contexts/AskChatProvider';
-import {ISnackbarContext, useSnackbar} from '../../contexts/SnackbarProvider';
+import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
+import { t } from 'i18next';
+import { EMessageType } from '../../common/models/enums/message-type';
+import { ESnackbarTypes } from '../../common/models/enums/snackbar-types';
+import { IAgentInfo } from '../../common/models/interfaces/agent-info';
+import { IBotSuggestion } from '../../common/models/interfaces/bot-suggestion';
+import { ICoordinates } from '../../common/models/interfaces/coordinates';
+import { ICreateChatPayload } from '../../common/models/interfaces/create-chat-payload';
+import { ICreateChatResponse } from '../../common/models/interfaces/create-chat-response';
+import { IUploadFileData } from '../../common/models/interfaces/upload-file-data';
+import { IUploadFileToChatPayload } from '../../common/models/interfaces/upload-file-to-chat-payload';
+import { IUploadFileToChatResponse } from '../../common/models/interfaces/upload-file-to-chat-response';
+import { IAgentsContext, useAgents } from '../../contexts/AgentsProvider';
+import { IAskChatContext, useAskChat } from '../../contexts/AskChatProvider';
+import { ISnackbarContext, useSnackbar } from '../../contexts/SnackbarProvider';
 import useCreateChat from '../../hooks/useCreateChat';
 import useUploadFileToChat from '../../hooks/useUploadFileToChat';
 import {
   IChatState,
   useChatStore,
 } from '../../storage/zustandStorage/useChatStore';
-import {transformToChatHistoryMessage} from '../../utils/transformToChatHistoryMessage';
+import { transformToChatHistoryMessage } from '../../utils/transformToChatHistoryMessage';
 import DefaultPromptPanel from '../DefaultPromptPanel';
 import FileCard from '../FileCard';
 import FileUploadMenu from '../FileUploadMenu';
@@ -49,21 +49,26 @@ const ChatScreenFooter: React.FC = props => {
   const styles = makeStyles(theme); // styling
   const [inputText, setInputText] = useState<string>('');
   const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false);
-  const [menuAnchor, setMenuAnchor] = useState<ICoordinates>({x: 0, y: 0});
+  const [menuAnchor, setMenuAnchor] = useState<ICoordinates>({ x: 0, y: 0 });
   const [selectedFile, setSelectedFile] = useState<IUploadFileData | null>(
     null,
   );
-  const {showSnackbar}: ISnackbarContext = useSnackbar();
+  const { showSnackbar }: ISnackbarContext = useSnackbar();
 
-  const {listOfAgentsQuery}: IAgentsContext = useAgents();
-  const {selectedAgent, selectedChat, setSelectedChat, addChatMessage, syncChatMessages} =
-    useChatStore((state: IChatState) => ({
-      selectedAgent: state.selectedAgent,
-      selectedChat: state.selectedChat,
-      setSelectedChat: state.setSelectedChat,
-      addChatMessage: state.addChatMessage,
-      syncChatMessages: state.syncChatMessages,
-    }));
+  const { listOfAgentsQuery }: IAgentsContext = useAgents();
+  const {
+    selectedAgent,
+    selectedChat,
+    setSelectedChat,
+    addChatMessage,
+    syncChatMessages,
+  } = useChatStore((state: IChatState) => ({
+    selectedAgent: state.selectedAgent,
+    selectedChat: state.selectedChat,
+    setSelectedChat: state.setSelectedChat,
+    addChatMessage: state.addChatMessage,
+    syncChatMessages: state.syncChatMessages,
+  }));
   const {
     askChat,
     isMessageGenerating,
@@ -114,8 +119,8 @@ const ChatScreenFooter: React.FC = props => {
   );
 
   const handleAttachFileMenuOpen = (event: GestureResponderEvent) => {
-    const {pageX, pageY} = event.nativeEvent;
-    setMenuAnchor({x: pageX - 10, y: pageY - 100});
+    const { pageX, pageY } = event.nativeEvent;
+    setMenuAnchor({ x: pageX - 10, y: pageY - 100 });
     setIsMenuVisible(true);
   };
   const handleAttachFileMenuClose = () => setIsMenuVisible(false);
@@ -147,7 +152,7 @@ const ChatScreenFooter: React.FC = props => {
     formData.append(file.name, file);
     console.log('FormData prepared:', formData); // Log the formData object to check its contents
 
-    await uploadFileMutation.mutateAsync({file: formData, selectedChatId});
+    await uploadFileMutation.mutateAsync({ file: formData, selectedChatId });
 
     setSelectedFile(null);
   };
@@ -302,7 +307,7 @@ const makeStyles = (theme: CustomTheme) =>
       backgroundColor: theme.colors.primary,
       height: 47,
       width: 47,
-      borderRadius: 30,
+      borderRadius: theme.roundness,
     },
     // input: {
     //   flex: 1,
@@ -344,10 +349,10 @@ const makeStyles = (theme: CustomTheme) =>
       width: '100%',
     },
     outlinedInput: {
-      borderRadius: 14,
+      borderRadius: theme.extraRoundness,
       maxHeight: MAX_INPUT_HEIGHT,
     },
-    inputContent: {textAlignVertical: 'center'},
+    inputContent: { textAlignVertical: 'center' },
 
     historyicon: {
       height: 25,

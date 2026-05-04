@@ -146,6 +146,8 @@ function PasswordSetup() {
             });
           },
         });
+      } else if (data.result?.status == 0 && data.result.message) {
+        showSnackbar(data.result.message, 'warning');
       }
     },
     onError(error, variables, context) {

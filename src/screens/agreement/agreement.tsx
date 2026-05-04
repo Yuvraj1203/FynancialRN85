@@ -1,6 +1,6 @@
 import {
   CustomButton,
-  CustomCheckBox,
+  CustomFormCheckBox,
   CustomText,
   HtmlRender,
   Shadow,
@@ -335,7 +335,7 @@ function Agreement() {
                       />
                     )}
 
-                    <CustomCheckBox
+                    <CustomFormCheckBox
                       mode={CheckBoxModeVariants.android}
                       control={control}
                       name={'acceptContract'}
@@ -376,7 +376,7 @@ const makeStyles = (theme: CustomTheme) =>
       backgroundColor: theme.colors.surface,
       width: '50%',
       height: 30,
-      borderRadius: 5,
+      borderRadius: theme.lightRoundness,
       marginTop: 30,
       marginBottom: 70,
     },
@@ -384,7 +384,7 @@ const makeStyles = (theme: CustomTheme) =>
       backgroundColor: theme.colors.surface,
       width: '90%',
       height: 15,
-      borderRadius: 3,
+      borderRadius: theme.lightRoundness,
       marginTop: 15,
     },
     skeletonBtnLay: {
@@ -396,7 +396,7 @@ const makeStyles = (theme: CustomTheme) =>
       backgroundColor: theme.colors.surface,
       width: '90%',
       height: 50,
-      borderRadius: 5,
+      borderRadius: theme.lightRoundness,
       marginTop: 80,
       marginBottom: 20,
     },
@@ -404,7 +404,7 @@ const makeStyles = (theme: CustomTheme) =>
       backgroundColor: theme.colors.surface,
       width: '30%',
       height: 30,
-      borderRadius: 5,
+      borderRadius: theme.roundness,
       marginTop: 30,
       marginBottom: 20,
     },

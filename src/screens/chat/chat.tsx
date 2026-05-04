@@ -134,6 +134,7 @@ export type ChatReturnProp = {
   leftGroup: boolean;
   media?: Asset[];
   message?: string;
+  preview?: GetLinkPreviewHTMLModel | undefined;
 };
 
 function Chat() {
@@ -732,7 +733,7 @@ function Chat() {
           return;
         }
 
-        handleSendMessage(data.message, undefined, data.media);
+        handleSendMessage(data.message, undefined, data.media, data.preview);
         return;
       }
 
@@ -761,6 +762,7 @@ function Chat() {
     fullImagePath,
     isLocal = false,
     localUri,
+    preview,
   }: {
     tempId: string;
     messageContent?: string;
@@ -770,13 +772,17 @@ function Chat() {
     fullImagePath?: string;
     isLocal?: boolean;
     localUri?: string;
+    preview?: GetLinkPreviewHTMLModel | undefined;
   }): UserChatMessageItem => {
     const timestamp = new Date().toISOString();
 
     // CASE 1: TEXT ONLY
     if (!imagePathS3 && !fileName && !localUri) {
       // ✅ add preview html before your processHtmlContent runs
-      const textWithPreview = buildTextWithPreview(messageContent ?? '');
+      const textWithPreview = buildTextWithPreview(
+        messageContent ?? '',
+        preview,
+      );
 
       const htmlText =
         processHtmlContent({ html: textWithPreview ?? '' })?.Content ?? '';
@@ -1228,22 +1234,27 @@ function Chat() {
   const buildFileAttachment = (id: string, name: string) =>
     `[file]{ "id": "${id}", "name": "${name}", "contentType": "application/pdf" }`;
 
-  const buildTextWithPreview = (rawText: string) => {
+  const buildTextWithPreview = (
+    rawText: string,
+    preview?: GetLinkPreviewHTMLModel | undefined,
+  ) => {
     const trimmed = rawText?.trim() ?? '';
     if (!trimmed) return trimmed;
 
+    const effectivePreview = preview ?? linkPreviewResult;
+
     // If we have preview HTML for last URL, append it after typed text
-    if (linkPreviewResult?.previewHtml && linkPreviewResult?.originalUrl) {
+    if (effectivePreview?.previewHtml && effectivePreview?.originalUrl) {
       // (Optional safe check) Append only if message includes that URL
       const urlExistsInMessage =
-        trimmed.includes(linkPreviewResult.originalUrl) ||
+        trimmed.includes(effectivePreview.originalUrl) ||
         trimmed.includes(
-          linkPreviewResult.originalUrl.replace('https://', ''),
+          effectivePreview.originalUrl.replace('https://', ''),
         ) ||
-        trimmed.includes(linkPreviewResult.originalUrl.replace('http://', ''));
+        trimmed.includes(effectivePreview.originalUrl.replace('http://', ''));
 
       if (urlExistsInMessage) {
-        return `${trimmed}${linkPreviewResult.previewHtml}`;
+        return `${trimmed}${effectivePreview.previewHtml}`;
       }
     }
 
@@ -1254,7 +1265,10 @@ function Chat() {
     text?: string,
     message?: UserChatMessageItem,
     media?: Asset[],
+    previewParam?: GetLinkPreviewHTMLModel | undefined,
   ) => {
+    const previewForSend = previewParam ?? linkPreviewResult;
+    Log('handleSendMessage captured preview => ' + !!previewForSend);
     setMessage('');
     signalRService.start();
 
@@ -1283,6 +1297,7 @@ function Chat() {
           fullImagePath: message.fullImagePath,
           isLocal: Boolean(parsed),
           localUri: message.imageS3Url,
+          preview: previewForSend,
         });
 
         checkUserMessage(rebuilt, 'instant');
@@ -1299,7 +1314,7 @@ function Chat() {
                 ? { groupId: userChatData.groupId }
                 : { UserId: userChatData.targetUserId }),
               signalRMsgData: rebuilt,
-              previewVisible: isPreviewVisible,
+              previewVisible: !!previewForSend,
             },
             signalRMsg: rebuilt,
           });
@@ -1321,6 +1336,7 @@ function Chat() {
           tempId,
           phoneIdentifier: rebuilt.phoneIdentifier,
           signalRData: rebuilt,
+          preview: previewForSend,
         });
         return;
       }
@@ -1330,6 +1346,7 @@ function Chat() {
         const msg = buildSignalRMessage({
           tempId,
           messageContent: text.trim(),
+          preview: previewForSend,
         });
 
         checkUserMessage(msg, 'instant');
@@ -1345,7 +1362,7 @@ function Chat() {
               ? { groupId: userChatData.groupId }
               : { UserId: userChatData.targetUserId }),
             signalRMsgData: msg,
-            previewVisible: isPreviewVisible,
+            previewVisible: !!previewForSend,
           },
           signalRMsg: msg,
         });
@@ -1362,6 +1379,7 @@ function Chat() {
           contentType: sendMedia.type,
           isLocal: true,
           localUri: sendMedia.uri,
+          preview: previewForSend,
         });
 
         checkUserMessage(localMsg, 'instant');
@@ -1382,6 +1400,7 @@ function Chat() {
           tempId,
           phoneIdentifier: localMsg.phoneIdentifier,
           signalRData: localMsg,
+          preview: previewForSend,
         });
         return;
       }
@@ -1397,6 +1416,7 @@ function Chat() {
           contentType: sendMedia.type,
           isLocal: true,
           localUri: sendMedia.uri,
+          preview: previewForSend,
         });
 
         checkUserMessage(localMsg, 'instant');
@@ -1417,6 +1437,7 @@ function Chat() {
           tempId,
           phoneIdentifier: localMsg.phoneIdentifier,
           signalRData: localMsg,
+          preview: previewForSend,
         });
       }
     }, 0);
@@ -1836,9 +1857,9 @@ function Chat() {
               {(!isEmpty(item.text) || item.linkPreviewHtml) && (
                 <View
                   style={
-                    item.text && item.text.length > 28
-                      ? styles.longMessageContainer
-                      : styles.shortMessageContainer
+                    item.side == 1
+                      ? styles.RightMessageTimestampContainer
+                      : styles.LeftMessageTimestampContainer
                   }
                 >
                   <Tap
@@ -1886,9 +1907,9 @@ function Chat() {
                     <CustomText
                       variant={TextVariants.labelSmall}
                       style={
-                        item.text && item.text.length > 28
-                          ? styles.longMessageTimestamp
-                          : styles.shortMessageTimestamp
+                        item.side == 1
+                          ? styles.RightMessageTimestamp
+                          : styles.LeftMessageTimestamp
                       }
                     >
                       {item.creationTimeDisplay}
@@ -1902,9 +1923,9 @@ function Chat() {
                   ) : (
                     <View
                       style={
-                        item.text && item.text.length > 28
-                          ? styles.longMessageTimestamp
-                          : styles.shortMessageTimestamp
+                        item.side == 1
+                          ? styles.RightMessageTimestamp
+                          : styles.LeftMessageTimestamp
                       }
                     >
                       <ClickRotateIcon onPress={() => handleRetry(item)} />
@@ -1954,6 +1975,7 @@ function Chat() {
       tempId?: string;
       phoneIdentifier?: string;
       signalRData?: UserChatMessageItem;
+      preview?: GetLinkPreviewHTMLModel | undefined;
       retry?: boolean;
     }) => {
       return makeRequest<UploadFileListToS3Model[]>({
@@ -2060,6 +2082,10 @@ function Chat() {
         }
 
         Log('messageContent before send : ' + messageContent);
+        Log(
+          'UploadFileListToS3Api.onSuccess variables.preview => ' +
+            !!variables.preview,
+        );
         sendMessageApi.mutate({
           apiPayload: {
             Message: messageContent,
@@ -2076,7 +2102,7 @@ function Chat() {
               imageOrFileId: data?.result?.at(0)?.imagePathS3,
               fullImagePath: data?.result?.at(0)?.fullImagePath,
             },
-            previewVisible: isPreviewVisible,
+            previewVisible: !!variables.preview,
           },
           signalRMsg: {
             ...variables?.signalRData,
@@ -3154,6 +3180,8 @@ const makeStyles = (theme: CustomTheme) =>
       flexDirection: 'row',
       marginHorizontal: 10,
       marginBottom: 20,
+      borderTopColor: theme.colors.surfaceVariant,
+      borderTopWidth: 1,
     },
     inactiveMsgContainer: {
       marginTop: 10,
@@ -3200,7 +3228,7 @@ const makeStyles = (theme: CustomTheme) =>
     sendIconTap: {
       position: 'absolute',
       backgroundColor: theme.colors.primary,
-      borderRadius: 35,
+      borderRadius: theme.extraRoundness,
       right: 5,
       bottom: 8, // Apply marginTop only for iOS
       alignSelf: 'flex-end',
@@ -3217,7 +3245,7 @@ const makeStyles = (theme: CustomTheme) =>
     leftMessageWithouprofile: {
       flex: 1,
       alignItems: 'flex-start',
-      paddingLeft: 40,
+      paddingLeft: 50,
     },
     leftMessage: {
       flex: 1,
@@ -3259,18 +3287,20 @@ const makeStyles = (theme: CustomTheme) =>
       marginBottom: 15,
     },
     profileContainer: {
-      width: 25,
-      height: 25,
+      width: 35,
+      height: 35,
       //borderRadius: 20,
       marginRight: 6,
-      borderRadius: theme.roundness,
+      borderRadius: theme.extraRoundness,
+      borderColor: theme.colors.outline,
+      borderWidth: 1,
     },
     profileImgContainer: {
-      width: 25,
-      height: 25,
+      width: 35,
+      height: 35,
       //borderRadius: 20,
       // marginRight: 6,
-      borderRadius: theme.roundness,
+      borderRadius: theme.extraRoundness,
     },
     selectedImg: {
       height: 80,
@@ -3305,46 +3335,46 @@ const makeStyles = (theme: CustomTheme) =>
       marginTop: 22,
     },
     rightTextContainer: {
-      paddingVertical: 5,
-      paddingHorizontal: 5,
+      padding: 10,
       backgroundColor: theme.colors.userMessage,
       borderRadius: theme.roundness,
       maxWidth: '75%',
       minWidth: 0, // Allows shrinking to fit short text
       alignSelf: 'flex-start', // Prevents unnecessary stretching
       flexShrink: 1, // Ensures it shrinks when text is short
+      borderBottomRightRadius: theme.lightRoundness,
     },
     leftTextContainer: {
-      paddingVertical: 5,
-      paddingHorizontal: 5,
+      padding: 10,
       backgroundColor: theme.colors.surfaceVariant,
       borderRadius: theme.roundness,
       maxWidth: '78%',
       minWidth: 0, // Adapts to short text dynamically
       flexShrink: 1,
       alignSelf: 'flex-start', // Prevents unnecessary stretching
+      borderBottomLeftRadius: theme.lightRoundness,
     },
     rightImageContainer: {
       flex: 1,
-      paddingVertical: 5,
-      paddingHorizontal: 5,
+      padding: 10,
       backgroundColor: theme.colors.userMessage,
       borderRadius: theme.roundness,
       maxWidth: '75%',
       minWidth: 0, // Allows shrinking to fit short text
       alignSelf: 'flex-start', // Prevents unnecessary stretching
       flexShrink: 1, // Ensures it shrinks when text is short
+      borderBottomRightRadius: theme.lightRoundness,
     },
     leftImageContainer: {
       flex: 1,
-      paddingVertical: 5,
-      paddingHorizontal: 5,
+      padding: 10,
       backgroundColor: theme.colors.surfaceVariant,
       borderRadius: theme.roundness,
       maxWidth: '75%',
       minWidth: 0, // Adapts to short text dynamically
       flexShrink: 1,
       alignSelf: 'flex-start', // Prevents unnecessary stretching
+      borderBottomLeftRadius: theme.lightRoundness,
     },
     shortMessageContainer: {
       flexDirection: 'row',
@@ -3359,6 +3389,16 @@ const makeStyles = (theme: CustomTheme) =>
       alignItems: 'flex-start',
       paddingHorizontal: 3,
     },
+    RightMessageTimestampContainer: {
+      flexDirection: 'column',
+      alignItems: 'flex-start',
+      paddingHorizontal: 3,
+    },
+    LeftMessageTimestampContainer: {
+      flexDirection: 'column',
+      alignItems: 'flex-start',
+      paddingHorizontal: 3,
+    },
     shortMessageTimestamp: {
       marginLeft: 8,
       alignSelf: 'flex-end',
@@ -3366,6 +3406,14 @@ const makeStyles = (theme: CustomTheme) =>
     longMessageTimestamp: {
       marginTop: 2,
       alignSelf: 'flex-end',
+    },
+    RightMessageTimestamp: {
+      marginTop: 5,
+      alignSelf: 'flex-end',
+    },
+    LeftMessageTimestamp: {
+      marginTop: 5,
+      alignSelf: 'flex-start',
     },
     imageContainer: {
       flex: 1,
@@ -3395,10 +3443,12 @@ const makeStyles = (theme: CustomTheme) =>
     wrapper: {
       flexDirection: 'row',
       justifyContent: 'flex-start',
+      alignItems: 'center',
+      paddingHorizontal: 10,
     },
     pdfIcon: {
-      width: 30,
-      height: 30,
+      width: 25,
+      height: 23,
       marginRight: 3,
     },
     clockIcon: {
@@ -3406,6 +3456,7 @@ const makeStyles = (theme: CustomTheme) =>
       height: 12,
       marginLeft: 5,
       alignSelf: 'flex-end',
+      marginTop: 5,
     },
     pdfName: {
       flex: 1,
@@ -3426,7 +3477,7 @@ const makeStyles = (theme: CustomTheme) =>
       marginTop: 3,
       paddingHorizontal: 5,
       paddingVertical: 2,
-      borderRadius: 5,
+      borderRadius: theme.roundness,
     },
 
     retryIconPdf: {
@@ -3436,7 +3487,7 @@ const makeStyles = (theme: CustomTheme) =>
       marginTop: 3,
       paddingHorizontal: 5,
       paddingVertical: 2,
-      borderRadius: 5,
+      borderRadius: theme.roundness,
     },
 
     timestampClock: {
@@ -3448,10 +3499,11 @@ const makeStyles = (theme: CustomTheme) =>
       marginTop: 3,
       paddingHorizontal: 5,
       paddingVertical: 2,
-      borderRadius: 5,
+      borderRadius: theme.roundness,
     },
     userNameOnMsgContainer: {
       paddingHorizontal: 3,
+      marginBottom: 5,
     },
     gradientOverlay: {
       position: 'absolute',
@@ -3479,7 +3531,7 @@ const makeStyles = (theme: CustomTheme) =>
       backgroundColor: theme.colors.surface,
       width: '60%',
       height: 14,
-      borderRadius: 5,
+      borderRadius: theme.roundness,
       marginTop: 15,
       marginHorizontal: 15,
     },
@@ -3487,7 +3539,7 @@ const makeStyles = (theme: CustomTheme) =>
       backgroundColor: theme.colors.surface,
       width: '40%',
       height: 9,
-      borderRadius: 5,
+      borderRadius: theme.roundness,
       marginTop: 15,
       marginHorizontal: 15,
     },
@@ -3644,9 +3696,9 @@ const makeStyles = (theme: CustomTheme) =>
     retryView: { marginEnd: 10, alignSelf: 'flex-end' },
     statusIconLay: {
       position: 'absolute',
-      left: 19,
-      top: 18,
-      borderRadius: 20, // Circular shape
+      right: 5,
+      bottom: 2,
+      borderRadius: theme.roundness, // Circular shape
       width: 9, // Ensure size consistency
       height: 9,
     },
@@ -3656,9 +3708,9 @@ const makeStyles = (theme: CustomTheme) =>
     textTap: { flexShrink: 1, padding: 0 },
     outOfOffcIconLay: {
       position: 'absolute',
-      left: 20,
-      top: 0,
-      borderRadius: 20, // Circular shape
+      right: 0,
+      bottom: 0,
+      borderRadius: theme.roundness, // Circular shape
       padding: 4, // Adjust padding for proper sizing
       width: 20, // Ensure size consistency
       height: 20,

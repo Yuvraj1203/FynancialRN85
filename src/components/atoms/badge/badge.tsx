@@ -1,7 +1,7 @@
-import {CustomTheme, useTheme} from '@/theme/themeProvider/paperTheme';
+import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
 import React from 'react';
-import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
-import CustomText, {TextVariants} from '../customText/customText';
+import { Platform, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import CustomText, { TextVariants } from '../customText/customText';
 
 type Props = {
   value?: string | number;
@@ -13,7 +13,7 @@ function Badge(props: Props) {
   const theme = useTheme();
   const styles = makeStyles(theme);
 
-  const {value, style} = props;
+  const { value, style } = props;
 
   if (value == undefined) {
     return <></>;
@@ -32,7 +32,8 @@ function Badge(props: Props) {
       <CustomText
         maxFontSizeMultiplier={1.1}
         variant={TextVariants.labelSmall}
-        style={styles.text}>
+        style={styles.text}
+      >
         {text}
       </CustomText>
     </View>
@@ -48,6 +49,7 @@ const makeStyles = (theme: CustomTheme) =>
       justifyContent: 'center',
       alignItems: 'center',
       paddingHorizontal: 4,
+      paddingVertical: Platform.OS == 'ios' ? 3 : 0,
     },
     round: {
       borderRadius: 8,

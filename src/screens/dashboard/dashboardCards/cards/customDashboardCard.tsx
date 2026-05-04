@@ -82,7 +82,7 @@ const makeStyles = (theme: CustomTheme) =>
     img: {
       height: '100%',
       width: '100%',
-      borderRadius: 5,
+      borderRadius: theme.roundness,
     },
     linkTap: {
       position: 'absolute',

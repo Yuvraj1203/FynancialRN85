@@ -48,6 +48,11 @@ const FabGroup = ({ visible = true, ...props }: Props) => {
 
   const styles = makeStyles(theme); // styling
 
+  const actionsWithDefaults = (props.items ?? []).map(item => ({
+    ...item,
+    labelMaxFontSizeMultiplier: item.labelMaxFontSizeMultiplier ?? 1,
+  }));
+
   return (
     <Portal>
       <FAB.Group
@@ -60,7 +65,7 @@ const FabGroup = ({ visible = true, ...props }: Props) => {
             paddingBottom: insets.bottom + 60,
           },
         ]}
-        actions={props.items ?? []}
+        actions={actionsWithDefaults}
         onStateChange={state => {
           props.setOpen(state.open);
         }}

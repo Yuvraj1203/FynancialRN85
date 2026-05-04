@@ -44,8 +44,9 @@ export const AppTheme = () => {
     ...PaperDefaultTheme,
     ...NavigationDefaultTheme,
     fonts: fonts,
-    roundness: 5,
-    extraRoundness: 14,
+    roundness: 25,
+    extraRoundness: 40,
+    lightRoundness: 6,
     colors: {
       ...PaperDefaultTheme.colors,
       ...NavigationDefaultTheme.colors,
@@ -88,8 +89,9 @@ export const AppTheme = () => {
     ...PaperDarkTheme,
     ...NavigationDarkTheme,
     fonts: fonts,
-    roundness: 5,
-    extraRoundness: 14,
+    roundness: 25,
+    extraRoundness: 40,
+    lightRoundness: 6,
     colors: {
       ...PaperDarkTheme.colors,
       ...NavigationDarkTheme.colors,
@@ -150,6 +152,7 @@ export function useTheme() {
 
 export interface CustomTheme extends MD3Theme {
   extraRoundness: number;
+  lightRoundness: number;
   colors: MD3Theme['colors'] &
     NavigationTheme['colors'] & {
       primaryHighlight1: string;

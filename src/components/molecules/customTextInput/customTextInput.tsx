@@ -363,6 +363,7 @@ const CustomTextInput = forwardRef<RNTextInput, Props>(
             contentStyle={[styles.content, props.contentStyle]}
             outlineStyle={[styles.outlineStyle, props.outlineStyle]}
             theme={{ colors: { onSurfaceVariant: theme.colors.labelLight } }}
+            maxFontSizeMultiplier={1}
           />
 
           {props.prefixIcon != null && (

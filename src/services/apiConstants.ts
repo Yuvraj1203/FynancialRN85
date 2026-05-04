@@ -286,4 +286,5 @@ export const ApiConstants = {
   GetConversation: 'api/Chat/GetConversation/',
   SubmitFeedback: 'api/Chat/SubmitFeedback',
   UploadFileToConversationUri: 'api/Chat/AddFileToConversation/:conversationId',
+  GetClientGoals: 'api/services/app/EMoneyApi/getClientGoals',
 };

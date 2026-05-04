@@ -1,8 +1,8 @@
-import {DrawerActions, useNavigation} from '@react-navigation/native';
-import React, {useState} from 'react';
-import {Keyboard, StyleSheet, View} from 'react-native';
+import { DrawerActions, useNavigation } from '@react-navigation/native';
+import React, { useState } from 'react';
+import { Keyboard, StyleSheet, View } from 'react-native';
 
-import {CustomText, Tap} from '@/components/atoms';
+import { CustomText, Tap } from '@/components/atoms';
 import CustomImage, {
   ImageType,
 } from '@/components/atoms/customImage/customImage';
@@ -10,11 +10,11 @@ import {
   TextEllipsis,
   TextVariants,
 } from '@/components/atoms/customText/customText';
-import {Images} from '@/theme/assets/images';
-import {CustomTheme, useTheme} from '@/theme/themeProvider/paperTheme';
-import {useTranslation} from 'react-i18next';
-import {MainScreenNavigationProp} from '../../common/models/types/main-screen-navigation-prop';
-import {IAgentsContext, useAgents} from '../../contexts/AgentsProvider';
+import { Images } from '@/theme/assets/images';
+import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
+import { useTranslation } from 'react-i18next';
+import { MainScreenNavigationProp } from '../../common/models/types/main-screen-navigation-prop';
+import { IAgentsContext, useAgents } from '../../contexts/AgentsProvider';
 import {
   IChatState,
   useChatStore,
@@ -27,7 +27,7 @@ type Props = {
   openHistory: boolean;
 };
 const ChatScreenHeader: React.FC<Props> = props => {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   const [menuVisible, setMenuVisible] = useState(false); // to show menu if right icons are more than 2
   const theme = useTheme(); // theme
@@ -36,7 +36,7 @@ const ChatScreenHeader: React.FC<Props> = props => {
   // Control agent dropdown visibility
   const [agentDropdownVisible, setAgentDropdownVisible] = useState(false);
   const styles = makeStyles(theme); // styling
-  const {setSelectedChat, setSelectedAgent, syncChatMessages, selectedAgent} =
+  const { setSelectedChat, setSelectedAgent, syncChatMessages, selectedAgent } =
     useChatStore((state: IChatState) => ({
       setSelectedChat: state.setSelectedChat,
       setSelectedAgent: state.setSelectedAgent,
@@ -46,7 +46,7 @@ const ChatScreenHeader: React.FC<Props> = props => {
   const navigation: MainScreenNavigationProp =
     useNavigation<MainScreenNavigationProp>();
 
-  const {listOfAgentsQuery}: IAgentsContext = useAgents();
+  const { listOfAgentsQuery }: IAgentsContext = useAgents();
   const getSelectedAgentName = (): string | undefined => {
     if (!listOfAgentsQuery.data) return undefined;
     const agent = listOfAgentsQuery.data.find(a => a.id === selectedAgent);
@@ -74,7 +74,7 @@ const ChatScreenHeader: React.FC<Props> = props => {
   };
   // Your existing menu options, with onSelectAgent wired up
   const menuOptions = [
-    {name: 'Select Agent', onPress: onSelectAgent},
+    { name: 'Select Agent', onPress: onSelectAgent },
     // add more menu items if needed
   ];
 
@@ -87,12 +87,13 @@ const ChatScreenHeader: React.FC<Props> = props => {
   );
   // This Tap *is* the anchor for the dropdown.
   const titleAnchor = (
-    <Tap onPress={() => setAgentDropdownVisible(true)} style={{flex: 1}}>
+    <Tap onPress={() => setAgentDropdownVisible(true)} style={{ flex: 1 }}>
       <CustomText
         ellipsis={TextEllipsis.tail}
         maxLines={1}
         variant={TextVariants.titleLarge}
-        style={styles.title}>
+        style={styles.title}
+      >
         {getSelectedAgentName() ?? 'Hey Fyn!'}
       </CustomText>
     </Tap>
@@ -111,7 +112,8 @@ const ChatScreenHeader: React.FC<Props> = props => {
           onPress={() => {
             Keyboard.dismiss();
             navigation.dispatch(DrawerActions.openDrawer()); // open drawer
-          }}>
+          }}
+        >
           <CustomImage
             source={Images.drawer}
             type={ImageType.svg}
@@ -125,7 +127,7 @@ const ChatScreenHeader: React.FC<Props> = props => {
             onDismiss={() => setAgentDropdownVisible(false)}
             anchor={titleAnchor}
           />
-          <View style={{transform: [{rotate: '270deg'}]}}>
+          <View style={{ transform: [{ rotate: '270deg' }] }}>
             <CustomImage
               source={Images.back}
               type={ImageType.svg}
@@ -155,7 +157,8 @@ const ChatScreenHeader: React.FC<Props> = props => {
         <Tap
           onPress={() => {
             props.setOpenHistory(!props.openHistory);
-          }}>
+          }}
+        >
           <CustomImage
             source={Images.history}
             type={ImageType.svg}
@@ -294,7 +297,7 @@ const makeStyles = (theme: CustomTheme) =>
       backgroundColor: theme.colors.primary,
       height: 50,
       width: 50,
-      borderRadius: 30,
+      borderRadius: theme.roundness,
     },
     headerIcon: {
       height: 25,
@@ -321,10 +324,10 @@ const makeStyles = (theme: CustomTheme) =>
       backgroundColor: theme.colors.surface,
       borderColor: theme.colors.onSurfaceVariant,
       borderWidth: 0.5,
-      borderRadius: 10,
+      borderRadius: theme.roundness,
       elevation: 4,
       shadowColor: theme.colors.onBackground,
-      shadowOffset: {width: 0, height: 3},
+      shadowOffset: { width: 0, height: 3 },
       shadowOpacity: 0.1,
       shadowRadius: 5,
     },

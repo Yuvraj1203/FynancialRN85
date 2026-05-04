@@ -47,7 +47,7 @@ type Props = {
 
 function CustomText({
   variant = TextVariants.bodyMedium,
-  allowFontScaling = true,
+  allowFontScaling = false,
   allowAdjustsFontSizeToFit = false,
 
   ...props

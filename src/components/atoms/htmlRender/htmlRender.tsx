@@ -297,36 +297,11 @@ function HtmlRender({
     const text = getTextFromTNode(tnode).trim();
 
     return (
-      <View
-        style={{
-          flexDirection: 'row',
-          marginBottom: 5,
-          alignItems: 'center', // ✅ vertical align fix
-        }}
-      >
-        <View
-          style={{
-            backgroundColor: theme.colors.surfaceVariant,
-            borderRadius: theme.roundness,
-            paddingHorizontal: 6,
-            paddingVertical: 2,
-            top: 5,
-            marginHorizontal: 2,
-            justifyContent: 'center',
-          }}
-        >
-          <CustomText
-            variant={TextVariants.labelLarge}
-            style={{
-              lineHeight: 18, // ✅ baseline fix
-              includeFontPadding: false, // Android fix
-              textAlignVertical: 'center',
-            }}
-          >
-            {text}
-          </CustomText>
-        </View>
-      </View>
+      <CustomText variant={TextVariants.labelLarge}>
+        <CustomText color={theme.colors.primary} style={styles.tagRenderText}>
+          {text}
+        </CustomText>
+      </CustomText>
     );
   };
 
@@ -510,15 +485,10 @@ function HtmlRender({
             enableExperimentalPercentWidth: true, // let % be interpreted correctly
           },
         }}
-        defaultTextProps={
-          allowCopy
-            ? {
-                selectable: enableSelection, // 🔑 controlled from outside
-              }
-            : {
-                selectable: false,
-              }
-        }
+        defaultTextProps={{
+          selectable: allowCopy ? enableSelection : false,
+          allowFontScaling: false, // 👈 ADD THIS
+        }}
         source={{
           html: props.compact
             ? normalizePostHtml(props.html ?? '')
@@ -601,6 +571,10 @@ const makeStyles = (theme: CustomTheme) =>
       width: 32,
       height: 32,
       tintColor: '#fff',
+    },
+    tagRenderText: {
+      textDecorationLine: 'underline',
+      fontWeight: 'bold',
     },
   });
 

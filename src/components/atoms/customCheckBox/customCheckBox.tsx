@@ -1,8 +1,9 @@
-import {CustomTheme, useTheme} from '@/theme/themeProvider/paperTheme';
-import {Control, Controller} from 'react-hook-form';
-import {StyleProp, StyleSheet, TextStyle, View, ViewStyle} from 'react-native';
-import {Checkbox, HelperText} from 'react-native-paper';
-import {TextVariants} from '../customText/customText';
+import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
+import { useState } from 'react';
+import { StyleProp, StyleSheet, TextStyle, ViewStyle } from 'react-native';
+import { Checkbox } from 'react-native-paper';
+import CustomText, { TextVariants } from '../customText/customText';
+import Tap from '../tap/tap';
 
 export enum CheckBoxModeVariants {
   android = 'android',
@@ -17,63 +18,79 @@ export enum CheckBoxStatus {
 
 // options for component
 type Props = {
-  control?: Control<any>;
-  name: string;
   mode?: CheckBoxModeVariants;
-  label: string;
+  label?: string;
   disabled?: boolean;
   labelVariant?: TextVariants;
   color?: string;
   style?: StyleProp<ViewStyle>;
   labelStyle?: StyleProp<TextStyle>;
+  onClick?: () => void;
+  value?: boolean;
 };
 
-function CustomCheckBox(props: Props) {
+function CustomCheckBox({
+  labelVariant = TextVariants.bodyLarge,
+  disabled = false,
+  ...props
+}: Props) {
   const theme = useTheme(); //theme
 
   const styles = makeStyles(theme); // access StylesSheet with theme implemented
 
-  return (
-    <Controller
-      control={props.control}
-      name={props.name}
-      rules={{required: true}} // Add rules here
-      render={({field: {onChange, value}, fieldState: {error}}) => (
-        <View style={props.style}>
-          <Checkbox.Item
-            mode={props.mode}
-            label={props.label}
-            status={value ? CheckBoxStatus.checked : CheckBoxStatus.unchecked}
-            onPress={() => onChange(!value)}
-            disabled={props.disabled}
-            color={props.color || theme.colors.primary}
-            labelStyle={[styles.label, props.labelStyle]}
-            position="leading"
-            style={props.style}
-          />
+  const [color, setColor] = useState(
+    props.color ? props.color : theme.colors.primary,
+  );
 
-          {/* Show helper text when there's an error */}
-          {error ? (
-            <HelperText type="error" visible={!!error}>
-              {error.message}
-            </HelperText>
-          ) : (
-            <HelperText type="error" visible={true}>
-              {''}
-            </HelperText>
-          )}
-        </View>
+  return (
+    <>
+      {props.label ? (
+        <Tap
+          style={[styles.checkboxContainer, props.style]}
+          onPress={() => (!disabled && props.onClick ? props.onClick() : null)}
+        >
+          <>
+            <CustomText
+              style={[styles.flexOne, props.labelStyle]}
+              variant={labelVariant}
+            >
+              {props.label}
+            </CustomText>
+
+            <Checkbox.Android
+              style={[styles.flexOne, props.labelStyle]}
+              disabled={disabled}
+              status={
+                props.value ? CheckBoxStatus.checked : CheckBoxStatus.unchecked
+              }
+              color={color}
+            />
+          </>
+        </Tap>
+      ) : (
+        <Checkbox.Android
+          style={[styles.flexOne, props.labelStyle]}
+          disabled={disabled}
+          status={
+            props.value ? CheckBoxStatus.checked : CheckBoxStatus.unchecked
+          }
+          color={color}
+        />
       )}
-    />
+    </>
   );
 }
 
 const makeStyles = (theme: CustomTheme) =>
   StyleSheet.create({
-    label: {
-      alignSelf: 'center',
-      padding: 10,
-      textAlign: 'left',
+    checkboxContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingHorizontal: 15,
+    },
+    flexOne: {
+      flex: 1,
     },
   });
 export default CustomCheckBox;

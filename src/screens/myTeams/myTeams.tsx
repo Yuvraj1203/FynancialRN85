@@ -156,6 +156,7 @@ function MyTeams() {
             userId: item.coachId,
           });
         }}
+        style={styles.paddingZero}
       >
         <View style={styles.cardContent}>
           {item?.isPrimary && (
@@ -338,7 +339,7 @@ const makeStyles = (theme: CustomTheme) =>
       flex: 1,
       // margin: 10,
       padding: 0,
-      borderRadius: 8,
+      borderRadius: theme.roundness,
       backgroundColor: theme.colors.teamCard,
       margin: 8,
     },
@@ -348,17 +349,21 @@ const makeStyles = (theme: CustomTheme) =>
     },
     triangleBadge: {
       alignSelf: 'flex-start',
-      borderRightWidth: 50,
-      borderTopWidth: 50,
+      borderRightWidth: 55,
+      borderTopWidth: 55,
       borderRightColor: 'transparent',
       borderTopColor: '#007bff',
       position: 'absolute',
+      borderTopLeftRadius: theme.roundness,
     },
     starIcon: {
       position: 'absolute',
-      top: 5,
-      left: 5,
-      height: 18,
+      top: 7,
+      left: 7,
+      height: 15,
+    },
+    paddingZero: {
+      padding: 0,
     },
     profileCircleContainer: {
       marginTop: 20,
@@ -367,12 +372,12 @@ const makeStyles = (theme: CustomTheme) =>
     profileView: {
       width: 100,
       height: 100,
-      borderRadius: 20,
+      borderRadius: theme.roundness,
     },
     profileImage: {
       width: 100,
       height: 100,
-      borderRadius: 20,
+      borderRadius: theme.roundness,
       fontSize: 50,
     },
     callButton: {
@@ -382,7 +387,7 @@ const makeStyles = (theme: CustomTheme) =>
       width: 25,
       height: 25,
       backgroundColor: theme.colors.completed,
-      borderRadius: 15,
+      borderRadius: theme.roundness,
       justifyContent: 'center',
       alignItems: 'center',
     },

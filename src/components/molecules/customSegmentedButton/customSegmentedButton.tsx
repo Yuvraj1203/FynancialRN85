@@ -1,8 +1,14 @@
-import {CustomText, Shadow, Tap} from '@/components/atoms';
-import {TextVariants} from '@/components/atoms/customText/customText';
-import {CustomTheme, useTheme} from '@/theme/themeProvider/paperTheme';
-import React, {useEffect} from 'react';
-import {StyleProp, StyleSheet, TextStyle, View, ViewStyle} from 'react-native';
+import { CustomText, Shadow, Tap } from '@/components/atoms';
+import { TextVariants } from '@/components/atoms/customText/customText';
+import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
+import React, { useEffect } from 'react';
+import {
+  StyleProp,
+  StyleSheet,
+  TextStyle,
+  View,
+  ViewStyle,
+} from 'react-native';
 
 export type SegmentedButtonItem = {
   label?: string;
@@ -20,7 +26,7 @@ type Props = {
   maxFontSizeMultiplier?: number;
 };
 
-function CustomSegmentedButton({allowFontScaling = true, ...props}: Props) {
+function CustomSegmentedButton({ allowFontScaling = false, ...props }: Props) {
   const theme = useTheme();
 
   const styles = makeStyles(theme);
@@ -46,7 +52,8 @@ function CustomSegmentedButton({allowFontScaling = true, ...props}: Props) {
                 props.setSelected(item);
               }
             }
-          }}>
+          }}
+        >
           {props.selected?.value == item.value ? (
             <Shadow style={styles.shadow}>
               <CustomText
@@ -54,7 +61,8 @@ function CustomSegmentedButton({allowFontScaling = true, ...props}: Props) {
                 variant={TextVariants.labelMedium}
                 style={props.lableStyle ? props.lableStyle : styles.label}
                 allowFontScaling={allowFontScaling}
-                color={theme.colors.onSurfaceVariant}>
+                color={theme.colors.onSurfaceVariant}
+              >
                 {item.label}
               </CustomText>
             </Shadow>
@@ -64,7 +72,8 @@ function CustomSegmentedButton({allowFontScaling = true, ...props}: Props) {
               variant={TextVariants.labelMedium}
               color={theme.colors.onSurfaceVariant}
               allowFontScaling={allowFontScaling}
-              style={props.lableStyle ? props.lableStyle : styles.label}>
+              style={props.lableStyle ? props.lableStyle : styles.label}
+            >
               {item.label}
             </CustomText>
           )}
@@ -98,7 +107,7 @@ const makeStyles = (theme: CustomTheme) =>
       backgroundColor: theme.colors.surface,
       marginHorizontal: 1,
     },
-    label: {alignSelf: 'center', textAlign: 'center'},
+    label: { alignSelf: 'center', textAlign: 'center' },
   });
 
 export default CustomSegmentedButton;

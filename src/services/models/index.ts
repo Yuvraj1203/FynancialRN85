@@ -83,6 +83,7 @@ export { type GetAddeparModel } from './getAddeparModel/getAddeparModel';
 export { type GetClientBasicNetworthModel } from './getClientBasicNetworthModel/getClientBasicNetworthModel';
 export { type GetClientBlackDiamondModel } from './getClientBlackDiamondModel/getClientBlackDiamondModel';
 
+export { type GetClientGoalsModel } from './/getClientGoalModel/getClientGoalModel';
 export { type GetClientTamaracModel } from './/getClientTamaracModel/getClientTamaracModel';
 
 export { type GetClientNitrogenModel } from './getClientNitrogenModel/getClientNitrogenModel';

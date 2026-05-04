@@ -1,10 +1,10 @@
 import React from 'react';
-import {FlatList, StyleSheet, View} from 'react-native';
-import {ActivityIndicator, Menu} from 'react-native-paper';
+import { FlatList, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Menu } from 'react-native-paper';
 
-import {CustomTheme, useTheme} from '@/theme/themeProvider/paperTheme';
-import {IAgentInfo} from '../../common/models/interfaces/agent-info';
-import {IAgentsContext, useAgents} from '../../contexts/AgentsProvider';
+import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
+import { IAgentInfo } from '../../common/models/interfaces/agent-info';
+import { IAgentsContext, useAgents } from '../../contexts/AgentsProvider';
 import {
   IChatState,
   useChatStore,
@@ -24,14 +24,14 @@ const AgentsDropdown: React.FC<AgentsDropdownProps> = ({
   const theme = useTheme();
   const styles = makeStyles(theme);
 
-  const {selectedAgent, setSelectedAgent} = useChatStore(
+  const { selectedAgent, setSelectedAgent } = useChatStore(
     (state: IChatState) => ({
       selectedAgent: state.selectedAgent,
       setSelectedAgent: state.setSelectedAgent,
     }),
   );
 
-  const {listOfAgentsQuery}: IAgentsContext = useAgents();
+  const { listOfAgentsQuery }: IAgentsContext = useAgents();
 
   const handleAgentSelect = (agent: IAgentInfo) => {
     setSelectedAgent(agent.id);
@@ -57,7 +57,8 @@ const AgentsDropdown: React.FC<AgentsDropdownProps> = ({
       anchor={anchor}
       anchorPosition="bottom"
       style={styles.menu}
-      contentStyle={styles.menuContent}>
+      contentStyle={styles.menuContent}
+    >
       {(listOfAgentsQuery.isFetching || listOfAgentsQuery.isLoading) &&
       !listOfAgentsQuery.data ? (
         <View style={styles.loadingContainer}>
@@ -68,7 +69,7 @@ const AgentsDropdown: React.FC<AgentsDropdownProps> = ({
           data={listOfAgentsQuery.data}
           keyExtractor={(agent: IAgentInfo) => agent.id.toString()}
           style={styles.scrollableMenu}
-          renderItem={({item: agent}) => (
+          renderItem={({ item: agent }) => (
             <Menu.Item
               key={agent.id}
               onPress={() => handleAgentSelect(agent)}
@@ -98,10 +99,10 @@ const makeStyles = (theme: CustomTheme) =>
       backgroundColor: theme.colors.surface,
       borderColor: theme.colors.onSurfaceVariant,
       borderWidth: 0.5,
-      borderRadius: 10,
+      borderRadius: theme.extraRoundness,
       elevation: 4,
       shadowColor: theme.colors.onBackground,
-      shadowOffset: {width: 0, height: 3},
+      shadowOffset: { width: 0, height: 3 },
       shadowOpacity: 0.1,
       shadowRadius: 5,
     },
@@ -116,7 +117,7 @@ const makeStyles = (theme: CustomTheme) =>
     },
     button: {
       borderWidth: 0.6,
-      borderRadius: 6,
+      borderRadius: theme.roundness,
       width: 160,
       alignItems: 'center',
       height: 37,

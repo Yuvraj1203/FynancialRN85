@@ -3,25 +3,25 @@ import {
   useNavigation,
   useNavigationState,
 } from '@react-navigation/native';
-import {FlashList, ListRenderItem} from '@shopify/flash-list';
-import {UseQueryResult} from '@tanstack/react-query';
-import React, {useEffect} from 'react';
-import {Platform, StyleSheet, TouchableOpacity, View} from 'react-native';
+import { FlashList, ListRenderItem } from '@shopify/flash-list';
+import { UseQueryResult } from '@tanstack/react-query';
+import React, { useEffect } from 'react';
+import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import {
   ActivityIndicator,
   IconButton,
   MD3Colors,
   Text,
 } from 'react-native-paper';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import {IAgentsContext, useAgents} from '@/chatBot/contexts/AgentsProvider';
-import {CustomText, Tap} from '@/components/atoms';
-import {TextVariants} from '@/components/atoms/customText/customText';
-import {CustomTheme, useTheme} from '@/theme/themeProvider/paperTheme';
-import {useTranslation} from 'react-i18next';
-import {IChatInfo} from '../../common/models/interfaces/chat-info';
-import {MainScreenNavigationProp} from '../../common/models/types/main-screen-navigation-prop';
+import { IAgentsContext, useAgents } from '@/chatBot/contexts/AgentsProvider';
+import { CustomText, Tap } from '@/components/atoms';
+import { TextVariants } from '@/components/atoms/customText/customText';
+import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
+import { useTranslation } from 'react-i18next';
+import { IChatInfo } from '../../common/models/interfaces/chat-info';
+import { MainScreenNavigationProp } from '../../common/models/types/main-screen-navigation-prop';
 import useListOfChats from '../../hooks/useListOfChats';
 import {
   IChatState,
@@ -37,12 +37,12 @@ const ListOfChatsDrawer: React.FC = () => {
   const theme = useTheme(); // theme
 
   const styles = makeStyles(theme); // styling
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   const navigation: MainScreenNavigationProp =
     useNavigation<MainScreenNavigationProp>();
   const navState = useNavigationState(state => state);
-  const {setSelectedAgent, setSelectedChat, syncChatMessages, selectedAgent} =
+  const { setSelectedAgent, setSelectedChat, syncChatMessages, selectedAgent } =
     useChatStore((state: IChatState) => ({
       setSelectedAgent: state.setSelectedAgent,
       setSelectedChat: state.setSelectedChat,
@@ -51,7 +51,7 @@ const ListOfChatsDrawer: React.FC = () => {
     }));
 
   const listOfChatsQuery: UseQueryResult<IChatInfo[]> = useListOfChats();
-  const {listOfAgentsQuery}: IAgentsContext = useAgents();
+  const { listOfAgentsQuery }: IAgentsContext = useAgents();
 
   const isDrawerOpen: boolean =
     navState?.history?.some(
@@ -89,7 +89,9 @@ const ListOfChatsDrawer: React.FC = () => {
     handleCloseDrawer();
   };
 
-  const renderFlashListItem: ListRenderItem<ListOfChatsItemInfo> = ({item}) => {
+  const renderFlashListItem: ListRenderItem<ListOfChatsItemInfo> = ({
+    item,
+  }) => {
     if ('type' in item && item.type === 'header') {
       return (
         <View style={styles.groupTitle}>
@@ -99,7 +101,8 @@ const ListOfChatsDrawer: React.FC = () => {
               colors: {
                 onSurface: theme.colors.outline,
               },
-            }}>
+            }}
+          >
             {item.label}
           </Text>
         </View>
@@ -110,7 +113,8 @@ const ListOfChatsDrawer: React.FC = () => {
     return (
       <TouchableOpacity
         style={styles.chatItem}
-        onPress={() => handleSelectChat(chatItem.id, chatItem.botID)}>
+        onPress={() => handleSelectChat(chatItem.id, chatItem.botID)}
+      >
         <Text style={styles.chatText} numberOfLines={1} ellipsizeMode={'tail'}>
           {chatItem.title}
         </Text>
@@ -135,7 +139,7 @@ const ListOfChatsDrawer: React.FC = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <View style={{flexDirection: 'row', gap: 72, alignItems: 'center'}}>
+        <View style={{ flexDirection: 'row', gap: 72, alignItems: 'center' }}>
           <Text style={styles.headerText}>Chats</Text>
           <Tap
             onPress={handleCreateNewChat}
@@ -144,7 +148,8 @@ const ListOfChatsDrawer: React.FC = () => {
               borderColor: theme.colors.outline,
               borderRadius: theme.roundness,
               alignItems: 'center',
-            }}>
+            }}
+          >
             <CustomText variant={TextVariants.labelLarge}>
               {t('StartNewChat')}
             </CustomText>
@@ -174,7 +179,7 @@ const ListOfChatsDrawer: React.FC = () => {
 
 const makeStyles = (theme: CustomTheme) =>
   StyleSheet.create({
-    container: {flex: 1, padding: 20},
+    container: { flex: 1, padding: 20 },
     centralizedContainer: {
       flex: 1,
       justifyContent: 'center',
@@ -186,14 +191,14 @@ const makeStyles = (theme: CustomTheme) =>
       alignItems: 'center',
       justifyContent: 'space-between',
     },
-    headerText: {fontSize: 20, fontWeight: 'bold'},
+    headerText: { fontSize: 20, fontWeight: 'bold' },
     chatItem: {
       padding: 10,
       backgroundColor: MD3Colors.neutral95,
       marginBottom: 10,
-      borderRadius: 10,
+      borderRadius: theme.roundness,
     },
-    startNewchat: {alignItems: 'center', flex: 1},
+    startNewchat: { alignItems: 'center', flex: 1 },
     chatText: {
       fontSize: 16,
       textAlignVertical: 'center',

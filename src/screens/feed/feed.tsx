@@ -54,7 +54,7 @@ import { GetFeedPostDetailsForEditModel } from '@/services/models/getFeedPostMod
 import { useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import { Asset } from 'react-native-image-picker';
 
 import { hideLoader } from '@/components/molecules/loader/loader';
@@ -709,10 +709,14 @@ function Feed() {
       .filter(post => !existingIds.has(post.postDetailID)) // filter duplicates
       .map(post => {
         const updatedComments = post.commentsReplies?.map(reply => {
-          const { cleanHtml: cleanReplyHtml, linkPreviewHtml: replyLinkPreviewHtml } =
-            extractLinkPreviewHtml(reply.commentDetailHTML ?? '');
-          const { cleanHtml: cleanReplyHtmlNoIframes, embeddedIframeHtml: replyEmbeddedIframeHtml } =
-            extractEmbeddedIframes(cleanReplyHtml);
+          const {
+            cleanHtml: cleanReplyHtml,
+            linkPreviewHtml: replyLinkPreviewHtml,
+          } = extractLinkPreviewHtml(reply.commentDetailHTML ?? '');
+          const {
+            cleanHtml: cleanReplyHtmlNoIframes,
+            embeddedIframeHtml: replyEmbeddedIframeHtml,
+          } = extractEmbeddedIframes(cleanReplyHtml);
           const parsedReplyHtml = processHtmlContent({
             html: cleanReplyHtmlNoIframes,
             maxWords: 50,
@@ -722,8 +726,14 @@ function Feed() {
 
           return {
             ...reply,
-            commentDetailHTML: stripPreviewUrlFromHtml(parsedReplyHtml?.Content, replyLinkPreviewHtml),
-            shortContent: stripPreviewUrlFromHtml(parsedReplyHtml?.shortContent, replyLinkPreviewHtml),
+            commentDetailHTML: stripPreviewUrlFromHtml(
+              parsedReplyHtml?.Content,
+              replyLinkPreviewHtml,
+            ),
+            shortContent: stripPreviewUrlFromHtml(
+              parsedReplyHtml?.shortContent,
+              replyLinkPreviewHtml,
+            ),
             iFrameList: parsedReplyHtml?.iFrameList,
             linkPreviewHtml: replyLinkPreviewHtml,
             embeddedIframeHtml: replyEmbeddedIframeHtml,
@@ -743,8 +753,14 @@ function Feed() {
         return {
           ...post,
           commentsReplies: updatedComments,
-          detailHTML: stripPreviewUrlFromHtml(parsedPostHtml?.Content, linkPreviewHtml),
-          shortContent: stripPreviewUrlFromHtml(parsedPostHtml?.shortContent, linkPreviewHtml),
+          detailHTML: stripPreviewUrlFromHtml(
+            parsedPostHtml?.Content,
+            linkPreviewHtml,
+          ),
+          shortContent: stripPreviewUrlFromHtml(
+            parsedPostHtml?.shortContent,
+            linkPreviewHtml,
+          ),
           iFrameList: parsedPostHtml?.iFrameList,
           linkPreviewHtml,
           embeddedIframeHtml,
@@ -781,13 +797,18 @@ function Feed() {
               if (item.postDetailID != data.result?.createOrEditPostDetail?.id)
                 return item;
 
-              const { cleanHtml: cleanRefreshHtml, linkPreviewHtml: refreshLinkPreviewHtml } =
-                extractLinkPreviewHtml(
-                  data.result?.createOrEditPostDetail?.detailHTML ||
-                  data.result?.createOrEditPostDetail?.detail || '',
-                );
-              const { cleanHtml: cleanRefreshHtmlNoIframes, embeddedIframeHtml: refreshEmbeddedIframeHtml } =
-                extractEmbeddedIframes(cleanRefreshHtml);
+              const {
+                cleanHtml: cleanRefreshHtml,
+                linkPreviewHtml: refreshLinkPreviewHtml,
+              } = extractLinkPreviewHtml(
+                data.result?.createOrEditPostDetail?.detailHTML ||
+                  data.result?.createOrEditPostDetail?.detail ||
+                  '',
+              );
+              const {
+                cleanHtml: cleanRefreshHtmlNoIframes,
+                embeddedIframeHtml: refreshEmbeddedIframeHtml,
+              } = extractEmbeddedIframes(cleanRefreshHtml);
               const updatedHtml = processHtmlContent({
                 html: cleanRefreshHtmlNoIframes,
                 linkColor: theme.colors.primary,
@@ -796,8 +817,14 @@ function Feed() {
 
               return {
                 ...item,
-                detailHTML: stripPreviewUrlFromHtml(updatedHtml?.Content, refreshLinkPreviewHtml),
-                shortContent: stripPreviewUrlFromHtml(updatedHtml?.shortContent, refreshLinkPreviewHtml),
+                detailHTML: stripPreviewUrlFromHtml(
+                  updatedHtml?.Content,
+                  refreshLinkPreviewHtml,
+                ),
+                shortContent: stripPreviewUrlFromHtml(
+                  updatedHtml?.shortContent,
+                  refreshLinkPreviewHtml,
+                ),
                 iFrameList: updatedHtml?.iFrameList,
                 linkPreviewHtml: refreshLinkPreviewHtml,
                 embeddedIframeHtml: refreshEmbeddedIframeHtml,
@@ -823,13 +850,18 @@ function Feed() {
             }),
           );
         } else if (variables.type == 'fromNotification') {
-          const { cleanHtml: cleanNotifHtml, linkPreviewHtml: notifLinkPreviewHtml } =
-            extractLinkPreviewHtml(
-              data.result?.createOrEditPostDetail?.detailHTML ||
-              data.result?.createOrEditPostDetail?.detail || '',
-            );
-          const { cleanHtml: cleanNotifHtmlNoIframes, embeddedIframeHtml: notifEmbeddedIframeHtml } =
-            extractEmbeddedIframes(cleanNotifHtml);
+          const {
+            cleanHtml: cleanNotifHtml,
+            linkPreviewHtml: notifLinkPreviewHtml,
+          } = extractLinkPreviewHtml(
+            data.result?.createOrEditPostDetail?.detailHTML ||
+              data.result?.createOrEditPostDetail?.detail ||
+              '',
+          );
+          const {
+            cleanHtml: cleanNotifHtmlNoIframes,
+            embeddedIframeHtml: notifEmbeddedIframeHtml,
+          } = extractEmbeddedIframes(cleanNotifHtml);
           const updatedHtml = processHtmlContent({
             html: cleanNotifHtmlNoIframes,
             linkColor: theme.colors.primary,
@@ -838,8 +870,14 @@ function Feed() {
 
           const notificationPost = {
             ...data.result?.createOrEditPostDetail,
-            detailHTML: stripPreviewUrlFromHtml(updatedHtml?.Content, notifLinkPreviewHtml),
-            shortContent: stripPreviewUrlFromHtml(updatedHtml?.shortContent, notifLinkPreviewHtml),
+            detailHTML: stripPreviewUrlFromHtml(
+              updatedHtml?.Content,
+              notifLinkPreviewHtml,
+            ),
+            shortContent: stripPreviewUrlFromHtml(
+              updatedHtml?.shortContent,
+              notifLinkPreviewHtml,
+            ),
             iFrameList: updatedHtml?.iFrameList,
             linkPreviewHtml: notifLinkPreviewHtml,
             embeddedIframeHtml: notifEmbeddedIframeHtml,
@@ -1126,10 +1164,14 @@ function Feed() {
 
         // 🔹 NEW: process comment HTML as well (for mentions, links, etc.)
         const updatedComments = newPostData.commentsReplies?.map(reply => {
-          const { cleanHtml: cleanNotifReplyHtml, linkPreviewHtml: notifReplyLinkPreviewHtml } =
-            extractLinkPreviewHtml(reply.commentDetailHTML ?? '');
-          const { cleanHtml: cleanNotifReplyHtmlNoIframes, embeddedIframeHtml: notifReplyEmbeddedIframeHtml } =
-            extractEmbeddedIframes(cleanNotifReplyHtml);
+          const {
+            cleanHtml: cleanNotifReplyHtml,
+            linkPreviewHtml: notifReplyLinkPreviewHtml,
+          } = extractLinkPreviewHtml(reply.commentDetailHTML ?? '');
+          const {
+            cleanHtml: cleanNotifReplyHtmlNoIframes,
+            embeddedIframeHtml: notifReplyEmbeddedIframeHtml,
+          } = extractEmbeddedIframes(cleanNotifReplyHtml);
           const parsedReplyHtml = processHtmlContent({
             html: cleanNotifReplyHtmlNoIframes,
             maxWords: 50,
@@ -1139,8 +1181,14 @@ function Feed() {
 
           return {
             ...reply,
-            commentDetailHTML: stripPreviewUrlFromHtml(parsedReplyHtml?.Content, notifReplyLinkPreviewHtml),
-            shortContent: stripPreviewUrlFromHtml(parsedReplyHtml?.shortContent, notifReplyLinkPreviewHtml),
+            commentDetailHTML: stripPreviewUrlFromHtml(
+              parsedReplyHtml?.Content,
+              notifReplyLinkPreviewHtml,
+            ),
+            shortContent: stripPreviewUrlFromHtml(
+              parsedReplyHtml?.shortContent,
+              notifReplyLinkPreviewHtml,
+            ),
             iFrameList: parsedReplyHtml?.iFrameList,
             linkPreviewHtml: notifReplyLinkPreviewHtml,
             embeddedIframeHtml: notifReplyEmbeddedIframeHtml,
@@ -1148,10 +1196,16 @@ function Feed() {
         });
 
         // 🔹 EXISTING: process post HTML (kept as-is)
-        const { cleanHtml: cleanNotifPostHtml, linkPreviewHtml: notifPostLinkPreviewHtml } =
-          extractLinkPreviewHtml(newPostData.detailHTML || newPostData.detail || '');
-        const { cleanHtml: cleanNotifPostHtmlNoIframes, embeddedIframeHtml: notifPostEmbeddedIframeHtml } =
-          extractEmbeddedIframes(cleanNotifPostHtml);
+        const {
+          cleanHtml: cleanNotifPostHtml,
+          linkPreviewHtml: notifPostLinkPreviewHtml,
+        } = extractLinkPreviewHtml(
+          newPostData.detailHTML || newPostData.detail || '',
+        );
+        const {
+          cleanHtml: cleanNotifPostHtmlNoIframes,
+          embeddedIframeHtml: notifPostEmbeddedIframeHtml,
+        } = extractEmbeddedIframes(cleanNotifPostHtml);
         const parsedPostHtml = processHtmlContent({
           html: cleanNotifPostHtmlNoIframes,
           linkColor: theme.colors.primary,
@@ -1162,8 +1216,14 @@ function Feed() {
         const normalizedPost: GetFeedPostModel = {
           ...newPostData,
           commentsReplies: updatedComments, // ⬅️ processed comments
-          detailHTML: stripPreviewUrlFromHtml(parsedPostHtml?.Content, notifPostLinkPreviewHtml),
-          shortContent: stripPreviewUrlFromHtml(parsedPostHtml?.shortContent, notifPostLinkPreviewHtml),
+          detailHTML: stripPreviewUrlFromHtml(
+            parsedPostHtml?.Content,
+            notifPostLinkPreviewHtml,
+          ),
+          shortContent: stripPreviewUrlFromHtml(
+            parsedPostHtml?.shortContent,
+            notifPostLinkPreviewHtml,
+          ),
           iFrameList: parsedPostHtml?.iFrameList,
           linkPreviewHtml: notifPostLinkPreviewHtml,
           embeddedIframeHtml: notifPostEmbeddedIframeHtml,
@@ -1706,7 +1766,7 @@ const makeStyles = (theme: CustomTheme, safeAreaInsets: EdgeInsets) =>
     fab: {
       position: 'absolute',
       right: 20,
-      bottom: safeAreaInsets.bottom,
+      bottom: Platform.OS == 'ios' ? safeAreaInsets.bottom : 30,
       width: 50, // size of the button
       height: 50, // size of the button
       backgroundColor: theme.colors.primary, // color of the FAB

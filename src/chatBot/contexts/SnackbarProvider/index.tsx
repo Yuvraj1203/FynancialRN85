@@ -22,7 +22,9 @@ const SnackbarContext: Context<ISnackbarContext | undefined> = createContext<
   ISnackbarContext | undefined
 >(undefined);
 
-export const SnackbarProvider: React.FC<PropsWithChildren> = ({ children }: PropsWithChildren) => {
+export const SnackbarProvider: React.FC<PropsWithChildren> = ({
+  children,
+}: PropsWithChildren) => {
   const theme: MD3Theme = useTheme();
   const styles = useStyles(theme);
   const [visible, setVisible] = useState<boolean>(false);
@@ -44,7 +46,9 @@ export const SnackbarProvider: React.FC<PropsWithChildren> = ({ children }: Prop
   }, [setVisible, setMessage]);
 
   return (
-    <SnackbarContext.Provider value={{ showSnackbar, hideSnackbar, visible, message }}>
+    <SnackbarContext.Provider
+      value={{ showSnackbar, hideSnackbar, visible, message }}
+    >
       {children}
       <Snackbar
         visible={visible}
@@ -52,13 +56,17 @@ export const SnackbarProvider: React.FC<PropsWithChildren> = ({ children }: Prop
         duration={3000}
         style={[
           styles.snackbar,
-          type === ESnackbarTypes.Success ? styles.successSnackbar : styles.errorSnackbar,
+          type === ESnackbarTypes.Success
+            ? styles.successSnackbar
+            : styles.errorSnackbar,
         ]}
         onIconPress={hideSnackbar}
         theme={{
           colors: {
             inverseOnSurface:
-              type === ESnackbarTypes.Success ? theme.colors.onBackground : theme.colors.background,
+              type === ESnackbarTypes.Success
+                ? theme.colors.onBackground
+                : theme.colors.background,
           },
         }}
       >
@@ -71,8 +79,10 @@ export const SnackbarProvider: React.FC<PropsWithChildren> = ({ children }: Prop
 const useStyles = (theme: MD3Theme) =>
   StyleSheet.create({
     snackbar: {
-      bottom: Dimensions.get('screen').height * (Platform.OS === 'android' ? 0.78 : 0.74),
-      borderRadius: 10,
+      bottom:
+        Dimensions.get('screen').height *
+        (Platform.OS === 'android' ? 0.78 : 0.74),
+      borderRadius: theme.roundness,
       margin: 'auto',
       width: '80%',
     },
