@@ -100,6 +100,7 @@
     "react-native-webview": "^13.16.1",
     "react-native-wheel-pick": "^1.2.8",
     "react-native-worklets": "^0.8.1",
+    "unzipper": "^0.12.3",
     "victory-native": "^41.20.2",
     "zod": "^4.3.6",
     "zustand": "^5.0.12"
