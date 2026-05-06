@@ -11,5 +11,12 @@
 	</dict>
 	<key>RCTNewArchEnabled</key>
 	<true/>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Poppins-ExtraLight.ttf</string>
+		<string>MaterialDesignIcons.ttf</string>
+		<string>Poppins-Regular.ttf</string>
+		<string>Poppins-SemiBold.ttf</string>
+	</array>
 </dict>
 </plist>

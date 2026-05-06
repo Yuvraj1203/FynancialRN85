@@ -2,9 +2,9 @@ import {Platform} from 'react-native';
 import {MD3Type} from 'react-native-paper/lib/typescript/types';
 
 export const CustomFonts = {
-  Regular: 'Quicksand-SemiBold',
-  Light: 'Quicksand-Light',
-  Bold: 'Quicksand-Bold',
+  Regular: 'Poppins-Regular',
+  Light: 'Poppins-ExtraLight',
+  Bold: 'Poppins-SemiBold',
 };
 
 export const _fontConfig = {
