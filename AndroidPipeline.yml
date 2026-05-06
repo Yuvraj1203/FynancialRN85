@@ -1,0 +1,216 @@
+trigger: none
+
+pool:
+  vmImage: 'ubuntu-latest' # Use Ubuntu for Android builds
+
+# if prodution is true then it will upload to play store else if
+# externalTester is true then it will upload to play store external testers
+# else it will upload to internal testers
+# if buildApk is true then it will only build the APK and send notification to teams
+
+parameters:
+  - name: tenant # Tenant Name select from above mentioned list
+    type: string
+    default: 'Fynancial'
+  - name: production # Set to 'true' for production upload else false for testing
+    type: boolean
+    default: false
+  - name: externalTester # Set True for external testers, for internal tester false
+    type: boolean
+    default: false
+  - name: buildApk # Set to 'true' to build APK, else false
+    type: boolean
+    default: false
+
+variables:
+  system.debug: true
+  gitUserEmail: 'piyush@fynancial.com'
+  gitUserName: 'PiyushPamecha'
+  TEAMS_WEBHOOK_URL: 'https://kansoftware.webhook.office.com/webhookb2/8de0d410-3eed-455b-b6b8-9747b9c800a3@cb7990f5-a944-475b-a626-2a9d331b05a0/IncomingWebhook/73fe95e6a2384cfcbff6ab1ab5bf64a8/bc4db73d-9fa2-4ec1-8afe-631a4deecb23/V2q_u-N3G-fMgAuKY7q6Q0-0gZ4luuhhItdaB7B3SmWaQ1' # Replace with your Teams webhook URL
+
+jobs:
+  - job: Build
+    timeoutInMinutes: 120
+
+    steps:
+      - checkout: self
+        persistCredentials: true
+
+      - script: |
+          echo "🔄 Resetting to the latest commit on branch $(Build.SourceBranchName)..."
+          git fetch origin $(Build.SourceBranchName) --force
+          git reset --hard origin/$(Build.SourceBranchName)
+          echo "✅ Now running on the latest commit $(git rev-parse HEAD)"
+        displayName: 'Ensure latest commit before build'
+
+      - task: NodeTool@0
+        inputs:
+          versionSpec: '20'
+        displayName: '🔧 Install Node.js'
+
+      - script: yarn install
+        displayName: '📦 Install Dependencies'
+
+      - script: |
+          echo "🔁 Switching to tenant: ${{ parameters.tenant }}"
+          npm run update-tenant -- "${{ parameters.tenant }}"
+        displayName: '🏢 Apply Tenant Config'
+
+      # Conditional Block: APK Build
+      - ${{ if eq(parameters.buildApk, true) }}:
+          - script: npm run releaseApk
+            displayName: '🏗️ Build Release APK'
+
+          - publish: $(Build.SourcesDirectory)/android/app/build/outputs/apk/release/app-release.apk
+            artifact: apk
+            displayName: '📦 Publish APK Artifact'
+
+          - script: |
+              curl -H "Content-Type: application/json" -d "{
+                \"@type\": \"MessageCard\",
+                \"@context\": \"http://schema.org/extensions\", 
+                \"summary\": \"APK Build Done\",
+                \"title\": \"**${{ parameters.tenant }}** APK Build Completed\",
+                \"text\": \"Download: [APK Artifact](https://dev.azure.com/kansoftware/Thoroughbred%20Apps/_build/results?buildId=$(Build.BuildId)&view=artifacts&type=publishedArtifacts)\"
+              }" $(TEAMS_WEBHOOK_URL)
+            displayName: '📣 Notify Teams (APK)'
+
+          - script: |
+              echo "🛑 Skipping release: Only APK Build"
+              exit 0
+            displayName: '🚫 Stop Pipeline (APK only)'
+
+      # Conditional Block: AAB Build + Play Store Upload
+      - ${{ if not(eq(parameters.buildApk, true)) }}:
+          - script: |
+              echo "🔍 Reading and bumping version info from tenantInfo.json..."
+
+              TENANT_JSON="$(Build.SourcesDirectory)/tenants/${{ parameters.tenant }}/tenantInfo.json"
+              echo "📄 Path: $TENANT_JSON"
+
+              # Extract package name
+              PACKAGE_NAME=$(jq -r '.PackageName' "$TENANT_JSON")
+              echo "📦 Package Name: $PACKAGE_NAME"
+
+              # Extract version name and split into parts
+              VERSION_NAME=$(jq -r '.AndroidVersionName' "$TENANT_JSON")
+              IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION_NAME"
+
+              # Convert parts to numbers (in case they're strings)
+              MAJOR=$((10#$MAJOR))
+              MINOR=$((10#$MINOR))
+              PATCH=$((10#$PATCH))
+
+              # Rollover logic: bump patch → minor → major
+              PATCH=$((PATCH + 1))
+              if [ $PATCH -gt 9 ]; then
+                PATCH=0
+                MINOR=$((MINOR + 1))
+                if [ $MINOR -gt 9 ]; then
+                  MINOR=0
+                  MAJOR=$((MAJOR + 1))
+                fi
+              fi
+
+              NEW_VERSION_NAME="${MAJOR}.${MINOR}.${PATCH}"
+              echo "🆕 New Version Name: $NEW_VERSION_NAME"
+
+              # Extract and bump version code (cast to number with 10# to strip leading 0s)
+              VERSION_CODE=$(jq -r '.AndroidVersionCode' "$TENANT_JSON")
+              VERSION_CODE=$((10#$VERSION_CODE))
+              NEW_VERSION_CODE=$((VERSION_CODE + 1))
+              echo "🆕 New Version Code: $NEW_VERSION_CODE"
+
+              # Update tenantInfo.json file
+              echo "✍️ Updating tenantInfo.json..."
+              jq \
+                --arg versionName "$NEW_VERSION_NAME" \
+                --arg versionCode "$NEW_VERSION_CODE" \
+                '.AndroidVersionName = $versionName | .AndroidVersionCode = $versionCode' \
+                "$TENANT_JSON" > "$TENANT_JSON.tmp" && mv "$TENANT_JSON.tmp" "$TENANT_JSON"
+
+              echo "✅ tenantInfo.json updated."
+
+              # Update build.gradle
+              echo "✍️ Updating android/app/build.gradle..."
+              BUILD_GRADLE="$(Build.SourcesDirectory)/android/app/build.gradle"
+
+              sed -i "s/versionName \".*\"/versionName \"$NEW_VERSION_NAME\"/" "$BUILD_GRADLE"
+              sed -i "s/versionCode [0-9]\+/versionCode $NEW_VERSION_CODE/" "$BUILD_GRADLE"
+
+              echo "✅ build.gradle updated."
+
+              # Set pipeline variables
+              echo "##vso[task.setvariable variable=PACKAGE_NAME]$PACKAGE_NAME"
+              echo "##vso[task.setvariable variable=NEW_VERSION_NAME]$NEW_VERSION_NAME"
+              echo "##vso[task.setvariable variable=NEW_VERSION_CODE]$NEW_VERSION_CODE"
+            displayName: '🔁 Semantic Version Bump from tenantInfo.json'
+
+          - script: npm run android:build
+            displayName: '📦 Build Android AAB'
+
+          - script: |
+              sudo gem install fastlane -NV
+              cd fastlane
+
+              AAB_PATH="$(Build.SourcesDirectory)/android/app/build/outputs/bundle/release/app-release.aab"
+
+              if [[ "${{ parameters.production }}" == "True" ]]; then
+                fastlane android release aab:"$AAB_PATH" package_name:"$(PACKAGE_NAME)" version_name:"$(NEW_VERSION_NAME)"
+              elif [[ "${{ parameters.externalTester }}" == "True" ]]; then
+                fastlane android betaExternal aab:"$AAB_PATH" package_name:"$(PACKAGE_NAME)" version_name:"$(NEW_VERSION_NAME)"
+              else
+                fastlane android beta aab:"$AAB_PATH" package_name:"$(PACKAGE_NAME)" version_name:"$(NEW_VERSION_NAME)"
+              fi
+            displayName: '🚀 Upload to Google Play via Fastlane'
+
+          # - script: |
+          #     cd $(Build.SourcesDirectory)
+          #     git config --global user.email "$(gitUserEmail)"
+          #     git config --global user.name "$(gitUserName)"
+          #     BRANCH_NAME=$(echo $(Build.SourceBranch) | sed 's/refs\/heads\///')
+
+          #     echo "🔄 Adding all changes..."
+          #     git add -A
+
+          #     # Commit changes if there are any
+          #     if ! git diff --cached --quiet; then
+          #       git commit -m "Incremented ${{ parameters.tenant }} version in Android after publish"
+          #     else
+          #       echo "ℹ️ No changes to commit"
+          #     fi
+
+          #     echo "🔄 Fetching and rebasing on origin/$BRANCH_NAME"
+          #     git fetch origin
+          #     git rebase origin/$BRANCH_NAME || {
+          #       echo "❌ Rebase failed due to conflict."
+          #       git rebase --abort
+          #       exit 1
+          #     }
+
+          #     echo "📤 Pushing changes..."
+          #     git push origin HEAD:$BRANCH_NAME
+          #   displayName: '📤 Commit Version Changes'
+
+          - script: |
+              # Extract AppVersion from App.tsx
+              APP_BUILD_VERSION=$(grep "AppVersion" src/App.tsx | sed -n "s/.*AppVersion *= *'\([^']*\)'.*/\1/p")
+
+              # Determine Environment
+              if [ "${{ parameters.production }}" == "True" ]; then
+                ENVIRONMENT="Android Production"
+              elif [ "${{ parameters.externalTester }}" == "True" ]; then
+                ENVIRONMENT="Android External Tester"
+              else
+                ENVIRONMENT="Android Internal Tester"
+              fi
+
+              # Send Teams notification
+              curl -H "Content-Type: application/json" -d "{
+                \"@type\": \"MessageCard\",
+                \"@context\": \"http://schema.org/extensions\", 
+                \"summary\": \"Android Build Uploaded\",
+                \"title\": \"**${{ parameters.tenant }}** Build Uploaded on ${ENVIRONMENT}\",
+                \"text\": \"Version: ${APP_BUILD_VERSION}\"
+              }" $(TEAMS_WEBHOOK_URL)
+            displayName: '📣 Notify Teams (APK)'

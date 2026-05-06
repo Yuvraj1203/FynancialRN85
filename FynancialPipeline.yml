@@ -1,0 +1,349 @@
+trigger: none
+
+pool:
+  vmImage: 'ubuntu-latest' # Use Ubuntu for Android builds
+
+# if prodution is true then it will upload to play store else if
+# externalTester is true then it will upload to play store external testers
+# else it will upload to internal testers
+# if buildApk is true then it will only build the APK and send notification to teams
+
+parameters:
+  - name: tenant # Tenant Name select from above mentioned list
+    type: string
+    default: 'Fynancial'
+
+  - name: android # Set to 'true' to build Android, else false
+    type: boolean
+    default: true
+  - name: ios # Set to 'true' to build IOS, else false
+    type: boolean
+    default: true
+
+  - name: production # Set to 'true' for production upload else false for testing
+    type: boolean
+    default: false
+  - name: externalTester # Set True for external testers, for internal tester false
+    type: boolean
+    default: false
+  - name: buildApk # Set to 'true' to build APK, else false
+    type: boolean
+    default: false
+
+  - name: buildIpa # Set to 'true' to build IPA, else false
+    type: boolean
+    default: false
+  - name: azureGitToken # to access credentials repo
+    type: string
+    default: ''
+  - name: matchbranch # to access credentials repo
+    type: string
+    default: ''
+
+variables:
+  system.debug: true
+  gitUserEmail: 'piyush@fynancial.com'
+  gitUserName: 'PiyushPamecha'
+  TEAMS_WEBHOOK_URL: 'https://kansoftware.webhook.office.com/webhookb2/8de0d410-3eed-455b-b6b8-9747b9c800a3@cb7990f5-a944-475b-a626-2a9d331b05a0/IncomingWebhook/73fe95e6a2384cfcbff6ab1ab5bf64a8/bc4db73d-9fa2-4ec1-8afe-631a4deecb23/V2q_u-N3G-fMgAuKY7q6Q0-0gZ4luuhhItdaB7B3SmWaQ1' # Replace with your Teams webhook URL
+
+jobs:
+  - job: Android
+    pool:
+      vmImage: 'ubuntu-latest'
+    timeoutInMinutes: 120
+    condition: eq('${{ parameters.android }}', true)
+
+    steps:
+      - checkout: self
+        persistCredentials: true
+
+      - task: NodeTool@0
+        inputs:
+          versionSpec: '20'
+        displayName: '🔧 Install Node.js'
+
+      - script: yarn install
+        displayName: '📦 Install Dependencies'
+
+      - script: |
+          echo "🔁 Switching to tenant: ${{ parameters.tenant }}"
+          npm run update-tenant -- "${{ parameters.tenant }}"
+        displayName: '🏢 Apply Tenant Config'
+
+      # Conditional Block: APK Build
+      - ${{ if eq(parameters.buildApk, true) }}:
+          - script: npm run releaseApk
+            displayName: '🏗️ Build Release APK'
+
+          - publish: $(Build.SourcesDirectory)/android/app/build/outputs/apk/release/app-release.apk
+            artifact: apk
+            displayName: '📦 Publish APK Artifact'
+
+          - script: |
+              curl -H "Content-Type: application/json" -d "{
+                \"@type\": \"MessageCard\",
+                \"@context\": \"http://schema.org/extensions\", 
+                \"summary\": \"APK Build Done\",
+                \"title\": \"**${{ parameters.tenant }}** APK Build Completed\",
+                \"text\": \"Download: [APK Artifact](https://dev.azure.com/kansoftware/Thoroughbred%20Apps/_build/results?buildId=$(Build.BuildId)&view=artifacts&type=publishedArtifacts)\"
+              }" $(TEAMS_WEBHOOK_URL)
+            displayName: '📣 Notify Teams (APK)'
+
+      # Conditional Block: AAB Build + Play Store Upload
+      - ${{ if not(eq(parameters.buildApk, true)) }}:
+          - script: |
+              echo "🔍 Reading versionName from build.gradle..."
+
+              TENANT_JSON="$(Build.SourcesDirectory)/tenants/${{ parameters.tenant }}/tenantInfo.json"
+              echo "📄 Path: $TENANT_JSON"
+
+              # Extract package name
+              PACKAGE_NAME=$(jq -r '.PackageName' "$TENANT_JSON")
+              echo "📦 Package Name: $PACKAGE_NAME"
+
+              BUILD_GRADLE="$(Build.SourcesDirectory)/android/app/build.gradle"
+              echo "📄 Path: $BUILD_GRADLE"
+
+              # Extract versionName (e.g. 0.2.3)
+              VERSION_NAME=$(grep -oE 'versionName "[0-9]+\.[0-9]+\.[0-9]+"' "$BUILD_GRADLE" | head -1 | cut -d'"' -f2)
+
+              if [ -z "$VERSION_NAME" ]; then
+                echo "❌ versionName not found in build.gradle"
+                exit 1
+              fi
+
+              echo "📦 Current Version Name: $VERSION_NAME"
+
+              # (Optional) expose as pipeline variable
+              echo "##vso[task.setvariable variable=PACKAGE_NAME]$PACKAGE_NAME"
+              echo "##vso[task.setvariable variable=ANDROID_VERSION_NAME]$VERSION_NAME"
+
+            displayName: '🔁 Semantic Version Bump from tenantInfo.json'
+
+          - script: npm run android:build
+            displayName: '📦 Build Android AAB'
+
+          - script: |
+              sudo gem install fastlane -NV
+              cd fastlane
+
+              AAB_PATH="$(Build.SourcesDirectory)/android/app/build/outputs/bundle/release/app-release.aab"
+
+              if [[ "${{ parameters.production }}" == "True" ]]; then
+                fastlane android release aab:"$AAB_PATH" package_name:"$(PACKAGE_NAME)" version_name:"$(ANDROID_VERSION_NAME)"
+              elif [[ "${{ parameters.externalTester }}" == "True" ]]; then
+                fastlane android betaExternal aab:"$AAB_PATH" package_name:"$(PACKAGE_NAME)" version_name:"$(ANDROID_VERSION_NAME)"
+              else
+                fastlane android beta aab:"$AAB_PATH" package_name:"$(PACKAGE_NAME)" version_name:"$(ANDROID_VERSION_NAME)"
+              fi
+            displayName: '🚀 Upload to Google Play via Fastlane'
+
+          - script: |
+              # Extract AppVersion from App.tsx
+              APP_BUILD_VERSION=$(grep "AppVersion" src/App.tsx | sed -n "s/.*AppVersion *= *'\([^']*\)'.*/\1/p")
+
+              # Determine Environment
+              if [ "${{ parameters.production }}" == "True" ]; then
+                ENVIRONMENT="Android Production"
+              elif [ "${{ parameters.externalTester }}" == "True" ]; then
+                ENVIRONMENT="Android External Tester"
+              else
+                ENVIRONMENT="Android Internal Tester"
+              fi
+
+              # Send Teams notification
+              curl -H "Content-Type: application/json" -d "{
+                \"@type\": \"MessageCard\",
+                \"@context\": \"http://schema.org/extensions\", 
+                \"summary\": \"Android Build Uploaded\",
+                \"title\": \"**${{ parameters.tenant }}** Build Uploaded on ${ENVIRONMENT}\",
+                \"text\": \"Version: ${APP_BUILD_VERSION}\"
+              }" $(TEAMS_WEBHOOK_URL)
+            displayName: '📣 Notify Teams (APK)'
+
+  - job: IOS
+    timeoutInMinutes: 120
+    pool:
+      vmImage: 'macOS-14'
+    condition: eq('${{ parameters.ios }}', true)
+
+    steps:
+      - checkout: self
+        persistCredentials: true
+
+      - task: NodeTool@0
+        inputs:
+          versionSpec: '20'
+        displayName: '🔧 Install Node.js'
+
+      - script: yarn install
+        displayName: '📦 Install Dependencies'
+
+      - script: |
+          echo "Available Xcode versions:"
+          ls /Applications | grep Xcode
+          echo "Selecting Xcode 16.2"
+          sudo xcode-select -s /Applications/Xcode_16.2.app/Contents/Developer
+          xcodebuild -version
+        displayName: 'Select Xcode version'
+
+      - script: |
+          echo "🔁 Switching to tenant: ${{ parameters.tenant }}"
+          npm run update-tenant -- "${{ parameters.tenant }}"
+        displayName: '🏢 Apply Tenant Config'
+
+      - script: |
+          echo "🔐 Creating and configuring temporary keychain for Fastlane..."
+          security create-keychain -p fastlane-temporary fastlane.keychain
+          security default-keychain -s fastlane.keychain
+          security unlock-keychain -p fastlane-temporary fastlane.keychain
+          security set-keychain-settings -lut 3600 fastlane.keychain
+        displayName: '🔐 Set up Fastlane keychain for code signing'
+
+      - script: |
+          # Extract the bundle ID from tenantInfo.json inside the tenant's folder
+          TENANT_INFO_PATH="$(Build.SourcesDirectory)/tenants/${{ parameters.tenant }}/tenantInfo.json"
+          APP_ID=$(jq -r '.BundleId' "$TENANT_INFO_PATH")
+          echo "##vso[task.setvariable variable=APP_ID]$APP_ID"
+          echo "Bundle ID: $APP_ID"
+        displayName: 'Get Bundle ID from tenantInfo.json'
+
+      - script: |
+          echo "🔧 Updating project.pbxproj with tenant-specific settings..."
+
+          # Extract Team ID from tenantInfo.json
+          TENANT_INFO_PATH="$(Build.SourcesDirectory)/tenants/${{ parameters.tenant }}/tenantInfo.json"
+          echo "📄 Path: $TENANT_INFO_PATH"
+          TEAM_ID=$(jq -r '.IosTeamId' "$TENANT_INFO_PATH")
+          echo "🔑 Using Team ID: $TEAM_ID"
+
+          # Determine match type
+          if [ "${{ parameters.buildIpa }}" == "True" ]; then
+            MATCH_TYPE="match AdHoc"
+          else
+            MATCH_TYPE="match AppStore"
+          fi
+
+          PBXPROJ_PATH="ios/${{ parameters.tenant }}.xcodeproj/project.pbxproj"
+          APP_IDENTIFIER="${APP_ID}"
+
+          # --- App Debug ---
+          /usr/libexec/PlistBuddy -c "Set :objects:13B07F941A680F5B00A75B9A:buildSettings:DEVELOPMENT_TEAM $TEAM_ID" $PBXPROJ_PATH
+          /usr/libexec/PlistBuddy -c "Set :objects:13B07F941A680F5B00A75B9A:buildSettings:PROVISIONING_PROFILE_SPECIFIER ${MATCH_TYPE} ${APP_IDENTIFIER}" $PBXPROJ_PATH
+          /usr/libexec/PlistBuddy -c "Set :objects:13B07F941A680F5B00A75B9A:buildSettings:PRODUCT_BUNDLE_IDENTIFIER ${APP_IDENTIFIER}" $PBXPROJ_PATH
+          /usr/libexec/PlistBuddy -c "Set :objects:13B07F941A680F5B00A75B9A:buildSettings:CODE_SIGN_IDENTITY Apple Development" $PBXPROJ_PATH
+
+          # --- App Release ---
+          /usr/libexec/PlistBuddy -c "Set :objects:13B07F951A680F5B00A75B9A:buildSettings:DEVELOPMENT_TEAM $TEAM_ID" $PBXPROJ_PATH
+          /usr/libexec/PlistBuddy -c "Set :objects:13B07F951A680F5B00A75B9A:buildSettings:PROVISIONING_PROFILE_SPECIFIER ${MATCH_TYPE} ${APP_IDENTIFIER}" $PBXPROJ_PATH
+          /usr/libexec/PlistBuddy -c "Set :objects:13B07F951A680F5B00A75B9A:buildSettings:PRODUCT_BUNDLE_IDENTIFIER ${APP_IDENTIFIER}" $PBXPROJ_PATH
+          /usr/libexec/PlistBuddy -c "Set :objects:13B07F951A680F5B00A75B9A:buildSettings:CODE_SIGN_IDENTITY Apple Distribution" $PBXPROJ_PATH
+
+          # --- Notifee Debug ---
+          /usr/libexec/PlistBuddy -c "Set :objects:C4D0FE7A2E7C17CE001F37A1:buildSettings:DEVELOPMENT_TEAM $TEAM_ID" $PBXPROJ_PATH
+          /usr/libexec/PlistBuddy -c "Set :objects:C4D0FE7A2E7C17CE001F37A1:buildSettings:PROVISIONING_PROFILE_SPECIFIER ${MATCH_TYPE} ${APP_IDENTIFIER}.NotifeeNotificationService" $PBXPROJ_PATH
+          /usr/libexec/PlistBuddy -c "Set :objects:C4D0FE7A2E7C17CE001F37A1:buildSettings:PRODUCT_BUNDLE_IDENTIFIER ${APP_IDENTIFIER}.NotifeeNotificationService" $PBXPROJ_PATH
+          /usr/libexec/PlistBuddy -c "Set :objects:C4D0FE7A2E7C17CE001F37A1:buildSettings:CODE_SIGN_IDENTITY Apple Development" $PBXPROJ_PATH
+
+          # --- Notifee Release ---
+          /usr/libexec/PlistBuddy -c "Set :objects:C4D0FE7B2E7C17CE001F37A1:buildSettings:DEVELOPMENT_TEAM $TEAM_ID" $PBXPROJ_PATH
+          /usr/libexec/PlistBuddy -c "Set :objects:C4D0FE7B2E7C17CE001F37A1:buildSettings:PROVISIONING_PROFILE_SPECIFIER ${MATCH_TYPE} ${APP_IDENTIFIER}.NotifeeNotificationService" $PBXPROJ_PATH
+          /usr/libexec/PlistBuddy -c "Set :objects:C4D0FE7B2E7C17CE001F37A1:buildSettings:PRODUCT_BUNDLE_IDENTIFIER ${APP_IDENTIFIER}.NotifeeNotificationService" $PBXPROJ_PATH
+          /usr/libexec/PlistBuddy -c "Set :objects:C4D0FE7B2E7C17CE001F37A1:buildSettings:CODE_SIGN_IDENTITY Apple Distribution" $PBXPROJ_PATH
+
+          echo "✅ project.pbxproj updated"
+        displayName: 'Fix project.pbxproj signing + bundle IDs'
+        env:
+          APP_ID: $(APP_ID)
+
+      - publish: $(Build.SourcesDirectory)/ios/
+        artifact: pbxproj
+        displayName: '📦 Publish PBXProj Artifact'
+
+      - script: npm run ios:clean
+        displayName: 'Pod Install'
+
+      - ${{ if eq(parameters.buildIpa, true) }}:
+          - script: |
+              # Install Fastlane
+              sudo gem install fastlane -NV
+
+              # Run the Fastlane lane to upload to TestFlight
+              cd "$(Build.SourcesDirectory)/fastlane"
+
+              fastlane ios buildIpa name:"${{ parameters.tenant }}" bundleId:"$(APP_ID)" matchbranch:"${{ parameters.matchbranch }}" self_hosted:"false"
+            displayName: 'Build IPA'
+            env:
+              MATCH_KEYCHAIN_NAME: fastlane.keychain
+              MATCH_KEYCHAIN_PASSWORD: fastlane-temporary
+              FASTLANE_USER: developer@fynancial.com
+              MATCH_PASSWORD: kansoft
+              AZURE_PAT: ${{ parameters.azureGitToken }}
+              FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 60
+              FASTLANE_XCODEBUILD_SETTINGS_RETRIES: 10
+              FASTLANE_XCODE_LIST_TIMEOUT: 60
+            condition: succeeded()
+
+          - publish: $(Build.SourcesDirectory)/${{ parameters.tenant }}.ipa
+            artifact: ipa
+            condition: succeeded()
+
+          - script: |
+              MESSAGE="{
+                \"@type\": \"MessageCard\",
+                \"@context\": \"http://schema.org/extensions\",
+                \"summary\": \"IOS IPA Build Completed\",
+                \"title\": \"**${{ parameters.tenant }}** IOS IPA Build Completed\",
+                \"text\": \"The latest IPA for tenant **${{ parameters.tenant }}** has been built successfully 🚀.<br>[Download IPA](https://dev.azure.com/kansoftware/Thoroughbred%20Apps/_build/results?buildId=$(Build.BuildId)&view=artifacts&type=publishedArtifacts)\"
+              }"
+              curl -H "Content-Type: application/json" -d "$MESSAGE" $(TEAMS_WEBHOOK_URL)
+            displayName: 'Send Teams Notification'
+            condition: succeeded()
+
+      - ${{ if not(eq(parameters.buildIpa, true)) }}:
+          - script: |
+              # Install Fastlane
+              sudo gem install fastlane -NV
+
+              # Run the Fastlane lane to upload to TestFlight
+              cd "$(Build.SourcesDirectory)/fastlane"
+
+              # Upload to TestFlight or Production according to need
+              if [ "${{ parameters.production }}" == "True" ]; then
+                fastlane ios release name:"${{ parameters.tenant }}" bundleId:"$(APP_ID)" matchbranch:"${{ parameters.matchbranch }}" self_hosted:"false"
+              elif [ "${{ parameters.externalTester }}" == "True" ]; then
+                fastlane ios betaExternal name:"${{ parameters.tenant }}" bundleId:"$(APP_ID)" matchbranch:"${{ parameters.matchbranch }}" self_hosted:"false"
+              else
+                fastlane ios beta name:"${{ parameters.tenant }}" bundleId:"$(APP_ID)" matchbranch:"${{ parameters.matchbranch }}" self_hosted:"false"
+              fi
+            displayName: 'Upload to App Store'
+            env:
+              MATCH_KEYCHAIN_NAME: fastlane.keychain
+              MATCH_KEYCHAIN_PASSWORD: fastlane-temporary
+              FASTLANE_USER: developer@fynancial.com
+              MATCH_PASSWORD: kansoft
+              AZURE_PAT: ${{ parameters.azureGitToken }}
+              FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 60
+              FASTLANE_XCODEBUILD_SETTINGS_RETRIES: 10
+              FASTLANE_XCODE_LIST_TIMEOUT: 60
+            condition: succeeded()
+
+          - script: |
+              APP_BUILD_VERSION=$(grep "AppVersion" src/App.tsx | sed -n "s/.*AppVersion *= *'\([^']*\)'.*/\1/p")
+
+              # Determine Environment
+              if [ "${{ parameters.production }}" == "True" ]; then
+                ENVIRONMENT="IOS Production"
+              elif [ "${{ parameters.externalTester }}" == "True" ]; then
+                ENVIRONMENT="IOS TestFlight External Tester"
+              else
+                ENVIRONMENT="IOS TestFlight"
+              fi
+              curl -H "Content-Type: application/json" -d "{
+                \"@type\": \"MessageCard\",
+                \"@context\": \"http://schema.org/extensions\", 
+                \"summary\": \"Ios Build Uploaded\",
+                \"title\": \"**${{ parameters.tenant }}** Build Uploaded on ${ENVIRONMENT}\",
+                \"text\": \"Version: ${APP_BUILD_VERSION}\"
+              }" $(TEAMS_WEBHOOK_URL)
+            displayName: '📣 Notify Teams (Ios)'
