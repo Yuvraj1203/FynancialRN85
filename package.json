@@ -1,27 +1,4 @@
 {
-  "name": "developers",
-  "version": "0.0.1",
-  "private": true,
-  "scripts": {
-    "android": "react-native run-android",
-    "ios": "react-native run-ios",
-    "lint": "eslint .",
-    "start": "react-native start",
-    "test": "jest",
-    "postinstall": "patch-package",
-    "release": "react-native run-android --mode=release",
-    "release-ios": "react-native run-ios --mode=Release",
-    "android:clean": "cd android && ./gradlew clean && cd ../",
-    "ios:clean": "cd ios && pod install && cd ..",
-    "android:cache": "yarn cache clean --force && yarn install",
-    "postandroid:cache": "yarn run android:clean && npx react-native start --reset-cache",
-    "ios:cache": "yarn cache clean --force && yarn install",
-    "postios:cache": "yarn run ios:clean && npx react-native start --reset-cache",
-    "update-tenant": "node update_tenant.js",
-    "postupdate-tenant": "npx react-native-asset && yarn cache clean --force",
-    "android:build": "react-native build-android --mode=release",
-    "releaseApk": "cd android && ./gradlew assembleRelease && cd ../"
-  },
   "dependencies": {
     "@d11/react-native-fast-image": "^8.13.0",
     "@datadog/mobile-react-native": "^3.3.0",
@@ -132,5 +109,28 @@
   },
   "engines": {
     "node": ">= 22.11.0"
-  }
+  },
+  "name": "developers",
+  "private": true,
+  "scripts": {
+    "android": "react-native run-android",
+    "android:build": "react-native build-android --mode=release",
+    "android:cache": "yarn cache clean --force && yarn install",
+    "android:clean": "cd android && ./gradlew clean && cd ../",
+    "ios": "react-native run-ios",
+    "ios:cache": "yarn cache clean --force && yarn install",
+    "ios:clean": "cd ios && pod install && cd ..",
+    "lint": "eslint .",
+    "postandroid:cache": "yarn run android:clean && npx react-native start --reset-cache",
+    "postinstall": "patch-package",
+    "postios:cache": "yarn run ios:clean && npx react-native start --reset-cache",
+    "postupdate-tenant": "npx react-native-asset && yarn cache clean --force",
+    "release": "react-native run-android --mode=release",
+    "release-ios": "react-native run-ios --mode=Release",
+    "releaseApk": "cd android && ./gradlew assembleRelease && cd ../",
+    "start": "react-native start",
+    "test": "jest",
+    "update-tenant": "node update_tenant.js"
+  },
+  "version": "0.0.1"
 }
