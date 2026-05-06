@@ -31,7 +31,7 @@ import notifee from '@notifee/react-native';
 import { useMutation } from '@tanstack/react-query';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, Image, Platform, StyleSheet, View } from 'react-native';
+import { Dimensions, Platform, StyleSheet, View } from 'react-native';
 import { useAuth0 } from 'react-native-auth0';
 import { check, PERMISSIONS, RESULTS } from 'react-native-permissions';
 
@@ -367,9 +367,10 @@ function Splash() {
           resizeMode={ResizeModeType.contain}
         />
         <View style={styles.splashLoading}>
-          <Image
+          <CustomImage
             source={Images.splashLoading}
             style={styles.splashLoadingGif}
+            resizeMode={ResizeModeType.contain}
           />
           {showNoInternetRef.current !== undefined && (
             <Shadow

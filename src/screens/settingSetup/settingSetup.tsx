@@ -29,7 +29,7 @@ import { showSnackbar, useLogout } from '@/utils/utils';
 import { useMutation } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Image, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 enum ButtonGroupEnum {
   RetryGroup = 'RetryGroup',
@@ -247,7 +247,7 @@ function SettingSetup() {
       <View style={styles.main}>
         {loading ? (
           <>
-            <Image
+            <CustomImage
               source={Images.settingSetup}
               style={styles.logo}
               resizeMode={ResizeModeType.contain}
