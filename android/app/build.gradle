@@ -1,3 +1,6 @@
+project.ext.vectoricons = [
+    iconFontNames: [ 'MaterialIcons.ttf' ] // Specify font files
+]
 apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
@@ -73,6 +76,8 @@ def enableProguardInReleaseBuilds = false
  */
 def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+'
 
+
+apply from: new File(["node", "--print", "require.resolve('@sentry/react-native/package.json')"].execute().text.trim(), "../sentry.gradle")
 android {
     ndkVersion rootProject.ext.ndkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -99,6 +104,13 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+
+        release {
+            storeFile file('my-release-key.keystore')
+            storePassword 'android'
+            keyAlias 'alias_name'
+            keyPassword 'android'
+        }
     }
     buildTypes {
         debug {
@@ -109,7 +121,7 @@ android {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
             resValue "string", "app_name", "Developers"
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
@@ -127,5 +139,15 @@ dependencies {
         implementation("com.facebook.react:hermes-android")
     } else {
         implementation jscFlavor
+    }
+    
+    implementation 'com.facebook.fresco:animated-gif:3.5.0'
+    // added for react-native-image-picker
+    implementation("androidx.activity:activity:1.9.+")
+
+    implementation("androidx.browser:browser") {
+        version {
+            strictly("1.8.0")
+        }
     }
 }
