@@ -12,6 +12,7 @@ import {
 } from '@/components/atoms/customImage/customImage';
 import { TextVariants } from '@/components/atoms/customText/customText';
 import {
+  CustomBottomPopup,
   CustomDropDownPopup,
   CustomHeader,
   CustomImagePicker,
@@ -32,8 +33,10 @@ import {
   GetCalItemtagsModel,
   GetGlobalCalendarContactTypeModel,
   GetGlobalEventForEdit,
+  GetScheduleTasksForGlobalCalendarModel,
   SaveGlobalCalendarAndEventDataModel,
   UploadFileListToS3Model,
+  UserRoleEnum,
 } from '@/services/models';
 import { EventListModel } from '@/services/models/eventListModel/eventListModel';
 import { GetAllUsersForGlobalCalendarModel } from '@/services/models/getAllUsersForGlobalCalendarModel/getAllUsersForGlobalCalendarModel';
@@ -71,6 +74,7 @@ import { AddScheduleUpdateReturnProp } from '../eventViewAll/eventViewAll';
 export type AddScheduleEventProps = {
   taskId?: string;
   taskIdentifier?: string;
+  item?: GetScheduleTasksForGlobalCalendarModel;
 };
 
 /**  Added by @Ajay 08-04-2025 (#6199) ---> Main function to render the Add Schedule screen */
@@ -116,6 +120,19 @@ function AddScheduleEvent() {
     GetAllUsersForGlobalCalendarModel[]
   >([]);
 
+  const [attendeesList, setAttendeesList] = useState<
+    GetAllUsersForGlobalCalendarModel[]
+  >([]);
+  const [selectedAttendeesList, setSelectedAttendeesList] = useState<
+    GetAllUsersForGlobalCalendarModel[]
+  >([]);
+  const [externalAttendeesList, setExternalAttendeesList] = useState<
+    GetAllUsersForGlobalCalendarModel[]
+  >([]);
+  const [selectedExternalAttendeesList, setSelectedExternalAttendeesList] =
+    useState<GetAllUsersForGlobalCalendarModel[]>([]);
+  const [externalAttendeesPopup, setExternalAttendeesPopup] = useState(false);
+
   const [contactTypeList, setContactTypeList] = useState<
     GetGlobalCalendarContactTypeModel[]
   >([]);
@@ -133,6 +150,13 @@ function AddScheduleEvent() {
   const [showImageSelectionPopup, setShowImageSelectionPopup] = useState(false);
 
   const [targetAudienceType, setTargetAudienceType] = useState<string>('');
+
+  const [isOffice365, setIsOffice365] = useState(
+    route.params?.item?.eventType &&
+      userDetails.userDetails?.role == UserRoleEnum.Advisor
+      ? route.params.item.eventType == 4
+      : false,
+  );
 
   const enum dateFormates {
     displayDateTime = 'MMM DD YYYY hh:mm A',
@@ -161,7 +185,11 @@ function AddScheduleEvent() {
   const eventList: EventListModel[] = [
     { id: 1, name: 'Phone Call' },
     { id: 2, name: 'In-Person Meeting' },
-    { id: 3, name: 'Online Meeting' },
+    {
+      id: 3,
+      name: !isOffice365 ? 'Office 365' : 'Online Meeting',
+      disabled: !isOffice365,
+    },
   ];
 
   /**  Added by @Ajay 08-04-2025 (#6199) ---> State management for dropdown visibility and event type */
@@ -178,14 +206,29 @@ function AddScheduleEvent() {
   useEffect(() => {
     if (userDetails.userDetails) {
       /** Trigger mutation to fetch global event data */
-      getGlobalEventForEdit.mutate({ Id: route.params?.taskIdentifier });
+      getGlobalEventForEdit.mutate({
+        payload: { Id: route.params?.taskIdentifier },
+        endpoint: isOffice365
+          ? ApiConstants.GetGlobalO365EventForEdit
+          : ApiConstants.GetGlobalEventForEdit,
+      });
 
       /** Fetch associated tags, contacts, and templates using the task identifier */
       const taskIdentifier = route.params?.taskId || 0;
-      GetCalItemtags.mutate({ GlobalCalId: taskIdentifier });
-      getAllUsersForGlobalCalendar.mutate({ GlobalCalId: taskIdentifier });
-      GetGlobalCalendarProgramList.mutate({ GlobalCalId: taskIdentifier });
-      GetGlobalCalendarContactTypeApi.mutate({ GlobalCalId: taskIdentifier });
+
+      if (isOffice365) {
+        GetFynancialAttendeesApi.mutate({
+          EventId: route.params?.taskIdentifier,
+        });
+        GetExternalAttendeesApi.mutate({
+          EventId: route.params?.taskIdentifier,
+        });
+      } else {
+        GetCalItemtags.mutate({ GlobalCalId: taskIdentifier });
+        getAllUsersForGlobalCalendar.mutate({ GlobalCalId: taskIdentifier });
+        GetGlobalCalendarProgramList.mutate({ GlobalCalId: taskIdentifier });
+        GetGlobalCalendarContactTypeApi.mutate({ GlobalCalId: taskIdentifier });
+      }
     }
   }, []);
 
@@ -221,62 +264,79 @@ function AddScheduleEvent() {
     })
     .superRefine((data, ctx) => {
       /**  Added by @Ajay 08-04-2025 (#6199) ---> Custom validation for event-specific fields */
-      if (
-        data.eventType === 'Phone Call' &&
-        (!data.phone || data.phone.trim().length < 5)
-      ) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: t('PhoneRequired'),
-          path: ['phone'],
-        });
-      }
-      if (
-        data.eventType === 'In-Person Meeting' &&
-        (!data.location || data.location.trim().length === 0)
-      ) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: t('LocationRequired'),
-          path: ['location'],
-        });
-      }
-      if (
-        data.eventType === 'Online Meeting' &&
-        (!data.meetingUrl ||
-          !/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/.test(
-            data.meetingUrl,
-          ))
-      ) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: t('InvalidUrl'),
-          path: ['meetingUrl'],
-        });
-      }
-      if (
-        data.eventType === 'Online Meeting' &&
-        data.meetingUrl &&
-        data.meetingUrl.length > 1000
-      ) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: t('UrlExceedsMaxLength'),
-          path: ['meetingUrl'],
-        });
-      }
-
-      /**  Added by @Ajay 08-04-2025 (#6199) ---> Ensure end date is not earlier than start date */
-      if (data?.startDateTime && data?.endDateTime) {
-        const parsedStartDateTime = parsedDate(data?.startDateTime);
-        const parsedEndDateTime = parsedDate(data?.endDateTime);
-        if (parsedStartDateTime && parsedEndDateTime) {
-          if (parsedStartDateTime > parsedEndDateTime) {
+      if (!isOffice365) {
+        {
+          if (
+            data.eventType === 'Phone Call' &&
+            (!data.phone || data.phone.trim().length < 5)
+          ) {
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
-              message: 'End date cannot be earlier than start date.',
-              path: ['endDateTime'],
+              message: t('PhoneRequired'),
+              path: ['phone'],
             });
+          }
+          if (
+            data.eventType === 'In-Person Meeting' &&
+            (!data.location || data.location.trim().length === 0)
+          ) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: t('LocationRequired'),
+              path: ['location'],
+            });
+          }
+          if (
+            data.eventType === 'Online Meeting' &&
+            (!data.meetingUrl ||
+              !/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/.test(
+                data.meetingUrl,
+              ))
+          ) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: t('InvalidUrl'),
+              path: ['meetingUrl'],
+            });
+          }
+          if (
+            data.eventType === 'Online Meeting' &&
+            data.meetingUrl &&
+            data.meetingUrl.length > 1000
+          ) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: t('UrlExceedsMaxLength'),
+              path: ['meetingUrl'],
+            });
+          }
+          /**  Added by @Ajay 08-04-2025 (#6199) ---> Validate target audience selection */
+          if (
+            !targetAudienceType &&
+            (selectedTagList?.length == 0 ||
+              selectedContactList?.length == 0 ||
+              !selectedTemplate)
+          ) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: t('TargetAudienceRequired'),
+              path: ['selectedTarget'],
+            });
+          }
+
+          /**  Added by @Ajay 08-04-2025 (#6199) ---> Ensure end date is not earlier than start date */
+          if (data?.startDateTime && data?.endDateTime) {
+            const parsedStartDateTime = parsedDate(data?.startDateTime);
+            const parsedEndDateTime = parsedDate(data?.endDateTime);
+            if (parsedStartDateTime && parsedEndDateTime) {
+              if (parsedStartDateTime > parsedEndDateTime) {
+                ctx.addIssue({
+                  code: z.ZodIssueCode.custom,
+                  message: 'End date cannot be earlier than start date.',
+                  path: ['endDateTime'],
+                });
+              }
+            }
           }
         }
       }
@@ -411,9 +471,8 @@ function AddScheduleEvent() {
       t,
     });
 
-    if (!isTargetValid) return;
+    if (!isTargetValid && !route.params?.item?.isOffice365) return;
     const formData = new FormData();
-
     if (mediaList.length > 0) {
       const fileType = {
         uri: mediaList[0].uri,
@@ -429,66 +488,87 @@ function AddScheduleEvent() {
   };
 
   /**  Added by @Ajay 08-04-2025 ---> Function to trigger saveEventSchedule mutation */
-  const triggerSaveEventSchedule = (data: Schema, imageId?: string) => {
-    saveEventSchedule.mutate({
-      IsSchedule: 'Y',
-      Id: route.params?.taskId ?? '0',
-      title: data?.eventTitle,
-      eventType: selectedEventType?.id,
-      phone: data.phone,
-      link: data.meetingUrl,
-      MeetingID: '',
-      Passcode: '',
-      start_Date: formatedDate(startDateTime),
-      start_Time: formatedTime(startDateTime),
-      end_Date: formatedDate(endDateTime),
-      end_Time: formatedTime(endDateTime),
-      organizer: userDetails.userDetails?.fullName,
-      description: data.description,
-      AssignedUserList: selectedContactList.map(item => ({
-        UserId: item.userId,
-      })),
-      AssignedTagList: selectedTagList.map(item => ({ TagId: item.id })),
-      AssignedContactTypeList: selectedContactTypeList.map(
-        item => item.contactType,
-      ),
-      ProgramId: selectedTemplate?.programID,
-      createOrEditEventsDto: {
-        Is_Active: true,
-        EventType: selectedEventType?.id,
-        Organizer: userDetails.userDetails?.fullName,
-        CoverImage: imageId ? imageId : uploadedImageId,
-        Title: data?.eventTitle,
-        isRemove:
-          mediaList.length != 0 || imageId || uploadedImageId ? false : true,
-        AdditionalInformation: null,
-        Description: data.description,
-        Location: data.location,
-        Phone: data.phone,
-        Link: data.meetingUrl,
-        Passcode: '',
+  const triggerSaveEventSchedule = (data?: Schema, imageId?: string) => {
+    if (isOffice365) {
+      const combineAttendees = [
+        ...selectedAttendeesList,
+        ...selectedExternalAttendeesList,
+      ].map(user => ({
+        emailAddress: {
+          name: user.emailAddress ?? '',
+          address: user.emailAddress ?? '',
+        },
+        type: 'Required',
+      }));
+
+      const queryParam = new URLSearchParams(
+        `eventId=${route.params?.taskIdentifier}`,
+      ).toString();
+      UpdateAttendeesApi.mutate({
+        endpoint: `${ApiConstants.UpdateAttendees}${'?'}${queryParam}`,
+        payload: JSON.stringify(combineAttendees),
+      });
+    } else {
+      saveEventSchedule.mutate({
+        IsSchedule: 'Y',
+        Id: route.params?.taskId ?? '0',
+        title: data?.eventTitle,
+        eventType: selectedEventType?.id,
+        phone: data?.phone,
+        link: data?.meetingUrl,
         MeetingID: '',
-        Start_Date: formatedDate(startDateTime),
-        Start_Time: formatDate({
+        Passcode: '',
+        start_Date: formatedDate(startDateTime),
+        start_Time: formatedTime(startDateTime),
+        end_Date: formatedDate(endDateTime),
+        end_Time: formatedTime(endDateTime),
+        organizer: userDetails.userDetails?.fullName,
+        description: data?.description,
+        AssignedUserList: selectedContactList.map(item => ({
+          UserId: item.userId,
+        })),
+        AssignedTagList: selectedTagList.map(item => ({ TagId: item.id })),
+        AssignedContactTypeList: selectedContactTypeList.map(
+          item => item.contactType,
+        ),
+        ProgramId: selectedTemplate?.programID,
+        createOrEditEventsDto: {
+          Is_Active: true,
+          EventType: selectedEventType?.id,
+          Organizer: userDetails.userDetails?.fullName,
+          CoverImage: imageId ? imageId : uploadedImageId,
+          Title: data?.eventTitle,
+          isRemove:
+            mediaList.length != 0 || imageId || uploadedImageId ? false : true,
+          AdditionalInformation: null,
+          Description: data?.description,
+          Location: data?.location,
+          Phone: data?.phone,
+          Link: data?.meetingUrl,
+          Passcode: '',
+          MeetingID: '',
+          Start_Date: formatedDate(startDateTime),
+          Start_Time: formatDate({
+            date: startDateTime,
+            parseFormat: dateFormates.displayDateTime,
+            returnFormat: dateFormates.dateTimeInParams,
+          }),
+          End_Date: formatedDate(startDateTime),
+          End_Time: formatDate({
+            date: endDateTime,
+            parseFormat: dateFormates.displayDateTime,
+            returnFormat: dateFormates.dateTimeInParams,
+          }),
+          id: route.params?.taskIdentifier ?? '',
+        },
+        ScheduleDateTime: formatDate({
           date: startDateTime,
           parseFormat: dateFormates.displayDateTime,
           returnFormat: dateFormates.dateTimeInParams,
         }),
-        End_Date: formatedDate(startDateTime),
-        End_Time: formatDate({
-          date: endDateTime,
-          parseFormat: dateFormates.displayDateTime,
-          returnFormat: dateFormates.dateTimeInParams,
-        }),
-        id: route.params?.taskIdentifier ?? '',
-      },
-      ScheduleDateTime: formatDate({
-        date: startDateTime,
-        parseFormat: dateFormates.displayDateTime,
-        returnFormat: dateFormates.dateTimeInParams,
-      }),
-      typeCode: 'Event',
-    });
+        typeCode: 'Event',
+      });
+    }
 
     console.log('Selecting end date : ', startDateTime);
   };
@@ -581,11 +661,14 @@ function AddScheduleEvent() {
 
   /**  Added by @Ajay 08-04-2025 (#6199) ---> Use mutation for fetching global event data for editing */
   const getGlobalEventForEdit = useMutation({
-    mutationFn: (sendData: Record<string, any>) => {
+    mutationFn: (sendData: {
+      payload: Record<string, any>;
+      endpoint: string;
+    }) => {
       return makeRequest<GetGlobalEventForEdit>({
-        endpoint: ApiConstants.GetGlobalEventForEdit,
+        endpoint: sendData.endpoint,
         method: HttpMethodApi.Get,
-        data: sendData,
+        data: sendData.payload,
       });
     },
     onMutate() {
@@ -608,7 +691,10 @@ function AddScheduleEvent() {
         setValue('phone', event.events?.phone || '');
         setValue('location', event.events?.location || '');
         setValue('meetingUrl', event.events?.link || '');
-        setValue('description', event.events?.description || '');
+        setValue(
+          'description',
+          event.events?.description?.replace(/<[^>]*>/g, '').trim() || '',
+        );
         if (event.events?.coverImage) {
           setUploadedImageId(event?.events?.coverImage);
         }
@@ -626,6 +712,9 @@ function AddScheduleEvent() {
               'eventType',
               selectedEvent.name,
             ); /** Set the event type name in form value */
+          } else if (event.events?.eventType == 4) {
+            setSelectedEventType(eventList[2]);
+            setValue('eventType', eventList[2].name);
           } else {
             setSelectedEventType(eventList[0]);
             setValue('eventType', eventList[0].name);
@@ -808,6 +897,127 @@ function AddScheduleEvent() {
     },
   });
 
+  /**  Added by @Yuvraj 04-11-2025 (#) ---> saving the office365 event */
+  const UpdateAttendeesApi = useMutation({
+    mutationFn: (sendData: { endpoint: string; payload: string }) => {
+      return makeRequest<SaveGlobalCalendarAndEventDataModel>({
+        endpoint: sendData.endpoint,
+        method: HttpMethodApi.Put,
+        data: sendData.payload,
+      });
+    },
+    onMutate() {
+      setSaveLoading(true); /** Show loading indicator while fetching data */
+    },
+    onSettled(data, error, variables, context) {
+      setSaveLoading(
+        false,
+      ); /** Hide loading indicator once data fetch is complete */
+    },
+    onSuccess(data, variables, context) {
+      /** Handle success response */
+      if (data?.result) {
+        if (data.result.status == 1) {
+          showSnackbar(t('EventUpdatedSuccessfully'), 'success');
+
+          sendDataBack('EventViewAll', {
+            isDetailsUpdated: true,
+          } as AddScheduleUpdateReturnProp);
+          handleGoBack(navigation);
+        } else if (data.result.status == 0 && data?.result?.message) {
+          showSnackbar(data?.result?.message, 'danger');
+        } else {
+          showSnackbar(t('errorSaveEvent'), 'danger');
+        }
+      }
+    },
+    onError(error, variables, context) {
+      /** Handle error response */
+      showSnackbar(error.message, 'danger');
+    },
+  });
+
+  /**  Added by @Yuvraj 04-11-2025 () ---> fetch the fynancial attendees */
+  const GetFynancialAttendeesApi = useMutation({
+    mutationFn: (sendData: Record<string, any>) => {
+      return makeRequest<GetGlobalCalendarContactTypeModel[]>({
+        endpoint: ApiConstants.GetFynancialAttendees,
+        method: HttpMethodApi.Get,
+        data: sendData,
+      });
+    },
+    onMutate(variables) {
+      setLoading(
+        true,
+      ); /** Show loading indicator while fetching data (#4274) */
+    },
+    onSettled(data, error, variables, context) {
+      setLoading(
+        false,
+      ); /** Hide loading indicator once data fetch is complete (#4274) */
+    },
+    onSuccess(data, variables, context) {
+      /** Handle success response */
+      if (data?.result && data.result.length > 0) {
+        setAttendeesList(data.result);
+        if (route.params?.taskId) {
+          // If editing an existing message, pre‐select any that are already marked “isSelected”
+          const previouslySelected = data.result.filter(
+            item => item.isSelected,
+          );
+          if (previouslySelected.length > 0) {
+            setSelectedAttendeesList(previouslySelected);
+            // setTargetAudienceType('ContactType');
+          }
+        }
+      }
+    },
+    onError(error, variables, context) {
+      /** Handle error response */
+      showSnackbar(error.message, 'danger');
+    },
+  });
+  /**  Added by @Yuvraj 04-11-2025 () ---> fetch the external attendees */
+  const GetExternalAttendeesApi = useMutation({
+    mutationFn: (sendData: Record<string, any>) => {
+      return makeRequest<GetGlobalCalendarContactTypeModel[]>({
+        endpoint: ApiConstants.GetExternalAttendees,
+        method: HttpMethodApi.Get,
+        data: sendData,
+      });
+    },
+    onMutate(variables) {
+      setLoading(
+        true,
+      ); /** Show loading indicator while fetching data (#4274) */
+    },
+    onSettled(data, error, variables, context) {
+      setLoading(
+        false,
+      ); /** Hide loading indicator once data fetch is complete (#4274) */
+    },
+    onSuccess(data, variables, context) {
+      /** Handle success response */
+      if (data?.result && data.result.length > 0) {
+        setExternalAttendeesList(data.result);
+        if (route.params?.taskId) {
+          // If editing an existing message, pre‐select any that are already marked “isSelected”
+          const previouslySelected = data.result.filter(
+            item => item.isSelected,
+          );
+          if (previouslySelected.length > 0) {
+            setSelectedExternalAttendeesList(previouslySelected);
+            // setTargetAudienceType('ContactType');
+          }
+        }
+      }
+    },
+    onError(error, variables, context) {
+      /** Handle error response */
+      showSnackbar(error.message, 'danger');
+    },
+  });
+
   return (
     <SafeScreen>
       <KeyboardAvoidingView
@@ -865,11 +1075,20 @@ function AddScheduleEvent() {
                   control={control}
                   placeholder={t('EnterEventTitle')}
                   label={t('EventTitle')}
+                  enabled={!isOffice365}
+                  fillColor={
+                    isOffice365 ? theme.colors.surfaceDisabled : undefined
+                  }
+                  contentStyle={
+                    isOffice365
+                      ? { color: theme.colors.onSurfaceDisabled }
+                      : undefined
+                  }
                 />
 
                 <Tap
                   onPress={() => {
-                    if (saveLoading) {
+                    if (saveLoading || isOffice365) {
                       return;
                     }
                     setShowEventTypeDropdown(true);
@@ -887,6 +1106,17 @@ function AddScheduleEvent() {
                       type: ImageType.svg,
                       color: theme.colors.onSurfaceVariant,
                     }}
+                    fillColor={
+                      isOffice365 ? theme.colors.surfaceDisabled : undefined
+                    }
+                    contentStyle={
+                      isOffice365
+                        ? { color: theme.colors.onSurfaceDisabled }
+                        : undefined
+                    }
+                    extraInfoTxt={
+                      'Coming soon: You’ll be able to schedule Office 365 Meetings here once our two-way integration is ready.'
+                    }
                   />
                 </Tap>
 
@@ -914,7 +1144,16 @@ function AddScheduleEvent() {
                     name={'meetingUrl'}
                     control={control}
                     placeholder={t('EnterUrl')}
-                    label={t('urlLabel')}
+                    label={t('MeetingUrl')}
+                    enabled={!isOffice365}
+                    fillColor={
+                      isOffice365 ? theme.colors.surfaceDisabled : undefined
+                    }
+                    contentStyle={
+                      isOffice365
+                        ? { color: theme.colors.onSurfaceDisabled }
+                        : undefined
+                    }
                   />
                 )}
 
@@ -927,91 +1166,105 @@ function AddScheduleEvent() {
                   height={70}
                   maxLines={2}
                   hidePreview={false}
+                  enabled={!isOffice365}
+                  fillColor={
+                    isOffice365 ? theme.colors.surfaceDisabled : undefined
+                  }
+                  contentStyle={
+                    isOffice365
+                      ? { color: theme.colors.onSurfaceDisabled }
+                      : undefined
+                  }
                 />
 
-                <CustomText
-                  variant={TextVariants.bodyMedium}
-                  style={styles.heading}
-                >
-                  {t('CoverImage')}
-                </CustomText>
-                {mediaList.length == 0 && !eventData?.events?.coverImageUrl ? (
-                  <Tap
-                    style={styles.noImgLayContainer}
-                    onPress={() => setShowImageSelectionPopup(true)}
-                  >
-                    <View style={styles.noImgLay}>
-                      <CustomImage
-                        source={Images.addCircle}
-                        type={ImageType.svg}
-                        style={styles.icon}
-                        color={theme.colors.primary}
-                      />
-                      <CustomText style={styles.noImgMsg}>
-                        {t('uploadCoverImg')}
-                      </CustomText>
-                    </View>
-                  </Tap>
-                ) : (
-                  (mediaList.at(0)?.uri ||
-                    eventData?.events?.coverImageUrl) && (
-                    <Tap
-                      onPress={() => {
-                        if (saveLoading) {
-                          return;
-                        }
-                        const imageList = mediaList.map(item => item.uri!);
-                        showImagePopup({
-                          imageList: imageList,
-                          defaultIndex: 0,
-                        });
-                      }}
-                      style={styles.selectedImageContainer}
+                {!isOffice365 && (
+                  <>
+                    <CustomText
+                      variant={TextVariants.bodyMedium}
+                      style={styles.heading}
                     >
-                      <View style={styles.imageContainer}>
-                        <CustomImage
-                          source={{
-                            uri: mediaList.at(0)?.uri
-                              ? mediaList.at(0)?.uri
-                              : eventData?.events?.coverImageUrl,
-                          }}
-                          resizeMode={ResizeModeType.cover}
-                          style={styles.selectedImgs}
-                        />
+                      {t('CoverImage')}
+                    </CustomText>
+                    {mediaList.length == 0 &&
+                    !eventData?.events?.coverImageUrl ? (
+                      <Tap
+                        style={styles.noImgLayContainer}
+                        onPress={() => setShowImageSelectionPopup(true)}
+                      >
+                        <View style={styles.noImgLay}>
+                          <CustomImage
+                            source={Images.addCircle}
+                            type={ImageType.svg}
+                            style={styles.icon}
+                            color={theme.colors.primary}
+                          />
+                          <CustomText style={styles.noImgMsg}>
+                            {t('uploadCoverImg')}
+                          </CustomText>
+                        </View>
+                      </Tap>
+                    ) : (
+                      (mediaList.at(0)?.uri ||
+                        eventData?.events?.coverImageUrl) && (
                         <Tap
                           onPress={() => {
                             if (saveLoading) {
                               return;
                             }
-                            setMediaList([]);
-                            setUploadedImageId('');
-                            setEventData(prevState => {
-                              if (prevState && prevState.events) {
-                                return {
-                                  ...prevState /** Preserve the previous state */,
-                                  events: {
-                                    ...prevState.events,
-                                    coverImageUrl: null,
-                                  } /** Set coverImageUrl to null */,
-                                };
-                              }
-                              return prevState; /** Return the original state if undefined */
+                            const imageList = mediaList.map(item => item.uri!);
+                            showImagePopup({
+                              imageList: imageList,
+                              defaultIndex: 0,
                             });
                           }}
-                          style={styles.selectedImgDeleteTap}
+                          style={styles.selectedImageContainer}
                         >
-                          <CustomImage
-                            source={Images.close}
-                            type={ImageType.svg}
-                            color={theme.colors.onPrimary}
-                            style={styles.selectedImgDelete}
-                          />
+                          <View style={styles.imageContainer}>
+                            <CustomImage
+                              source={{
+                                uri: mediaList.at(0)?.uri
+                                  ? mediaList.at(0)?.uri
+                                  : eventData?.events?.coverImageUrl,
+                              }}
+                              resizeMode={ResizeModeType.cover}
+                              style={styles.selectedImgs}
+                            />
+                            <Tap
+                              onPress={() => {
+                                if (saveLoading) {
+                                  return;
+                                }
+                                setMediaList([]);
+                                setUploadedImageId('');
+                                setEventData(prevState => {
+                                  if (prevState && prevState.events) {
+                                    return {
+                                      ...prevState /** Preserve the previous state */,
+                                      events: {
+                                        ...prevState.events,
+                                        coverImageUrl: null,
+                                      } /** Set coverImageUrl to null */,
+                                    };
+                                  }
+                                  return prevState; /** Return the original state if undefined */
+                                });
+                              }}
+                              style={styles.selectedImgDeleteTap}
+                            >
+                              <CustomImage
+                                source={Images.close}
+                                type={ImageType.svg}
+                                color={theme.colors.onPrimary}
+                                style={styles.selectedImgDelete}
+                              />
+                            </Tap>
+                          </View>
                         </Tap>
-                      </View>
-                    </Tap>
-                  )
+                      )
+                    )}
+                  </>
                 )}
-                <View style={styles.divider1} />
+                <View style={isOffice365 ? styles.divider : styles.divider1} />
 
                 <CustomText
                   style={styles.segmentB}
@@ -1020,120 +1273,223 @@ function AddScheduleEvent() {
                   {t('targetAudience')}
                 </CustomText>
 
-                <Tap
-                  onPress={() => {
-                    if (saveLoading) {
-                      return;
-                    }
-                    clearErrors('selectedTarget'); // reset error
+                {isOffice365 ? (
+                  <>
+                    <Tap
+                      onPress={() => {
+                        if (saveLoading) {
+                          return;
+                        }
+                        setShowTargetAudDropdown(true);
+                      }}
+                      style={styles.dropDownSelect}
+                    >
+                      <>
+                        <CustomText
+                          style={styles.attendeeLabel}
+                          variant={TextVariants.bodyMedium}
+                        >
+                          {t('Attendees')}
+                        </CustomText>
+                        <View style={styles.chipsContainer}>
+                          {selectedAttendeesList.length == 0 ? (
+                            <CustomText
+                              color={theme.colors.outline}
+                              variant={TextVariants.bodyMedium}
+                            >
+                              {t('SelectAttendees')}
+                            </CustomText>
+                          ) : (
+                            selectedAttendeesList.map((item, index) => (
+                              <CustomChips
+                                key={item.userId} // Always give a key in loop
+                                chipId={item.userId}
+                                chipLabel={item.name}
+                                onCloseClick={value => {
+                                  if (value) {
+                                    setSelectedAttendeesList(
+                                      selectedAttendeesList.filter(
+                                        item => item.userId !== value,
+                                      ),
+                                    );
+                                  }
+                                }}
+                              />
+                            ))
+                          )}
+                        </View>
+                      </>
+                    </Tap>
+                    <Tap
+                      onPress={() => {
+                        if (saveLoading) {
+                          return;
+                        }
+                        if (externalAttendeesList.length > 0) {
+                          setExternalAttendeesPopup(true);
+                        } else {
+                          showSnackbar(t('NoExternalAttendees'), 'warning');
+                        }
+                      }}
+                      style={[styles.verticalMargin, styles.dropDownSelect]}
+                    >
+                      <>
+                        <CustomText
+                          style={styles.attendeeLabel}
+                          variant={TextVariants.bodyMedium}
+                        >
+                          {t('ExternalAttendees')}
+                        </CustomText>
+                        <View style={styles.chipsContainer}>
+                          {selectedExternalAttendeesList.length == 0 ? (
+                            <CustomText
+                              color={theme.colors.outline}
+                              variant={TextVariants.bodyMedium}
+                            >
+                              {t('NoExternalAttendees')}
+                            </CustomText>
+                          ) : (
+                            selectedExternalAttendeesList.map((item, index) => (
+                              <CustomChips
+                                key={index + 1}
+                                chipId={index + 1}
+                                chipLabel={item.name}
+                                onCloseClick={value => {
+                                  setSelectedExternalAttendeesList(
+                                    selectedExternalAttendeesList.filter(
+                                      extItem =>
+                                        extItem.emailAddress !==
+                                        item.emailAddress,
+                                    ),
+                                  );
+                                }}
+                              />
+                            ))
+                          )}
+                        </View>
+                      </>
+                    </Tap>
+                  </>
+                ) : (
+                  <>
+                    <Tap
+                      onPress={() => {
+                        if (saveLoading) {
+                          return;
+                        }
+                        clearErrors('selectedTarget'); // reset error
 
-                    setShowTargetAudDropdown(true);
-                  }}
-                  style={styles.dropDownSelect}
-                >
-                  <FormTextInput
-                    name={'selectedTarget'}
-                    control={control}
-                    showLabel={true}
-                    enabled={false}
-                    placeholder={
-                      targetAudienceType === 'Tags' &&
-                      selectedTagList.length > 0
-                        ? t('Tags')
-                        : targetAudienceType === 'Contacts' &&
-                          selectedContactList.length > 0
-                        ? t('Contacts')
-                        : targetAudienceType === 'Templates' && selectedTemplate
-                        ? selectedTemplate.programName
-                        : targetAudienceType === 'ContactType' &&
-                          selectedContactTypeList.length > 0
-                        ? t('ContactType')
-                        : t('SelectTargetAudience')
-                    }
-                    label={t('targetAudienceText')}
-                    suffixIcon={{
-                      source: Images.down,
-                      type: ImageType.svg,
-                      color: theme.colors.onSurfaceVariant,
-                    }}
-                  />
-                </Tap>
-                {targetAudienceType === 'ContactType' &&
-                  selectedContactTypeList.length > 0 && (
-                    <View>
-                      <CustomText
-                        style={styles.targetAudLabel}
-                        variant={TextVariants.titleSmall}
-                      >
-                        {t('SelectedContactType')}
-                      </CustomText>
-                      <View style={styles.chipsContainer}>
-                        {selectedContactTypeList.map((item, index) => (
-                          <CustomChips
-                            key={item.contactType} // Always give a key in loop
-                            chipId={item.contactType}
-                            chipLabel={item.contactName}
-                            onCloseClick={value => {
-                              if (value) {
-                                handleRemoveContactType(value);
-                              }
-                            }}
-                          />
-                        ))}
-                      </View>
-                    </View>
-                  )}
-                {targetAudienceType === 'Tags' &&
-                  selectedTagList.length > 0 && (
-                    <View>
-                      <CustomText
-                        style={styles.targetAudLabel}
-                        variant={TextVariants.titleSmall}
-                      >
-                        {t('SelectedTags')}
-                      </CustomText>
-                      <View style={styles.chipsContainer}>
-                        {selectedTagList.map((item, index) => (
-                          <CustomChips
-                            key={item.id} // Always give a key in loop
-                            chipId={item.id}
-                            chipLabel={item.tagName}
-                            onCloseClick={value => {
-                              if (value) {
-                                handleRemoveTag(value);
-                              }
-                            }}
-                          />
-                        ))}
-                      </View>
-                    </View>
-                  )}
+                        setShowTargetAudDropdown(true);
+                      }}
+                      style={styles.dropDownSelect}
+                    >
+                      <FormTextInput
+                        name={'selectedTarget'}
+                        control={control}
+                        showLabel={true}
+                        enabled={false}
+                        placeholder={
+                          targetAudienceType === 'Tags' &&
+                          selectedTagList.length > 0
+                            ? t('Tags')
+                            : targetAudienceType === 'Contacts' &&
+                              selectedContactList.length > 0
+                            ? t('Contacts')
+                            : targetAudienceType === 'Templates' &&
+                              selectedTemplate
+                            ? selectedTemplate.programName
+                            : targetAudienceType === 'ContactType' &&
+                              selectedContactTypeList.length > 0
+                            ? t('ContactType')
+                            : t('SelectTargetAudience')
+                        }
+                        label={t('targetAudienceText')}
+                        suffixIcon={{
+                          source: Images.down,
+                          type: ImageType.svg,
+                          color: theme.colors.onSurfaceVariant,
+                        }}
+                      />
+                    </Tap>
+                    {targetAudienceType === 'ContactType' &&
+                      selectedContactTypeList.length > 0 && (
+                        <View>
+                          <CustomText
+                            style={styles.targetAudLabel}
+                            variant={TextVariants.titleSmall}
+                          >
+                            {t('SelectedContactType')}
+                          </CustomText>
+                          <View style={styles.chipsContainer}>
+                            {selectedContactTypeList.map((item, index) => (
+                              <CustomChips
+                                key={item.contactType} // Always give a key in loop
+                                chipId={item.contactType}
+                                chipLabel={item.contactName}
+                                onCloseClick={value => {
+                                  if (value) {
+                                    handleRemoveContactType(value);
+                                  }
+                                }}
+                              />
+                            ))}
+                          </View>
+                        </View>
+                      )}
+                    {targetAudienceType === 'Tags' &&
+                      selectedTagList.length > 0 && (
+                        <View>
+                          <CustomText
+                            style={styles.targetAudLabel}
+                            variant={TextVariants.titleSmall}
+                          >
+                            {t('SelectedTags')}
+                          </CustomText>
+                          <View style={styles.chipsContainer}>
+                            {selectedTagList.map((item, index) => (
+                              <CustomChips
+                                key={item.id} // Always give a key in loop
+                                chipId={item.id}
+                                chipLabel={item.tagName}
+                                onCloseClick={value => {
+                                  if (value) {
+                                    handleRemoveTag(value);
+                                  }
+                                }}
+                              />
+                            ))}
+                          </View>
+                        </View>
+                      )}
 
-                {targetAudienceType === 'Contacts' &&
-                  selectedContactList.length > 0 && (
-                    <View>
-                      <CustomText
-                        style={styles.targetAudLabel}
-                        variant={TextVariants.titleSmall}
-                      >
-                        {t('SelectedContacts')}
-                      </CustomText>
-                      <View style={styles.chipsContainer}>
-                        {selectedContactList.map((item, index) => (
-                          <CustomChips
-                            key={item.userId} // Always give a key in loop
-                            chipId={item.userId}
-                            chipLabel={item.name}
-                            onCloseClick={value => {
-                              if (value) {
-                                handleRemoveContacts(value);
-                              }
-                            }}
-                          />
-                        ))}
-                      </View>
-                    </View>
-                  )}
+                    {targetAudienceType === 'Contacts' &&
+                      selectedContactList.length > 0 && (
+                        <View>
+                          <CustomText
+                            style={styles.targetAudLabel}
+                            variant={TextVariants.titleSmall}
+                          >
+                            {t('SelectedContacts')}
+                          </CustomText>
+                          <View style={styles.chipsContainer}>
+                            {selectedContactList.map((item, index) => (
+                              <CustomChips
+                                key={item.userId} // Always give a key in loop
+                                chipId={item.userId}
+                                chipLabel={item.name}
+                                onCloseClick={value => {
+                                  if (value) {
+                                    handleRemoveContacts(value);
+                                  }
+                                }}
+                              />
+                            ))}
+                          </View>
+                        </View>
+                      )}
+                  </>
+                )}
+
                 <View style={styles.divider} />
 
                 <ScheduleDateTimePicker
@@ -1143,6 +1499,7 @@ function AddScheduleEvent() {
                   endDateError={endDateError}
                   loading={saveLoading}
                   showEndDate={true}
+                  enabled={!isOffice365}
                   startDatePress={value => {
                     handleStartDatePress(value);
                   }}
@@ -1183,14 +1540,17 @@ function AddScheduleEvent() {
             shown={showTargetAudDropdown}
             setShown={setShowTargetAudDropdown}
             tagList={tagList}
-            contactList={contactList}
+            contactList={isOffice365 ? attendeesList : contactList}
             contactTypeList={contactTypeList}
             templateList={templateList}
             selectedType={targetAudienceType}
             selectedTagsList={selectedTagList}
-            selectedContactsList={selectedContactList}
+            selectedContactsList={
+              isOffice365 ? selectedAttendeesList : selectedContactList
+            }
             selectedContactTypesList={selectedContactTypeList}
             selectedTemplate={selectedTemplate}
+            attendees={isOffice365}
             onselectType={value => {
               if (value) {
                 setTargetAudienceType(value);
@@ -1203,7 +1563,11 @@ function AddScheduleEvent() {
             }}
             onContactsSelected={value => {
               if (value) {
-                setSelectedContactList(value);
+                if (isOffice365) {
+                  setSelectedAttendeesList(value!);
+                } else {
+                  setSelectedContactList(value);
+                }
               }
             }}
             onTemplateSelected={value => {
@@ -1213,6 +1577,30 @@ function AddScheduleEvent() {
               setSelectedContactTypeList(value!);
             }}
           />
+          <CustomBottomPopup
+            shown={externalAttendeesPopup}
+            setShown={setExternalAttendeesPopup}
+            title={t('ExternalAttendees')}
+            keyboardHandle
+          >
+            <CustomDropDownPopup
+              // key={'Contacts'}
+              loading={false}
+              items={externalAttendeesList}
+              displayKey="name"
+              idKey="emailAddress"
+              selectedMultipleItems={selectedExternalAttendeesList}
+              mode={DropdownModes.multiple}
+              withPopup={false}
+              onSave={value => {
+                setSelectedExternalAttendeesList(
+                  value as GetAllUsersForGlobalCalendarModel[],
+                );
+
+                setExternalAttendeesPopup(false);
+              }}
+            />
+          </CustomBottomPopup>
         </View>
       </KeyboardAvoidingView>
     </SafeScreen>
@@ -1379,14 +1767,25 @@ const makeStyles = (theme: CustomTheme) =>
       width: '100%',
       backgroundColor: theme.colors.border,
     },
+    verticalMargin: {
+      marginVertical: 15,
+    },
     targetAudLabel: {
       paddingBottom: 10,
       paddingLeft: 5,
       fontSize: 14,
       fontWeight: 'semibold',
     },
+    attendeeLabel: {
+      paddingBottom: 10,
+      paddingLeft: 5,
+    },
     heading: {
       paddingLeft: 5,
+    },
+    timeZone: {
+      alignSelf: 'flex-start',
+      backgroundColor: theme.colors.surfaceVariant,
     },
   });
 

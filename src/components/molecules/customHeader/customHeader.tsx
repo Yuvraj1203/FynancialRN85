@@ -440,17 +440,15 @@ const makeStyles = (theme: CustomTheme) =>
     },
     statusIconLay: {
       position: 'absolute',
-      right: 0,
-      bottom: 6,
+      right: 5,
+      bottom: 7,
       borderRadius: theme.extraRoundness, // Circular shape
       padding: 4, // Adjust padding for proper sizing
-      width: 12, // Ensure size consistency
-      height: 12,
+      width: 10, // Ensure size consistency
+      height: 10,
       justifyContent: 'center',
       alignItems: 'center',
-      left: 35,
       overflow: 'hidden',
-      top: 35,
     },
 
     groupDetailsLay: { flex: 1 },
@@ -509,12 +507,12 @@ const makeStyles = (theme: CustomTheme) =>
 
     outOfOffcIconLay: {
       position: 'absolute',
-      left: 30,
-      top: 30,
+      right: 0,
+      bottom: 4,
       borderRadius: theme.extraRoundness, // Circular shape
       padding: 4, // Adjust padding for proper sizing
-      width: 20, // Ensure size consistency
-      height: 20,
+      width: 16, // Ensure size consistency
+      height: 16,
       backgroundColor: theme.dark
         ? theme.colors.onSurface
         : theme.colors.surface,

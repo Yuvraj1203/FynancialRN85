@@ -60,10 +60,7 @@ function MyReferrals() {
             {item?.referredTo}
           </CustomText>
 
-          <CustomText
-            variant={TextVariants.labelMedium}
-            color={theme.colors.labelLight}
-          >
+          <CustomText variant={TextVariants.labelMedium}>
             {item.referredDateUTC}
           </CustomText>
         </View>
@@ -175,6 +172,7 @@ const makeStyles = (theme: CustomTheme) =>
     cardData: {
       flexDirection: 'row',
       justifyContent: 'space-between',
+      alignItems: 'center',
     },
     email: {
       marginVertical: 2,

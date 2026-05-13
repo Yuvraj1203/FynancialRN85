@@ -25,6 +25,7 @@ import {
   GetUserProgramSessionEventsModel,
 } from '@/services/models';
 import { templateStore, userStore } from '@/store';
+import { TenantInfo } from '@/tenantInfo';
 import { Images } from '@/theme/assets/images';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
 import Log from '@/utils/logger';
@@ -335,6 +336,10 @@ const EventViewAll = () => {
           appEndDate,
           appEndTime,
           sameDayEvent: appStartDate == appEndDate,
+          description:
+            item.eventType == 4
+              ? item.description?.replace(/<[^>]+>/g, '').trim()
+              : item.description, // remove HTML tags,
         };
       })
       .sort((a, b) => {
@@ -389,7 +394,10 @@ const EventViewAll = () => {
           appEndTime,
           sameDayEvent: appStartDate == appEndDate,
           isPastDate: isPastDate({
-            date: item.event_Start_Date!,
+            date:
+              item.scheduleTaskTypeId == 2
+                ? item.event_End_Date!
+                : item.event_Start_Date!,
             parseFormat: DateFormats.FullDate,
           }),
         };
@@ -661,20 +669,27 @@ const EventViewAll = () => {
     onSuccess(data, variables, context) {
       if (data.result) {
         data.result.map(item => {
+          item.isOffice365 =
+            item.scheduleTaskTypeId == 2 && item.eventType == 4; // check if office event
           item.uiTitle = item.title
             ?.replace(/<[^>]*>/g, '') // remove HTML tags
             .replace(/&[a-zA-Z#0-9]+;/g, ' ') // replace entities like &nbsp; or &#123; with space
             .trim();
-          item.icon =
-            item.scheduleTaskTypeId == 1
-              ? Images.newspaperPng
-              : item.scheduleTaskTypeId == 2
-              ? Images.event
-              : item.scheduleTaskTypeId == 3
-              ? Images.reminder2
-              : item.scheduleTaskTypeId == 4
-              ? Images.itemList
-              : Images.faqPng;
+          item.description =
+            item.scheduleTaskTypeId == 2 && item.eventType == 4
+              ? item.description?.replace(/<[^>]+>/g, '').trim()
+              : item.description; // remove HTML tags
+          item.icon = item.requireAttention
+            ? Images.warning
+            : item.scheduleTaskTypeId == 1
+            ? Images.newspaperPng
+            : item.scheduleTaskTypeId == 2
+            ? Images.event
+            : item.scheduleTaskTypeId == 3
+            ? Images.reminder2
+            : item.scheduleTaskTypeId == 4
+            ? Images.itemList
+            : Images.faqPng;
         });
         if (variables.forEventDots) {
           const formatToLocalDate = (dateStr: string) =>
@@ -761,15 +776,18 @@ const EventViewAll = () => {
 
   /** Added by @Yuvraj 03-04-2025 -> deleting the item from all global events (FYN-6256) */
   const deleteGlobalCalTaskApi = useMutation({
-    mutationFn: (sendData: Record<string, any>) => {
+    mutationFn: (sendData: {
+      endpoint: string;
+      payload: Record<string, any>;
+    }) => {
       return makeRequest<null>({
-        endpoint: ApiConstants.DeleteGlobalCalTask,
+        endpoint: sendData.endpoint,
         method: HttpMethodApi.Delete,
-        data: sendData,
+        data: sendData.payload,
       });
     },
     onMutate(variables) {
-      setDeleteLoadingId(variables.Id);
+      setDeleteLoadingId(variables.payload.Id);
     },
     onSettled(data, error, variables, context) {
       setSelectedItem(undefined);
@@ -794,7 +812,10 @@ const EventViewAll = () => {
     return (
       <Shadow
         onPress={() => {
-          navigation.navigate('ScheduleEventDetail', { id: item.id });
+          navigation.navigate('ScheduleEventDetail', {
+            id: item.id,
+            contactItem: item,
+          });
         }}
         style={styles.eventCard}
       >
@@ -900,7 +921,6 @@ const EventViewAll = () => {
 
       default:
         // safety fallback (optional)
-        // navigation.navigate('EventDetailScreen', { item });
         break;
     }
   };
@@ -918,7 +938,7 @@ const EventViewAll = () => {
             <View style={styles.detailSubContainerSchedule}>
               <CustomImage
                 source={item.icon}
-                color={theme.colors.outline}
+                color={item.requireAttention ? undefined : theme.colors.outline}
                 style={styles.detailImageScheduleTitle}
               />
               <CustomText
@@ -982,11 +1002,13 @@ const EventViewAll = () => {
               variant={TextVariants.bodyMedium}
               style={styles.width95}
             >
-              {`${item?.userTags ? item?.userTags + ' ' : ''}${
-                item?.userNameFilter ? item?.userNameFilter + ' ' : ''
-              }${item?.programFilter ? item?.programFilter + ' ' : ''}${
-                item?.userTypeFilter
-              }`}
+              {item.requireAttention
+                ? t('NoMatchingContact')
+                : `${item?.userTags ? item?.userTags + ' ' : ''}${
+                    item?.userNameFilter ? item?.userNameFilter + ' ' : ''
+                  }${item?.programFilter ? item?.programFilter + ' ' : ''}${
+                    item?.userTypeFilter
+                  }`}
             </CustomText>
           </View>
         </View>
@@ -1156,6 +1178,7 @@ const EventViewAll = () => {
                   navigation.navigate('AddScheduleEvent', {
                     taskId: selectedItem?.id?.toString()!,
                     taskIdentifier: selectedItem?.taskIdentifier!,
+                    item: selectedItem,
                   });
                 } else if (selectedItem?.scheduleTaskTypeId == 3) {
                   navigation.navigate('AddScheduleReminder', {
@@ -1183,7 +1206,9 @@ const EventViewAll = () => {
               },
             },
             {
-              title: t('Delete'),
+              title: selectedItem?.isOffice365
+                ? t('RemoveFromFynancial', { app: TenantInfo.AppName })
+                : t('Delete'),
               image: Images.delete,
               imageType: ImageType.svg,
               titleColor: theme.colors.error,
@@ -1191,23 +1216,30 @@ const EventViewAll = () => {
               onPress: () => {
                 setShowActionSheet(false);
                 showAlertPopup({
-                  title: t('Delete'),
-                  msg: `${t('DeleteMsgSchedule')} ${
-                    selectedItem?.scheduleTaskTypeId == 1
-                      ? t('Post')
-                      : selectedItem?.scheduleTaskTypeId == 2
-                      ? t('Event')
-                      : selectedItem?.scheduleTaskTypeId == 3
-                      ? t('Reminder')
-                      : selectedItem?.scheduleTaskTypeId == 4
-                      ? t('ActionItem')
-                      : t('Item')
-                  }`,
+                  title: selectedItem?.isOffice365 ? t('Remove') : t('Delete'),
+                  msg: selectedItem?.isOffice365
+                    ? t('RemoveMsgSchedule')
+                    : `${t('DeleteMsgSchedule')} ${
+                        selectedItem?.scheduleTaskTypeId == 1
+                          ? t('Post')
+                          : selectedItem?.scheduleTaskTypeId == 2
+                          ? t('Event')
+                          : selectedItem?.scheduleTaskTypeId == 3
+                          ? t('Reminder')
+                          : selectedItem?.scheduleTaskTypeId == 4
+                          ? t('ActionItem')
+                          : t('Item')
+                      }`,
                   PositiveText: t('Yes'),
                   NegativeText: t('No'),
                   onPositivePress: () => {
                     deleteGlobalCalTaskApi.mutate({
-                      Id: selectedItem?.taskIdentifier,
+                      endpoint: selectedItem?.isOffice365
+                        ? ApiConstants.RemoveFromFynancial
+                        : ApiConstants.DeleteGlobalCalTask,
+                      payload: {
+                        Id: selectedItem?.taskIdentifier,
+                      },
                     });
                   },
                 });

@@ -1138,11 +1138,15 @@ function Profile() {
 
   /** Added by @Yuvraj 19-03-2025 -> getUserDetailForProfileApiCall call to get user detail (FYN-5821) */
   const getUserDetailForProfileApiCall = useMutation({
-    mutationFn: (sendData: Record<string, any>) => {
+    mutationFn: (payload: {
+      sendData?: Record<string, any>;
+      profileUpdate?: boolean;
+      fromRefresh?: boolean;
+    }) => {
       return makeRequest<GetUserDetailForProfileModel>({
         endpoint: ApiConstants.GetUserDetailForProfile,
         method: HttpMethodApi.Get,
-        data: sendData,
+        data: {},
       }); // API Call
     },
     onMutate(variables) {
@@ -1183,6 +1187,15 @@ function Profile() {
         };
 
         setUserDetails(userData);
+
+        if (variables.fromRefresh && userDetails?.isAdvisor) {
+          GetUserPersonalInfoApi.mutate({
+            userId: userDetails?.userID,
+          });
+          GetUserContactInfoApi.mutate({
+            userId: userDetails?.userID,
+          });
+        }
       }
     },
     onError(error, variables, context) {
@@ -1755,16 +1768,10 @@ function Profile() {
                 } else {
                   isContact && getUserActiveTemplate.mutate({});
                   setLoadingButtons('screenRefresh');
-                  getUserDetailForProfileApiCall.mutate({});
+                  getUserDetailForProfileApiCall.mutate({ fromRefresh: true });
                   if (userDetails?.isAdvisor) {
                     getAllUserCertificatesApiCall.mutate({
                       Id: userDetails?.userID,
-                    });
-                    GetUserPersonalInfoApi.mutate({
-                      userId: userDetails?.userID,
-                    });
-                    GetUserContactInfoApi.mutate({
-                      userId: userDetails?.userID,
                     });
                     getCurrentStatusApi.mutate({});
                   }
@@ -1919,7 +1926,10 @@ function Profile() {
                   >
                     <View style={styles.accordianTapView}>
                       <View style={styles.accordianTitleContainer}>
-                        <CustomText variant={TextVariants.titleMedium}>
+                        <CustomText
+                          style={styles.accordianTitle}
+                          variant={TextVariants.bodyLarge}
+                        >
                           {t('PersonalDetails')}
                         </CustomText>
                         {route?.params?.navigationFrom !=
@@ -1994,11 +2004,7 @@ function Profile() {
                                 {`${Item.label}`}
                               </CustomText>
                             </View>
-                            <CustomText
-                              style={styles.valueText}
-                              color={theme.colors.outline}
-                              variant={TextVariants.bodyLarge}
-                            >
+                            <CustomText style={styles.valueText}>
                               {Item.value?.trim() ? Item.value : ''}
                             </CustomText>
                           </View>
@@ -2018,7 +2024,10 @@ function Profile() {
                   >
                     <View style={styles.accordianTapView}>
                       <View style={styles.accordianTitleContainer}>
-                        <CustomText variant={TextVariants.titleMedium}>
+                        <CustomText
+                          style={styles.accordianTitle}
+                          variant={TextVariants.bodyLarge}
+                        >
                           {t('ContactDetails')}
                         </CustomText>
                         {userDetails?.isAdvisor && (
@@ -2091,11 +2100,7 @@ function Profile() {
                                 {`${Item.label}`}
                               </CustomText>
                             </View>
-                            <CustomText
-                              style={styles.valueText}
-                              color={theme.colors.outline}
-                              variant={TextVariants.bodyLarge}
-                            >
+                            <CustomText style={styles.valueText}>
                               {Item.value?.trim() ? Item.value : '-'}
                             </CustomText>
                           </View>
@@ -2121,7 +2126,7 @@ function Profile() {
                           <View style={styles.accordianTapView}>
                             <CustomText
                               style={styles.accordianTitle}
-                              variant={TextVariants.titleMedium}
+                              variant={TextVariants.bodyLarge}
                             >
                               {t('Experiences')}
                             </CustomText>
@@ -2215,7 +2220,10 @@ function Profile() {
                       >
                         <View style={styles.accordianTapView}>
                           <View style={styles.accordianTitleContainer}>
-                            <CustomText variant={TextVariants.titleMedium}>
+                            <CustomText
+                              style={styles.accordianTitle}
+                              variant={TextVariants.bodyLarge}
+                            >
                               {t('Notes')}
                             </CustomText>
                             <Tap
@@ -2350,7 +2358,10 @@ function Profile() {
                       >
                         <View style={styles.accordianTapView}>
                           <View style={styles.accordianTitleContainer}>
-                            <CustomText variant={TextVariants.titleMedium}>
+                            <CustomText
+                              style={styles.accordianTitle}
+                              variant={TextVariants.bodyLarge}
+                            >
                               {t('LicensesAndCertificates')}
                             </CustomText>
 

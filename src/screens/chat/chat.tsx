@@ -2999,7 +2999,7 @@ function Chat() {
                           marginTop: Platform.OS === 'ios' ? 8 : 0, // Apply marginTop only for iOS
                           paddingRight: 32,
                           textAlignVertical: 'center',
-                          marginBottom: 2,
+                          fontFamily: theme.fonts.regular.fontFamily,
                         }}
                         height={50}
                         maxLines={5}

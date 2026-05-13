@@ -1429,6 +1429,7 @@ const makeStyles = (theme: CustomTheme) =>
     memberName: {
       marginLeft: 10,
       flex: 1,
+      gap: 5,
     },
     avatar: {
       height: 40,

@@ -33,6 +33,9 @@ export type GetFeedPostModel = {
   showMore?: boolean;
   linkPreviewHtml?: string;
   embeddedIframeHtml?: string;
+  // Populated by GetBookmarkedPostsForView (FYN-10455)
+  bookmarkId?: string;
+  collectionId?: string;
 };
 
 export type postDocumentsForFeed = {

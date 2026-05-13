@@ -1,4 +1,6 @@
 export { default as ActionItemList } from './actionItemList/actionItemList';
+export { default as BookmarkCollectionScreen } from './bookmarkCollection/bookmarkCollection';
+export { default as BookmarksScreen } from './bookmarks/bookmarks';
 export { default as AddActionItem } from './addActionItem/addActionItem';
 export { default as AddScheduleActionItem } from './addScheduleActionItem/addScheduleActionItem';
 export { default as AddScheduleEvent } from './addScheduleEvent/addScheduleEvent';
@@ -15,7 +17,6 @@ export { default as CreateLicenseCertificate } from './createLicenseCertificate/
 export { default as CreatePost } from './createPost/createPost';
 export { default as CustomNotification } from './customNotification/customNotification';
 export { default as Dashboard } from './dashboard/dashboard';
-export { default as EventDetailScreen } from './eventDetailScreen/eventDetailScreen';
 export { default as EventViewAll } from './eventViewAll/eventViewAll';
 export { default as Faq } from './faq/faq';
 export { default as Feed } from './feed/feed';

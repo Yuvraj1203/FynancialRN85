@@ -8,11 +8,19 @@ import {
 import { TenantInfo } from './tenantInfo';
 
 const config = new DatadogProviderConfiguration(
-  TenantInfo.ApiUrl.includes('sanctuary')
+  TenantInfo.TenancyName.includes('newhorizonsdemo')
+    ? 'pub10a69678fa094e6a57c7091d2c06762b'
+    : TenantInfo.ApiUrl.includes('sanctuary')
     ? 'pub3a2612b18345af2ab53612783c9eddb6'
     : 'pubd0934edd37e660408f785e28ec1eb791',
-  TenantInfo.ApiUrl.includes('sanctuary') ? 'sanctuary-prd' : 'fyn-prd',
-  TenantInfo.ApiUrl.includes('sanctuary')
+  TenantInfo.TenancyName.includes('newhorizonsdemo')
+    ? 'uat'
+    : TenantInfo.ApiUrl.includes('sanctuary')
+    ? 'sanctuary-prd'
+    : 'fyn-prd',
+  TenantInfo.TenancyName.includes('newhorizonsdemo')
+    ? '0f05dddc-afa8-45e6-99a8-38b57e31c588'
+    : TenantInfo.ApiUrl.includes('sanctuary')
     ? '0752e75e-1432-41d8-b574-40b5e1a8661d'
     : '582ca7bb-17b6-4c14-9e63-234fe3cdd521',
   true, // track User interactions (e.g.: Tap on buttons. You can use 'accessibilityLabel' element property to give tap action the name, otherwise element type will be reported)
@@ -43,7 +51,7 @@ type Props = {
 
 const DatadogWrapper = (props: Props) => {
   const DATADOG_DISABLED_TENANTS = [
-    'newhorizonsdemo',
+    //'newhorizonsdemo',
     'developers',
     'dktest2',
     'Finology',

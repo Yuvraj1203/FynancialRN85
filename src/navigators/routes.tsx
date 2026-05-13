@@ -20,7 +20,6 @@ import {
   CreatePost,
   CustomNotification,
   Dashboard,
-  EventDetailScreen,
   EventViewAll,
   Faq,
   Feed,
@@ -56,6 +55,7 @@ import {
   UploadSecureFiles,
 } from '@/screens';
 import AddSchedulePost from '@/screens/addSchedulePost/addSchedulePost';
+import BookmarkCollectionScreen from '@/screens/bookmarkCollection/bookmarkCollection';
 import ContactVault from '@/screens/contactVault/contactVault';
 import TypographyScreen from '@/screens/typography/typography';
 import Vault from '@/screens/vault/vault';
@@ -128,10 +128,6 @@ export function RootNavigator() {
         name="AddScheduleMessage"
         component={AddScheduleMessage}
       />
-      <RootStack.Screen
-        name="EventDetailScreen"
-        component={EventDetailScreen}
-      />
 
       <RootStack.Screen
         name="ScheduledPostDetail"
@@ -192,6 +188,10 @@ export function RootNavigator() {
       <RootStack.Screen name="PasswordSetup" component={PasswordSetup} />
       <RootStack.Screen name="MyAccounts" component={MyAccounts} />
       <RootStack.Screen name="AccountDetails" component={AccountDetails} />
+      <RootStack.Screen
+        name="BookmarkCollection"
+        component={BookmarkCollectionScreen}
+      />
     </RootStack.Navigator>
   );
 }

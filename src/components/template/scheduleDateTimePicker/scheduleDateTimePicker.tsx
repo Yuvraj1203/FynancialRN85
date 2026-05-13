@@ -25,6 +25,7 @@ type Props = {
   endDateError?: string;
   loading?: boolean;
   showEndDate?: boolean;
+  enabled?: boolean;
   startDatePress?: (value?: string) => void;
   endDatePress?: (value?: string) => void;
 };
@@ -36,7 +37,7 @@ enum DateSelectionType {
 }
 
 /**  Added by @Ajay 08-04-2025 ---> Main component for scheduling date and time picker */
-const ScheduleDateTimePicker = (props: Props) => {
+const ScheduleDateTimePicker = ({ enabled = true, ...props }: Props) => {
   const theme = useTheme();
   const styles = makeStyles(theme);
 
@@ -160,7 +161,7 @@ const ScheduleDateTimePicker = (props: Props) => {
       <Tap
         disableRipple
         onPress={() => {
-          if (props.loading) {
+          if (props.loading || !enabled) {
             return;
           }
           setDateSelection(DateSelectionType.start);
@@ -195,7 +196,7 @@ const ScheduleDateTimePicker = (props: Props) => {
           disableRipple
           onPress={() => {
             // props.endDatePress?.(endDateTime);
-            if (props.loading) {
+            if (props.loading || !enabled) {
               return;
             }
             setDateSelection(DateSelectionType.end);

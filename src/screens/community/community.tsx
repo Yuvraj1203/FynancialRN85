@@ -1424,12 +1424,14 @@ function Community() {
             handleImagePopup={value => {
               setShowCommentPopup(false);
               if (value) {
-                showImagePopup({
-                  ...value,
-                  onClose() {
-                    setShowCommentPopup(true);
-                  },
-                });
+                setTimeout(() => {
+                  showImagePopup({
+                    ...value,
+                    onClose() {
+                      setShowCommentPopup(true);
+                    },
+                  });
+                }, 500);
               }
             }}
             fromNotificationItem={

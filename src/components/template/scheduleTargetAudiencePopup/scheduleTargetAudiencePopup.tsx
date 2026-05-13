@@ -39,6 +39,7 @@ type Props<T> = {
   onTemplateSelected: (value?: GetAllUsersForGlobalCalendarModel) => void;
   onselectType: (value?: string) => void;
   showCommunity?: boolean;
+  attendees?: boolean;
 };
 
 /**  Added by @Ajay 08-04-2025 ---> Enum for segmented button values */
@@ -202,28 +203,38 @@ function ScheduleTargetAudiencePopup<T>({
     >
       <View>
         <CustomSegmentedButton
-          items={[
-            {
-              label: t('Tags'),
-              value: SegmentedButtonsValues.Tags,
-            },
-            {
-              label: t('Contacts'),
-              value: SegmentedButtonsValues.Contacts,
-            },
-            {
-              label: t('ContactType'),
-              value: SegmentedButtonsValues.ContactType,
-            },
-            ...(tenantDetail?.allowCommunityTemplateCreation && showCommunity
+          items={
+            props.attendees
               ? [
                   {
-                    label: t('CommunityTemplate'),
-                    value: SegmentedButtonsValues.Templates,
+                    label: t('Attendees'),
+                    value: SegmentedButtonsValues.Contacts,
                   },
                 ]
-              : []),
-          ]}
+              : [
+                  {
+                    label: t('Tags'),
+                    value: SegmentedButtonsValues.Tags,
+                  },
+                  {
+                    label: t('Contacts'),
+                    value: SegmentedButtonsValues.Contacts,
+                  },
+                  {
+                    label: t('ContactType'),
+                    value: SegmentedButtonsValues.ContactType,
+                  },
+                  ...(tenantDetail?.allowCommunityTemplateCreation &&
+                  showCommunity
+                    ? [
+                        {
+                          label: t('CommunityTemplate'),
+                          value: SegmentedButtonsValues.Templates,
+                        },
+                      ]
+                    : []),
+                ]
+          }
           selected={SelectedAudienceType}
           allowFontScaling={false}
           setSelected={value => {

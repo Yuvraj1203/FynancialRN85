@@ -1,5 +1,4 @@
-import {Platform} from 'react-native';
-import {MD3Type} from 'react-native-paper/lib/typescript/types';
+import { MD3Type } from 'react-native-paper/lib/typescript/types';
 
 export const CustomFonts = {
   Regular: 'Poppins-Regular',
@@ -115,14 +114,14 @@ export const _fontConfig = {
   bodyMedium: {
     fontFamily: CustomFonts.Regular,
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '400',
     letterSpacing: 0,
     lineHeight: 20,
   } as MD3Type,
 
   bodyLarge: {
     fontFamily: CustomFonts.Bold,
-    fontWeight: Platform.OS === 'ios' ? 'bold' : '600',
+    fontWeight: '400',
     fontSize: 18,
     letterSpacing: 0,
     lineHeight: 24,

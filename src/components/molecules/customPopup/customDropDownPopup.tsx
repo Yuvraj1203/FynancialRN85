@@ -10,6 +10,7 @@ import { ImageType } from '@/components/atoms/customImage/customImage';
 import CustomText, {
   TextVariants,
 } from '@/components/atoms/customText/customText';
+import { EventListModel } from '@/services/models/eventListModel/eventListModel';
 import { Images } from '@/theme/assets/images';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
 import { FlashListRef } from '@shopify/flash-list';
@@ -112,10 +113,22 @@ function CustomDropDownPopup<T>({
     return (
       <Tap
         style={styles.checkboxContainer}
-        onPress={() => handleSingleSelection(item)}
+        onPress={() => {
+          if (!(item as EventListModel).disabled) {
+            handleSingleSelection(item);
+          }
+        }}
       >
         <>
-          <CustomText style={styles.flexOne} variant={TextVariants.bodyLarge}>
+          <CustomText
+            color={
+              (item as EventListModel).disabled
+                ? theme.colors.outline
+                : theme.colors.onSurfaceVariant
+            }
+            style={styles.flexOne}
+            variant={TextVariants.bodyLarge}
+          >
             {String(item[props.displayKey])}
           </CustomText>
 
@@ -127,6 +140,12 @@ function CustomDropDownPopup<T>({
                 ? 'checked'
                 : 'unchecked'
             }
+            disabled={(item as EventListModel).disabled}
+            onPress={() => {
+              if (!(item as EventListModel).disabled) {
+                handleSingleSelection(item);
+              }
+            }}
           />
         </>
       </Tap>

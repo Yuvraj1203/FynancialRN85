@@ -17,7 +17,7 @@ import i18n from './translations';
 import { ReturnScreenDataProvider } from './utils/navigationUtils';
 import { isEmpty } from './utils/utils';
 
-export const AppVersion = '2.0.5A';
+export const AppVersion = '2.0.5B';
 
 Sentry.init({
   dsn: __DEV__ ? undefined : TenantInfo.SentryDsn,

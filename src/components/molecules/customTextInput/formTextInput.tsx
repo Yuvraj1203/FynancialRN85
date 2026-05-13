@@ -104,6 +104,7 @@ type Props = {
   enabled?: boolean;
   hideText?: boolean;
   helperTxt?: string;
+  extraInfoTxt?: string;
   prefixIcon?: InputIcon;
   suffixIcon?: InputIcon;
   inputMode?: InputModes;
@@ -486,6 +487,17 @@ const FormTextInput = forwardRef<RNTextInput, Props>(
                 <></>
               )}
             </View>
+
+            {props.extraInfoTxt && (
+              <View style={styles.bottomLayout}>
+                <CustomText
+                  variant={TextVariants.labelMedium}
+                  color={theme.colors.labelLight}
+                >
+                  {props.extraInfoTxt}
+                </CustomText>
+              </View>
+            )}
             {showError && (
               <View style={styles.bottomLayout}>
                 <CustomText

@@ -158,4 +158,8 @@ export const Images = {
   thumbDown: require('../images/images/thumbDown.svg'),
   attachment: require('../images/images/attachment.svg'),
   stop: require('../images/images/stop.svg'),
+  warning: require('../images/images/warning.png'),
+  bookmark: require('../images/images/bookmark.svg'),
+  bookmarkFilled: require('../images/images/bookmarkFilled.svg'),
+  tickCircle: require('../images/images/tickCircle.svg'),
 };

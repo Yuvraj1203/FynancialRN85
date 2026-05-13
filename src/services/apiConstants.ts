@@ -69,6 +69,7 @@ export const ApiConstants = {
   GetUserProgramSessionEvents:
     'api/services/app/programevents/getuserprogramsessionevents',
   GetEventsForEdit: 'api/services/app/eventses/geteventsforedit',
+  GetO365EventsForEdit: 'api/services/app/Eventses/getO365EventsForEdit',
 
   // Add Schedule
   GetCalItemtags:
@@ -83,6 +84,8 @@ export const ApiConstants = {
     'api/services/app/GlobalCalendarDatas/saveGlobalCalendarAndReminderData',
   GetGlobalEventForEdit:
     'api/services/app/GlobalCalendarDatas/getGlobalEventForEdit',
+  GetGlobalO365EventForEdit:
+    'api/services/app/GlobalCalendarDatas/getGlobalO365EventForEdit',
   GetGlobalReminderForEdit:
     'api/services/app/GlobalCalendarDatas/getGlobalReminderForEdit',
   GetAllReminderType: 'api/services/app/ReminderTypes/GetAllReminderType',
@@ -143,12 +146,16 @@ export const ApiConstants = {
   GetFeedDetailForEdit: 'api/services/app/feeddetails/getfeeddetailforedit',
   GetPostDetailForEdit: 'api/services/app/feeddetails/getPostDetailForEdit',
   GetPostById: 'api/services/app/feeddetails/getpostbyid',
+  GetPostsByFeedDetailIds:
+    'api/services/app/feeddetails/GetPostsByFeedDetailIds',
   saveUserPersonalInfo: 'api/services/app/userdetails/saveUserPersonalInfo',
   saveUserContactInfo: 'api/services/app/userdetails/saveUserContactInfo',
   GetScheduleTasksForGlobalCalendar:
     'api/services/app/GlobalCalendarDatas/getScheduleTasksForGlobalCalendar',
   DeleteGlobalCalTask:
     'api/services/app/GlobalCalendarDatas/deleteglobalcaltask',
+  RemoveFromFynancial:
+    'api/services/app/GlobalCalendarDatas/removeFromFynancial',
   GetGlobalPostForEdit:
     'api/services/app/GlobalCalendarDatas/getGlobalPostForEdit',
   GetGlobalActionItemForEdit:
@@ -218,6 +225,11 @@ export const ApiConstants = {
   GetReminderById: 'api/services/app/contactdashboard/getreminderbyid',
   GetGlobalCalendarContactType:
     'api/services/app/GlobalCalendarItemTagMappings/GetGlobalCalendarContactType',
+  GetFynancialAttendees:
+    'api/services/app/CalendarEventAttendees/GetFynancialAttendees',
+  GetExternalAttendees:
+    'api/services/app/CalendarEventAttendees/GetExternalAttendees',
+  UpdateAttendees: 'api/services/app/MicrosoftOfficeApi/UpdateAttendees',
   GetProfilePicture: 'api/services/app/Chat/GetProfilePicture',
 
   GetResourceTypes: 'api/services/app/FeedDetails/GetResourceTypes',
@@ -270,6 +282,30 @@ export const ApiConstants = {
   GetAccountTransactions:
     'api/services/app/UserVendorData/getAccountTransactions',
   GetTimePeriods: 'api/services/app/UserVendorData/GetTimePeriods',
+
+  // Bookmark Collection APIs (FYN-10455)
+  ToggleSaveFeed: 'api/services/app/BookmarkedFeeds/ToggleSaveFeed',
+  ToggleCollectionMembership:
+    'api/services/app/bookmarkedFeeds/toggleCollectionMembership',
+  RemoveFromCollection: 'api/services/app/bookmarkedFeeds/removeFromCollection',
+  GetUserBookmarkedFeedIds:
+    'api/services/app/bookmarkedFeeds/getUserBookmarkedFeedIds',
+  GetSavedFeedsCount: 'api/services/app/bookmarkedFeeds/getSavedFeedsCount',
+  GetSavedFeedDetailIds:
+    'api/services/app/bookmarkedFeeds/getSavedFeedDetailIds',
+  GetUserCollections: 'api/services/app/bookmarkedFeeds/getUserCollections',
+  CreateCollection: 'api/services/app/bookmarkedFeeds/createCollection',
+  RenameCollection: 'api/services/app/bookmarkedFeeds/renameCollection',
+  DeleteCollection: 'api/services/app/bookmarkedFeeds/deleteCollection',
+  MoveToCollection: 'api/services/app/bookmarkedFeeds/moveToCollection',
+  BulkMoveToCollection: 'api/services/app/bookmarkedFeeds/bulkMoveToCollection',
+  BulkAssignToCollection:
+    'api/services/app/bookmarkedFeeds/bulkAssignToCollection',
+  BulkRemoveBookmarks: 'api/services/app/bookmarkedFeeds/bulkRemoveBookmarks',
+  BulkUnsaveFeeds: 'api/services/app/bookmarkedFeeds/bulkUnsaveFeeds',
+  GetFeedsInCollection: 'api/services/app/bookmarkedFeeds/getFeedsInCollection',
+  GetBookmarkedPostsForView:
+    'api/services/app/FeedDetails/GetBookmarkedPostsForView',
 
   ChatBotBaseUrl: 'https://fynancial.aicrisk.com/',
   ChatBotUserId: 'f28fb2cd-741c-4d1c-9da5-7cae37afe748',

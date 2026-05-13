@@ -30,6 +30,8 @@ export type GetScheduleTasksForGlobalCalendarModel = {
   uiTitle?: string;
   icon?: string;
   FromSelf?: boolean;
+  requireAttention?: boolean;
+  isOffice365?: boolean;
 };
 
 export type onBehalfOfModel = {

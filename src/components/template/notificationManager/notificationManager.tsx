@@ -806,7 +806,7 @@ function NotificationManager() {
               },
             },
             {
-              screen: 'EventDetailScreen',
+              screen: 'ScheduleEventDetail',
               data: {
                 id: notificationData?.EventId,
               },

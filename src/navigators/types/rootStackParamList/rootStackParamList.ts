@@ -6,6 +6,8 @@ import { AddScheduleEventProps } from '@/screens/addScheduleEvent/addScheduleEve
 import { AddScheduleMessageProps } from '@/screens/addScheduleMessage/addScheduleMessage';
 import { AddSchedulePostProps } from '@/screens/addSchedulePost/addSchedulePost';
 import { AddScheduleReminderProps } from '@/screens/addScheduleReminder/addScheduleReminder';
+import { BookmarkCollectionScreenProps } from '@/screens/bookmarkCollection/bookmarkCollection';
+import { BookmarksScreenProps } from '@/screens/bookmarks/bookmarks';
 import { ChatProps } from '@/screens/chat/chat';
 import { ChatImageUploadProps } from '@/screens/chat/chatImageUpload';
 import { ChatGroupMemberProps } from '@/screens/chatGroupMember/chatGroupMember';
@@ -15,7 +17,6 @@ import { CreateLicenseCertificateProps } from '@/screens/createLicenseCertificat
 import { CreatePostProps } from '@/screens/CreatePost/CreatePost';
 import { CustomNotificationProps } from '@/screens/customNotification/customNotification';
 import { DashBoardProps } from '@/screens/dashboard/dashboard';
-import { EventDetailScreenProps } from '@/screens/eventDetailScreen/eventDetailScreen';
 import { FeedProps } from '@/screens/feed/feed';
 import { GroupMembersProps } from '@/screens/groupMembers/groupMembers';
 import { HtmlRenderScreenProps } from '@/screens/htmlRenderScreen/htmlRenderScreen';
@@ -60,7 +61,6 @@ export type RootStackParamList = {
   Chat: ChatProps | undefined;
   HtmlRenderScreen: HtmlRenderScreenProps | undefined;
   TypographyScreen: undefined;
-  EventDetailScreen: EventDetailScreenProps | undefined;
   ResourceSubCategory: ResourceSubCategoryProp | undefined;
   ChatGroupMember: ChatGroupMemberProps | undefined;
   EventViewAll?: undefined;
@@ -83,7 +83,6 @@ export type RootStackParamList = {
   ChatImageUpload: ChatImageUploadProps | undefined;
   CreateLicenseCertificate: CreateLicenseCertificateProps | undefined;
   PasswordSetup: undefined;
-
   ScheduledPostDetail: ScheduledPostDetailProps | undefined;
   ScheduleEventDetail: ScheduleEventDetailProps | undefined;
   ScheduleReminderDetail: ScheduleReminderDetailProps | undefined;
@@ -92,4 +91,6 @@ export type RootStackParamList = {
   ScheduleGroupMessageDetail: ScheduleGroupMessageDetailProps | undefined;
   MyAccounts: MyAccountsProps;
   AccountDetails: AccountDetailsProps;
+  BookmarkCollection: BookmarkCollectionScreenProps;
+  Bookmarks: BookmarksScreenProps;
 };

@@ -1085,7 +1085,7 @@ const makeStyles = (theme: CustomTheme) =>
     },
     contactOption: {
       width: 40,
-      height: 30,
+      height: 27,
       alignItems: 'center',
       justifyContent: 'center',
     },

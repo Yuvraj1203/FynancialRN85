@@ -1,12 +1,12 @@
-import {CustomText} from '@/components/atoms';
-import {TextVariants} from '@/components/atoms/customText/customText';
+import { CustomText } from '@/components/atoms';
+import { TextVariants } from '@/components/atoms/customText/customText';
 import {
   GetCardsForUserDashboardModel,
   GetPerformanceSummaryDataModel,
 } from '@/services/models';
-import {CustomTheme, useTheme} from '@/theme/themeProvider/paperTheme';
-import {useTranslation} from 'react-i18next';
-import {StyleSheet, View} from 'react-native';
+import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
+import { useTranslation } from 'react-i18next';
+import { StyleSheet, View } from 'react-native';
 import CustomLinkIconCard from './customLinkIconCard';
 import ErrorCard from './errorCard';
 
@@ -24,7 +24,7 @@ function OrionPs(props: Props) {
   const styles = makeStyles(theme);
 
   /** Added by @Yuvraj 31-01-2025 -> translations for labels (FYN-4299) */
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   const maxFontSize = 1.3;
 
@@ -38,7 +38,7 @@ function OrionPs(props: Props) {
     ) {
       return theme.colors.error;
     } else {
-      return theme.colors.completed;
+      return theme.dark ? theme.colors.primary : theme.colors.completed;
     }
   };
 
@@ -49,7 +49,8 @@ function OrionPs(props: Props) {
         variant={TextVariants.bodyLarge}
         color={
           props.isPrimary ? theme.colors.surface : theme.colors.onSurfaceVariant
-        }>
+        }
+      >
         {props.cardData.title}
       </CustomText>
 
@@ -60,13 +61,15 @@ function OrionPs(props: Props) {
               <CustomText
                 maxFontSizeMultiplier={maxFontSize}
                 variant={TextVariants.bodyMedium}
-                style={styles.orionPsItemTitle}>
+                style={styles.orionPsItemTitle}
+              >
                 {t('EndingValue')}
               </CustomText>
               <CustomText
                 maxFontSizeMultiplier={maxFontSize}
                 variant={TextVariants.bodyLarge}
-                style={styles.orionPsItemValue}>
+                style={styles.orionPsItemValue}
+              >
                 {props.data.endingValue}
               </CustomText>
             </View>
@@ -74,14 +77,16 @@ function OrionPs(props: Props) {
               <CustomText
                 maxFontSizeMultiplier={maxFontSize}
                 variant={TextVariants.bodyMedium}
-                style={styles.orionPsItemTitle}>
+                style={styles.orionPsItemTitle}
+              >
                 {t('InvestmentGain')}
               </CustomText>
               <CustomText
                 maxFontSizeMultiplier={maxFontSize}
                 color={textColorOfDataValues()}
                 variant={TextVariants.bodyLarge}
-                style={styles.orionPsItemValue}>
+                style={styles.orionPsItemValue}
+              >
                 {props.data.investmentGain}
               </CustomText>
             </View>
@@ -89,14 +94,16 @@ function OrionPs(props: Props) {
               <CustomText
                 maxFontSizeMultiplier={maxFontSize}
                 variant={TextVariants.bodyMedium}
-                style={styles.orionPsItemTitle}>
+                style={styles.orionPsItemTitle}
+              >
                 {t('NetTwr')}
               </CustomText>
               <CustomText
                 maxFontSizeMultiplier={maxFontSize}
                 color={textColorOfDataValues()}
                 variant={TextVariants.bodyLarge}
-                style={styles.orionPsItemValue}>
+                style={styles.orionPsItemValue}
+              >
                 {props.data.netTWR}
               </CustomText>
             </View>
@@ -109,7 +116,8 @@ function OrionPs(props: Props) {
                 props.isPrimary
                   ? theme.colors.surface
                   : theme.colors.onSurfaceVariant
-              }>
+              }
+            >
               {t('InceptionToDate')}
             </CustomText>
           </View>
@@ -131,7 +139,7 @@ const makeStyles = (theme: CustomTheme) =>
       flex: 1,
       padding: 20,
     },
-    cardMain: {flex: 1},
+    cardMain: { flex: 1 },
     orionPsData: {
       flex: 1,
       justifyContent: 'center',

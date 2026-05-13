@@ -11,6 +11,7 @@ import {
 } from '@/components/molecules';
 import { HeaderIconProps } from '@/components/molecules/customHeader/customHeader';
 import { CommentPopup, SafeScreen, SupportPopup } from '@/components/template';
+import { showBookmarkPopup } from '@/components/template/bookmarkPopup/bookmarkPopup';
 import PostItem, { PostType } from '@/components/template/postItem/postItem';
 import { showTemplatePopup } from '@/components/template/templatePopup/templatePopup';
 import { ApiConstants } from '@/services/apiConstants';
@@ -50,12 +51,17 @@ import {
 import { showAlertPopup } from '@/components/template/alertPopup/alertPopup';
 import { showImagePopup } from '@/components/template/imagePopup/imagePopup';
 
+import CustomSegmentedButton, {
+  SegmentedButtonItem,
+} from '@/components/molecules/customSegmentedButton/customSegmentedButton';
+import { BookmarkedFeedIdDto } from '@/services/models/bookmarkModel/bookmarkModel';
 import { GetFeedPostDetailsForEditModel } from '@/services/models/getFeedPostModel/getFeedPostModel';
 import { useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, StyleSheet, View } from 'react-native';
 import { Asset } from 'react-native-image-picker';
+import BookmarksScreen from '../bookmarks/bookmarks';
 
 import { hideLoader } from '@/components/molecules/loader/loader';
 import { CommentType } from '@/components/template/commentItem/commentItem';
@@ -184,6 +190,12 @@ function Feed() {
   const [editCommentId, setEditCommentId] = useState<GetAllCommentsModel>();
   const route = useAppRoute('ContactFeed');
 
+  /**
+   * Bookmark functionality is visible only to non-advisor users (FYN-10455).
+   * Advisors (isAdvisor=true) do not see the bookmark icon or Bookmarks tab.
+   */
+  const isContactFeed = userDetails?.isAdvisor === false;
+
   const [editPostIdloading, setEditPostIdloading] = useState<string>();
   const { receiveDataBack } = useReturnDataContext(); // get data back from next screen
   const [updatePostId, setUpdatePostId] = useState<number>();
@@ -207,6 +219,24 @@ function Feed() {
 
   const [fromNotification, setFromNotification] = useState(false);
   const [fromLikeScreen, setFromLikeScreen] = useState(false);
+
+  // Bookmark tab state (FYN-10455)
+  const [bookmarkCount, setBookmarkCount] = useState(0);
+  const feedTabItem: SegmentedButtonItem = { label: t('Feed'), value: 'feed' };
+  const bookmarksTabItem: SegmentedButtonItem = {
+    label:
+      bookmarkCount > 0
+        ? `${t('Bookmarks')} (${bookmarkCount})`
+        : t('Bookmarks'),
+    value: 'bookmarks',
+  };
+
+  const [activeTab, setActiveTab] = useState<SegmentedButtonItem>(feedTabItem);
+  const [bookmarksTabVisited, setBookmarksTabVisited] = useState(false);
+  // Map: postDetailID -> BookmarkedFeedIdDto
+  const [bookmarkMap, setBookmarkMap] = useState<
+    Record<string, BookmarkedFeedIdDto>
+  >({});
 
   const isFocused = useIsFocused();
 
@@ -395,6 +425,11 @@ function Feed() {
           ? templateData.selectedTemplate?.groupID
           : undefined,
     });
+
+    // Refresh bookmarked IDs — only for Contacts feed (FYN-10455)
+    if (isContactFeed) {
+      fetchBookmarkedIds();
+    }
   };
 
   /**
@@ -972,6 +1007,13 @@ function Feed() {
    * Added by  @Shivang 02-04-25 -> Function to render each feed item (FYN-4065 )
    */
   const renderFeedItem = (item: GetFeedPostModel) => {
+    // Bookmark state only applies in the Contacts feed (FYN-10455)
+    const bmEntry =
+      isContactFeed && item.postDetailID
+        ? bookmarkMap[item.postDetailID]
+        : undefined;
+    const isBookmarked = !!bmEntry;
+
     return (
       <PostItem
         item={item}
@@ -989,6 +1031,75 @@ function Feed() {
         }} // CHANGED (function pass)
         openLinks={openInAppBrowser}
         type={PostType.feed}
+        // Bookmark icon only visible in Contacts feed (FYN-10455)
+        isBookmarked={isContactFeed ? isBookmarked : undefined}
+        bookmarkClick={
+          // Bookmark action only wired up in Contacts feed (FYN-10455)
+          isContactFeed
+            ? () => {
+                Log(
+                  `[Feed][Bookmark] Bookmark icon tapped | postDetailID=${
+                    item.postDetailID
+                  } | isBookmarked=${isBookmarked} | bookmarkId=${
+                    bmEntry?.bookmarkId ?? 'null'
+                  } | collectionId=${bmEntry?.collectionId ?? 'null'}`,
+                );
+                showBookmarkPopup({
+                  feedDetailId: item.postDetailID ?? '',
+                  isBookmarked,
+                  bookmarkId: bmEntry?.bookmarkId,
+                  collectionId: bmEntry?.collectionId,
+                  sessionId: templateData.selectedTemplate?.programSessionID,
+                  groupId: templateData.selectedTemplate?.groupID,
+                  onSaved: (_bmId, colId) => {
+                    Log(
+                      `[Feed][Bookmark] onSaved callback | postDetailID=${
+                        item.postDetailID
+                      } | bookmarkId=${_bmId} | collectionId=${
+                        colId ?? 'null'
+                      }`,
+                    );
+                    setBookmarkMap(prev => ({
+                      ...prev,
+                      [item.postDetailID ?? '']: {
+                        bookmarkId: _bmId,
+                        feedDetailId: item.postDetailID ?? '',
+                        collectionId: colId,
+                      },
+                    }));
+                    fetchBookmarkedIds();
+                  },
+                  onRemoved: () => {
+                    Log(
+                      `[Feed][Bookmark] onRemoved callback | postDetailID=${item.postDetailID}`,
+                    );
+                    setBookmarkMap(prev => {
+                      const next = { ...prev };
+                      delete next[item.postDetailID ?? ''];
+                      return next;
+                    });
+                  },
+                  onCollectionChanged: (_bmId, colId) => {
+                    Log(
+                      `[Feed][Bookmark] onCollectionChanged callback | postDetailID=${
+                        item.postDetailID
+                      } | bookmarkId=${_bmId} | newCollectionId=${
+                        colId ?? 'null'
+                      }`,
+                    );
+                    setBookmarkMap(prev => ({
+                      ...prev,
+                      [item.postDetailID ?? '']: {
+                        ...prev[item.postDetailID ?? ''],
+                        bookmarkId: _bmId,
+                        collectionId: colId,
+                      },
+                    }));
+                  },
+                });
+              }
+            : undefined
+        }
         //shortContent
         likeClick={() => {
           updateFeed({
@@ -1021,6 +1132,79 @@ function Feed() {
         loading={item.postDetailID == updatePostId}
       />
     );
+  };
+
+  // ── Bookmark mutations (FYN-10455) ──────────────────────────────────────
+
+  const fetchBookmarkCountApi = useMutation<number, Error>({
+    mutationFn: () =>
+      makeRequest<number>({
+        endpoint: ApiConstants.GetSavedFeedsCount,
+        method: HttpMethodApi.Get,
+        data: {
+          sessionId:
+            templateData.selectedTemplate?.programTypeID !== 0 &&
+            templateData.selectedTemplate?.programTypeID !== undefined &&
+            templateData.selectedTemplate?.programTypeID !== null
+              ? templateData.selectedTemplate?.programSessionID
+              : undefined,
+          groupId:
+            templateData.selectedTemplate?.programTypeID !== 0 &&
+            templateData.selectedTemplate?.programTypeID !== undefined &&
+            templateData.selectedTemplate?.programTypeID !== null
+              ? templateData.selectedTemplate?.groupID
+              : undefined,
+        },
+      }).then(res => res?.result ?? 0),
+    onSuccess: count => setBookmarkCount(count),
+  });
+
+  const fetchBookmarkedIdsApi = useMutation<
+    GetFeedPostModel[],
+    Error,
+    Record<string, any>
+  >({
+    mutationFn: (sendData: Record<string, any>) =>
+      makeRequest<GetFeedPostModel[]>({
+        endpoint: ApiConstants.GetBookmarkedPostsForView,
+        method: HttpMethodApi.Get,
+        data: sendData,
+      }).then(res => res?.result ?? []),
+    onSuccess: list => {
+      const map: Record<string, BookmarkedFeedIdDto> = {};
+      list.forEach(item => {
+        if (item.postDetailID && item.bookmarkId) {
+          map[item.postDetailID] = {
+            bookmarkId: item.bookmarkId,
+            feedDetailId: item.postDetailID,
+            collectionId: item.collectionId ?? null,
+          };
+        }
+      });
+      Log(`[Feed][Bookmark] bookmarkedPosts fetched | count=${list.length}`);
+      setBookmarkMap(map);
+    },
+    onError: (err: any) => {
+      Log(`[Feed][Bookmark] fetchBookmarkedIds error | ${err?.message}`);
+    },
+  });
+
+  const fetchBookmarkedIds = () => {
+    fetchBookmarkedIdsApi.mutate({
+      sessionId:
+        templateData.selectedTemplate?.programTypeID !== 0 &&
+        templateData.selectedTemplate?.programTypeID !== undefined &&
+        templateData.selectedTemplate?.programTypeID !== null
+          ? templateData.selectedTemplate?.programSessionID
+          : undefined,
+      groupId:
+        templateData.selectedTemplate?.programTypeID !== 0 &&
+        templateData.selectedTemplate?.programTypeID !== undefined &&
+        templateData.selectedTemplate?.programTypeID !== null
+          ? templateData.selectedTemplate?.groupID
+          : undefined,
+    });
+    fetchBookmarkCountApi.mutate();
   };
 
   /**
@@ -1114,10 +1298,31 @@ function Feed() {
             setHasMoreData(false);
           }
         }
+
+        if (isContactFeed) {
+          const newPostEntries: Record<string, BookmarkedFeedIdDto> = {};
+          data.result.forEach(item => {
+            if (item.postDetailID && item.bookmarkId) {
+              newPostEntries[item.postDetailID] = {
+                bookmarkId: item.bookmarkId,
+                feedDetailId: item.postDetailID,
+                collectionId: item.collectionId ?? null,
+              };
+            }
+          });
+          if (variables.PageNumber === 1) {
+            setBookmarkMap(newPostEntries);
+          } else {
+            setBookmarkMap(prev => ({ ...prev, ...newPostEntries }));
+          }
+        }
       } else {
         setHasMoreData(false);
         if (variables.PageNumber == 1) {
           setFeedPostList([]);
+          if (isContactFeed) {
+            setBookmarkMap({});
+          }
         }
       }
     },
@@ -1453,7 +1658,7 @@ function Feed() {
           title={t('Feed')}
           rightIcons={setHeaderRightIcons()}
           showSearchIcon={
-            fromNotification
+            fromNotification || activeTab.value === 'bookmarks'
               ? false
               : templateData.templateList
               ? templateData.selectedTemplate
@@ -1465,83 +1670,121 @@ function Feed() {
           setSearchText={searchFeeds}
         />
 
-        {loading ? (
-          <SkeletonList />
-        ) : (
-          <View style={styles.main}>
-            <CustomFlatList
-              data={feedPostList}
-              extraData={[editPostIdloading]}
-              contentContainerStyle={
-                feedPostList.length == 0
-                  ? styles.flatListContainerStyle
-                  : undefined
+        {/* Bookmarks / Feed tab switcher — Contacts feed only (FYN-10455) */}
+        {!fromNotification && isContactFeed && (
+          <CustomSegmentedButton
+            items={[feedTabItem, bookmarksTabItem]}
+            selected={activeTab}
+            setSelected={value => {
+              if (value.value === 'bookmarks' && !bookmarksTabVisited) {
+                setBookmarksTabVisited(true);
               }
-              refreshing={loading}
-              keyExtractor={(item, index) =>
-                `feedpost-${item.postDetailID!}-${index}`
-              }
-              ItemSeparatorComponent={() => (
-                <Divider style={styles.postItemSeprator} />
-              )}
-              onRefresh={() => {
-                if (fromNotification) {
-                  handleNotification();
-                } else {
-                  callGetAllPostApi(1);
-                }
-              }}
-              onEndReachedThreshold={0.6}
-              onEndReached={loadMoreFeed}
-              ListFooterComponent={
-                hasMoreData && feedPostList.length > 0 ? (
-                  <LoadMore />
-                ) : !fromNotification && feedPostList.length > 0 ? (
-                  <View style={styles.listFooter}>
-                    <View style={styles.divider} />
-                    <CustomText
-                      style={styles.FeedEndText}
-                      variant={TextVariants.titleSmall}
-                    >
-                      {t('EndOfFeed')}
-                    </CustomText>
-                  </View>
-                ) : (
-                  <></>
-                )
-              }
-              ListEmptyComponent={
-                <EmptyView
-                  label={
-                    search.length > 0 ? t('NoPostSearchMsg') : t('NoPostsMsg')
-                  }
-                />
-              }
-              renderItem={({ item }) => renderFeedItem(item)}
-            />
+              setActiveTab(value);
+            }}
+            style={styles.segmentedButton}
+          />
+        )}
 
-            {route.params?.navigationFrom !=
-              FeedParentScreenType.fromNotification &&
-              userDetails?.isAdvisor && (
-                <Tap
-                  style={styles.fab}
-                  onPress={() => {
-                    navigation.navigate('CreatePost', {
-                      selectedUserId: route.params?.selectedUserId,
-                      navigationFrom: FeedParentScreenType.contactListing,
-                    });
-                  }}
-                >
-                  <CustomImage
-                    style={styles.icon}
-                    source={Images.edit}
-                    type={ImageType.svg}
-                    color={theme.colors.surface}
-                  />
-                </Tap>
-              )}
+        {bookmarksTabVisited && (
+          <View
+            style={[
+              styles.main,
+              { display: activeTab.value === 'bookmarks' ? 'flex' : 'none' },
+            ]}
+          >
+            <BookmarksScreen
+              sessionId={templateData.selectedTemplate?.programSessionID}
+              groupId={templateData.selectedTemplate?.groupID}
+              onCountChange={setBookmarkCount}
+              isActive={activeTab.value === 'bookmarks'}
+            />
           </View>
         )}
+
+        <View
+          style={[
+            styles.main,
+            { display: activeTab.value === 'bookmarks' ? 'none' : 'flex' },
+          ]}
+        >
+          {loading ? (
+            <SkeletonList />
+          ) : (
+            <View style={styles.main}>
+              <CustomFlatList
+                data={feedPostList}
+                extraData={[editPostIdloading]}
+                contentContainerStyle={
+                  feedPostList.length == 0
+                    ? styles.flatListContainerStyle
+                    : undefined
+                }
+                refreshing={loading}
+                keyExtractor={(item, index) =>
+                  `feedpost-${item.postDetailID!}-${index}`
+                }
+                ItemSeparatorComponent={() => (
+                  <Divider style={styles.postItemSeprator} />
+                )}
+                onRefresh={() => {
+                  if (fromNotification) {
+                    handleNotification();
+                  } else {
+                    callGetAllPostApi(1);
+                  }
+                }}
+                onEndReachedThreshold={0.6}
+                onEndReached={loadMoreFeed}
+                ListFooterComponent={
+                  hasMoreData && feedPostList.length > 0 ? (
+                    <LoadMore />
+                  ) : !fromNotification && feedPostList.length > 0 ? (
+                    <View style={styles.listFooter}>
+                      <View style={styles.divider} />
+                      <CustomText
+                        style={styles.FeedEndText}
+                        variant={TextVariants.titleSmall}
+                      >
+                        {t('EndOfFeed')}
+                      </CustomText>
+                    </View>
+                  ) : (
+                    <></>
+                  )
+                }
+                ListEmptyComponent={
+                  <EmptyView
+                    label={
+                      search.length > 0 ? t('NoPostSearchMsg') : t('NoPostsMsg')
+                    }
+                  />
+                }
+                renderItem={({ item }) => renderFeedItem(item)}
+              />
+
+              {route.params?.navigationFrom !=
+                FeedParentScreenType.fromNotification &&
+                userDetails?.isAdvisor && (
+                  <Tap
+                    style={styles.fab}
+                    onPress={() => {
+                      navigation.navigate('CreatePost', {
+                        selectedUserId: route.params?.selectedUserId,
+                        navigationFrom: FeedParentScreenType.contactListing,
+                      });
+                    }}
+                  >
+                    <CustomImage
+                      style={styles.icon}
+                      source={Images.edit}
+                      type={ImageType.svg}
+                      color={theme.colors.surface}
+                    />
+                  </Tap>
+                )}
+            </View>
+          )}
+        </View>
         {selectedPost && (
           <CommentPopup
             moduleType="feed"
@@ -1608,12 +1851,14 @@ function Feed() {
             handleImagePopup={value => {
               setShowCommentPopup(false);
               if (value) {
-                showImagePopup({
-                  ...value,
-                  onClose() {
-                    setShowCommentPopup(true);
-                  },
-                });
+                setTimeout(() => {
+                  showImagePopup({
+                    ...value,
+                    onClose() {
+                      setShowCommentPopup(true);
+                    },
+                  });
+                }, 500);
               }
             }}
             fromNotificationItem={
@@ -1777,6 +2022,10 @@ const makeStyles = (theme: CustomTheme, safeAreaInsets: EdgeInsets) =>
     icon: {
       width: 27,
       height: 27,
+    },
+    segmentedButton: {
+      marginHorizontal: 16,
+      marginBottom: 4,
     },
   });
 

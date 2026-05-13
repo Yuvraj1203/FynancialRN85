@@ -467,7 +467,7 @@ const makeStyles = (theme: CustomTheme, props: Props) =>
       left: 5,
       position: 'absolute',
       justifyContent: 'center',
-      top: 15,
+      top: 13,
       //bottom: 15,
     },
     prefixIconImage: {

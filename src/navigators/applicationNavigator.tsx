@@ -1,6 +1,7 @@
 import { Loader } from '@/components/molecules';
 import { AlertPopup, ImagePopup, TemplatePopup } from '@/components/template';
 import BiometricPopup from '@/components/template/biometricPopup/biometricPopup';
+import BookmarkPopup from '@/components/template/bookmarkPopup/bookmarkPopup';
 import NotificationManager, {
   notificationSeenApi,
 } from '@/components/template/notificationManager/notificationManager';
@@ -19,16 +20,14 @@ import {
   userStore,
 } from '@/store';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
-import {
-  getFirebaseAnalytics,
-  getFirebaseMessaging,
-} from '@/utils/firebase';
 import Log from '@/utils/logger';
 import { DdRumReactNavigationTracking } from '@datadog/mobile-react-navigation';
 import { NetInfoState, useNetInfo } from '@react-native-community/netinfo';
-import { logEvent } from '@react-native-firebase/analytics';
+import { getAnalytics, logEvent } from '@react-native-firebase/analytics';
+import { getApp } from '@react-native-firebase/app';
 import {
   getInitialNotification,
+  getMessaging,
   onNotificationOpenedApp,
 } from '@react-native-firebase/messaging';
 import {
@@ -36,7 +35,7 @@ import {
   NavigationContainer,
   useNavigationContainerRef,
 } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useMutation } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -46,8 +45,9 @@ import { PaperProvider } from 'react-native-paper';
 import { RootNavigator } from './routes';
 import { RootStackParamList } from './types';
 
-const messaging = getFirebaseMessaging();
-const analytics = getFirebaseAnalytics();
+const app = getApp();
+const messaging = getMessaging(app);
+const analytics = getAnalytics(app);
 
 const linking: LinkingOptions<ReactNavigation.RootParamList> = {
   prefixes: ['fynancialapp://'],
@@ -74,9 +74,6 @@ const linking: LinkingOptions<ReactNavigation.RootParamList> = {
     if (typeof url === 'string') {
       return url;
     }
-    if (!messaging) {
-      return undefined;
-    }
     //getInitialNotification: When the application is opened from a quit state.
     const message = await getInitialNotification(messaging);
     notificationSeenApi({
@@ -90,13 +87,11 @@ const linking: LinkingOptions<ReactNavigation.RootParamList> = {
     const linkingSubscription = Linking.addEventListener('url', onReceiveURL);
 
     //onNotificationOpenedApp: When the application is running, but in the background.
-    const unsubscribe = messaging
-      ? onNotificationOpenedApp(messaging, message => {
-          notificationSeenApi({
-            notificationData: message?.data as NotificationDataModel,
-          });
-        })
-      : () => {};
+    const unsubscribe = onNotificationOpenedApp(messaging, message => {
+      notificationSeenApi({
+        notificationData: message?.data as NotificationDataModel,
+      });
+    });
 
     return () => {
       linkingSubscription.remove();
@@ -352,9 +347,6 @@ function ApplicationNavigator() {
             const currentRouteName = navigationRef.getCurrentRoute()?.name;
 
             const trackScreenView = async (screenName: string | undefined) => {
-              if (!analytics) {
-                return;
-              }
               await logEvent(analytics, 'screen_view' as any, {
                 screen_name: currentRouteName,
                 screen_class: currentRouteName,
@@ -371,6 +363,7 @@ function ApplicationNavigator() {
 
           <TemplatePopup />
           <AlertPopup />
+          <BookmarkPopup />
           <ImagePopup />
           <NotificationManager />
           <BiometricPopup />

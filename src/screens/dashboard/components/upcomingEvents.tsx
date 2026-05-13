@@ -128,6 +128,7 @@ function UpcomingEvents(props: Props) {
         onPress={() => {
           navigation.navigate('ScheduleEventDetail', {
             id: eventItem.id,
+            contactItem: eventItem,
           });
         }}
         style={styles.eventCard}

@@ -15,6 +15,7 @@ import {
   userStore,
 } from '@/store';
 import { UserBiometricOption } from '@/store/biometricStore/biometricStore';
+import useSignalRStore from '@/store/signalRStore/signalRStore';
 import { TenantInfo } from '@/tenantInfo';
 import { Images } from '@/theme/assets/images';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
@@ -33,6 +34,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, Platform, StyleSheet, View } from 'react-native';
 import { useAuth0 } from 'react-native-auth0';
+import DeviceInfo from 'react-native-device-info';
 import { check, PERMISSIONS, RESULTS } from 'react-native-permissions';
 
 const { width, height } = Dimensions.get('window');
@@ -70,6 +72,8 @@ function Splash() {
   const logoutTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const retryCountRef = useRef(0);
+
+  const signalRConnected = useSignalRStore(state => state.isConnected);
 
   useEffect(() => {
     handleAppStart();
@@ -372,6 +376,17 @@ function Splash() {
             style={styles.splashLoadingGif}
             resizeMode={ResizeModeType.contain}
           />
+          <View style={styles.bottomLay}>
+            {signalRConnected && <View style={styles.dot} />}
+
+            <CustomText variant={TextVariants.labelSmall}>{`${t(
+              'BuildVersion',
+            )} : ${AppVersion}`}</CustomText>
+            <CustomText variant={TextVariants.labelSmall}>
+              {`${t('Version')} : ${DeviceInfo.getVersion()}`}
+            </CustomText>
+          </View>
+
           {showNoInternetRef.current !== undefined && (
             <Shadow
               onPress={() => {
@@ -415,7 +430,7 @@ const makeStyles = (theme: CustomTheme) =>
     },
     splashLoading: {
       position: 'absolute',
-      bottom: 50,
+      bottom: 0,
       left: 10,
       right: 10,
     },
@@ -444,6 +459,23 @@ const makeStyles = (theme: CustomTheme) =>
       backgroundColor: theme.colors.onError,
       padding: 10,
       borderRadius: theme.roundness,
+    },
+    bottomLay: {
+      alignSelf: 'center',
+      justifyContent: 'center',
+      alignItems: 'center',
+      flexDirection: 'row',
+      paddingTop: 20,
+      paddingBottom: 20,
+      paddingHorizontal: 10,
+      gap: 10,
+    },
+    dot: {
+      height: 5,
+      width: 5,
+      borderRadius: 5,
+      backgroundColor: theme.colors.completed,
+      marginTop: 5,
     },
   });
 

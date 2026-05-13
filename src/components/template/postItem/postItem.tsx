@@ -66,6 +66,8 @@ type Props = {
   shortContent?: boolean;
   loading?: boolean;
   showMoreClick?: () => void;
+  bookmarkClick?: () => void;
+  isBookmarked?: boolean;
 };
 
 function PostItem({ item, ...props }: Props) {
@@ -503,6 +505,24 @@ function PostItem({ item, ...props }: Props) {
               imageStyle={styles.likeIcon}
               onPress={props.commentClick}
             />
+            {/* Only render bookmark button when bookmarkClick is provided (FYN-10455) */}
+            {props.bookmarkClick !== undefined && (
+              <FeatureButton
+                source={
+                  props.isBookmarked ? Images.bookmarkFilled : Images.bookmark
+                }
+                label={t('Bookmark')}
+                color={
+                  props.isBookmarked ? theme.colors.primary : undefined
+                }
+                fillColor={
+                  props.isBookmarked ? theme.colors.primary : undefined
+                }
+                imageStyle={styles.likeIcon}
+                onIconPress={props.bookmarkClick}
+                onPress={props.bookmarkClick}
+              />
+            )}
           </View>
           {item.commentsReplies && item.commentsReplies.length > 0 && (
             <Tap

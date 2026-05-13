@@ -1,4 +1,3 @@
-// src/screens/scheduleDetails/ScheduleEventDetailScreen.tsx
 import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
 import { RefreshControl, StyleSheet, View } from 'react-native';
@@ -28,6 +27,7 @@ import {
   GetEventsForEditModel,
   GetGlobalScheduleDetailForEditModel,
   GetScheduleTasksForGlobalCalendarModel,
+  GetUserProgramSessionEventsModel,
 } from '@/services/models';
 
 import { userStore } from '@/store';
@@ -50,6 +50,7 @@ import { useTranslation } from 'react-i18next';
 export type ScheduleEventDetailProps = {
   id?: string;
   item?: GetScheduleTasksForGlobalCalendarModel;
+  contactItem?: GetUserProgramSessionEventsModel;
 };
 type ComputeStatusParams =
   | {
@@ -98,7 +99,12 @@ const ScheduleEventDetail = () => {
   const fetchData = () => {
     if (userDetails.userDetails?.isAdvisor) {
       if (!item?.taskIdentifier) return;
-      GetGlobalScheduleEventDetailApi.mutate({ Id: item.taskIdentifier });
+      GetGlobalScheduleEventDetailApi.mutate({
+        payload: { Id: item.taskIdentifier },
+        endpoint: item.isOffice365
+          ? ApiConstants.GetGlobalO365EventForEdit
+          : ApiConstants.GetGlobalEventForEdit,
+      });
     } else {
       getEventsForEditApi.mutate({ Id: route?.id });
     }
@@ -155,11 +161,14 @@ const ScheduleEventDetail = () => {
   };
 
   const GetGlobalScheduleEventDetailApi = useMutation({
-    mutationFn: (sendData: Record<string, any>) => {
+    mutationFn: (sendData: {
+      payload: Record<string, any>;
+      endpoint: string;
+    }) => {
       return makeRequest<GetGlobalScheduleDetailForEditModel>({
-        endpoint: ApiConstants.GetGlobalEventForEdit,
+        endpoint: sendData.endpoint,
         method: HttpMethodApi.Get,
-        data: sendData,
+        data: sendData.payload,
       });
     },
     onMutate() {
@@ -175,6 +184,9 @@ const ScheduleEventDetail = () => {
         ...resp.result,
         events: {
           ...resp.result.events,
+          description: item?.isOffice365
+            ? resp.result.events?.description?.replace(/<[^>]+>/g, '').trim()
+            : resp.result.events?.description,
           eventTypeName: getEventTypeName(
             resp.result.events?.eventType,
             eventList,
@@ -193,7 +205,10 @@ const ScheduleEventDetail = () => {
   const getEventsForEditApi = useMutation({
     mutationFn: (sendData: Record<string, any>) => {
       return makeRequest<GetEventsForEditModel>({
-        endpoint: ApiConstants.GetEventsForEdit,
+        endpoint:
+          route?.contactItem?.eventType == 4
+            ? ApiConstants.GetO365EventsForEdit
+            : ApiConstants.GetEventsForEdit,
         method: HttpMethodApi.Get,
         data: sendData,
       });
