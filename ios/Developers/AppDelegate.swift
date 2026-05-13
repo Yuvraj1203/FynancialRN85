@@ -15,12 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
   ) -> Bool {
-    if let googleServicePath = Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist"),
-       let options = FirebaseOptions(contentsOfFile: googleServicePath) {
-      FirebaseApp.configure(options: options)
-    } else {
-      NSLog("[Firebase] GoogleService-Info.plist not found. Skipping Firebase initialization.")
-    }
+    FirebaseApp.configure()
 
     let delegate = ReactNativeDelegate()
     let factory = RCTReactNativeFactory(delegate: delegate)
@@ -32,7 +27,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     window = UIWindow(frame: UIScreen.main.bounds)
 
     factory.startReactNative(
-      withModuleName: moduleName,
+      withModuleName: "Developers",
       in: window,
       launchOptions: launchOptions
     )

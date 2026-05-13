@@ -122,7 +122,7 @@
     "ios:clean": "cd ios && pod install && cd ..",
     "lint": "eslint .",
     "postandroid:cache": "yarn run android:clean && npx react-native start --reset-cache",
-    "postinstall": "patch-package",
+    "postinstall": "patch-package && node scripts/fix-vector-icons-fonts.js",
     "postios:cache": "yarn run ios:clean && npx react-native start --reset-cache",
     "postupdate-tenant": "npx react-native-asset && yarn cache clean --force",
     "release": "react-native run-android --mode=release",

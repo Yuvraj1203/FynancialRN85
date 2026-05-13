@@ -2580,9 +2580,10 @@ PODS:
     - Yoga
   - RNNotifee (9.1.8):
     - React-Core
-    - RNNotifee/NotifeeCore (= 9.1.8)
-  - RNNotifee/NotifeeCore (9.1.8):
-    - React-Core
+    - RNNotifeeCore
+  - RNNotifeeCore (9.1.8):
+    - RNNotifeeCore/NotifeeCore (= 9.1.8)
+  - RNNotifeeCore/NotifeeCore (9.1.8)
   - RNPermissions (5.5.1):
     - hermes-engine
     - RCTRequired
@@ -3035,6 +3036,7 @@ DEPENDENCIES:
   - RNInAppBrowser (from `../node_modules/react-native-inappbrowser-reborn`)
   - RNKeychain (from `../node_modules/react-native-keychain`)
   - "RNNotifee (from `../node_modules/@notifee/react-native`)"
+  - "RNNotifeeCore (from `../node_modules/@notifee/react-native/RNNotifeeCore.podspec`)"
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReactNativeHapticFeedback (from `../node_modules/react-native-haptic-feedback`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
@@ -3295,6 +3297,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-keychain"
   RNNotifee:
     :path: "../node_modules/@notifee/react-native"
+  RNNotifeeCore:
+    :path: "../node_modules/@notifee/react-native/RNNotifeeCore.podspec"
   RNPermissions:
     :path: "../node_modules/react-native-permissions"
   RNReactNativeHapticFeedback:
@@ -3447,7 +3451,8 @@ SPEC CHECKSUMS:
   RNImageCropPicker: 5c9c8bef4c72d3f451b499aa0ecd90a644ea1bbd
   RNInAppBrowser: 904d24dc75e8e6c6c98a3160329192608946f9df
   RNKeychain: d57edf101a72acf3ae85fe4d796eed1d951d2a90
-  RNNotifee: 5e3b271e8ea7456a36eec994085543c9adca9168
+  RNNotifee: 223aca9580ebc74fb1d16963bebfe702f39a3d1f
+  RNNotifeeCore: 908097edf7d7dd54b64821ba1a68012f7a2a4cd5
   RNPermissions: 73c2ee279251ff34f06e837cd6230e47303a5ae8
   RNReactNativeHapticFeedback: 9dc72312c12cb53ee240b5b7aae1e167f3d940a6
   RNReanimated: 121c52535a4276e09b9235e067811b222a681760
@@ -3465,6 +3470,6 @@ SPEC CHECKSUMS:
   TOCropViewController: 797deaf39c90e6e9ddd848d88817f6b9a8a09888
   Yoga: bb9419b17da842d8aa3d6f93f8deaf9fcd82abd3
 
-PODFILE CHECKSUM: fc2b0d3b26ee28e611737bb069029b624c5e0fa2
+PODFILE CHECKSUM: 2a77a296374af73ce832960a90033071a58b23d6
 
 COCOAPODS: 1.16.2
