@@ -3,6 +3,7 @@ import React
 import React_RCTAppDelegate
 import ReactAppDependencyProvider
 import Firebase
+import Auth0
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -35,13 +36,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     return true
   }
 
-  func application(
-    _ app: UIApplication,
-    open url: URL,
-    options: [UIApplication.OpenURLOptionsKey : Any] = [:]
-  ) -> Bool {
-    return true
+
+  // Auth0 configuration
+  func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+    return RCTLinkingManager.application(app, open: url, options: options)
   }
+
+
+
 }
 
 class ReactNativeDelegate: RCTDefaultReactNativeFactoryDelegate {
