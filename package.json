@@ -47,7 +47,7 @@
     "react-native-auth0": "^5.5.0",
     "react-native-blob-util": "^0.24.7",
     "react-native-calendars": "^1.1314.0",
-    "react-native-date-picker": "^5.0.13",
+    "react-native-date-picker": "burakharun/react-native-date-picker#fix/new-architecture-turbo-modules",
     "react-native-device-info": "^15.0.2",
     "react-native-flash-message": "^0.4.2",
     "react-native-fs": "^2.20.0",
