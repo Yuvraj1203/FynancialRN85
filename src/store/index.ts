@@ -10,6 +10,7 @@ export { default as languageStore } from './languageStore/languageStore';
 export { default as loaderStore } from './loaderStore/loaderStore';
 export { default as useLogoutStore } from './logoutStore/logoutStore';
 export { default as notificationPermissionStore } from './notificationPermissionStore/notificationPermissionStore';
+export { usePopupManagerStore } from './popupManagerStore/popupManagerStore';
 export { default as templateStore } from './templateStore/templateStore';
 export { default as appThemeStore } from './themeStore/themeStore';
 export { default as userStore } from './userStore/userStore';

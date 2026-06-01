@@ -1,9 +1,9 @@
-import {CustomImageProps} from '@/components/atoms/customImage/customImage';
-import {CustomPopup} from '@/components/molecules';
-import {CustomTheme, useTheme} from '@/theme/themeProvider/paperTheme';
-import {useEffect, useState} from 'react';
-import {useTranslation} from 'react-i18next';
-import {StyleSheet} from 'react-native';
+import { CustomImageProps } from '@/components/atoms/customImage/customImage';
+import { CustomPopup } from '@/components/molecules';
+import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { StyleSheet } from 'react-native';
 
 // options for component
 type GLobalPopupProps = {
@@ -27,7 +27,7 @@ function AlertPopup() {
 
   const styles = makeStyles(theme); // access StylesSheet with theme implemented
 
-  const {t} = useTranslation(); //translation
+  const { t } = useTranslation(); //translation
 
   const [popupProps, setPopupProps] = useState<GLobalPopupProps>({});
 
@@ -48,6 +48,7 @@ function AlertPopup() {
     <>
       {popupProps.NegativeText ? (
         <CustomPopup
+          popupId="alert-dialog-popup"
           shown={showPopup}
           setShown={setShowPopup}
           title={popupProps.title}

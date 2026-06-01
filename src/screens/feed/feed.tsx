@@ -83,6 +83,12 @@ export type FeedReturnProp = {
   pageNo?: number;
   like?: boolean;
   comment?: number;
+  bookmarkUpdate?: {
+    postDetailId: string;
+    isBookmarked: boolean;
+    bookmarkId?: string;
+    collectionId?: string | null;
+  };
 };
 
 export type FeedProps = {
@@ -469,6 +475,27 @@ function Feed() {
       };
 
   receiveDataBack('Feed', (data: FeedReturnProp) => {
+    if (data.bookmarkUpdate) {
+      const { postDetailId, isBookmarked, bookmarkId, collectionId } =
+        data.bookmarkUpdate;
+      if (isBookmarked && bookmarkId) {
+        setBookmarkMap(prev => ({
+          ...prev,
+          [postDetailId]: {
+            bookmarkId,
+            feedDetailId: postDetailId,
+            collectionId: collectionId ?? null,
+          },
+        }));
+      } else if (!isBookmarked) {
+        setBookmarkMap(prev => {
+          const next = { ...prev };
+          delete next[postDetailId];
+          return next;
+        });
+      }
+      return;
+    }
     if (data.postId) {
       if (data.like == undefined && data.comment == undefined) {
         // when coming back from comments
@@ -1682,6 +1709,7 @@ function Feed() {
               setActiveTab(value);
             }}
             style={styles.segmentedButton}
+            textVariant={TextVariants.labelLarge}
           />
         )}
 
@@ -1875,6 +1903,7 @@ function Feed() {
         )}
 
         <CustomActionSheetPoup
+          popupId="feed-action-sheet"
           shown={showActionPopup}
           setShown={setShowActionPopup}
           hideIcons={false}
@@ -1888,6 +1917,7 @@ function Feed() {
         <SupportPopup shown={showSupportPopup} setShown={setShowSupportPopup} />
 
         <CustomImagePicker
+          popupId="feed-image-picker"
           showPopup={showImagePicker}
           setShowPopup={setShowImagePicker}
           mediaList={value => {
@@ -1897,6 +1927,7 @@ function Feed() {
         />
 
         <CustomPopup
+          popupId="feed-commenting-status-popup"
           shown={showCommentTurningPopup}
           setShown={setShowCommentTurningPopup}
           compact

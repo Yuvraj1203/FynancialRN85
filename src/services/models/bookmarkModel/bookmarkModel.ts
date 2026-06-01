@@ -28,3 +28,9 @@ export type BookmarkedPostsResponse = {
   items: GetFeedPostModel[];
   totalCount: number;
 };
+
+export type CreateCollectionResult = {
+  success: boolean;
+  errorMessage?: string;
+  collection: UserCollectionDto;
+};

@@ -848,7 +848,6 @@ const Message = () => {
                 maxLines={1}
                 variant={TextVariants.bodySmall}
                 style={{ marginTop: 3 }}
-                color={theme.colors.labelLight}
               >
                 {item.groupId ? `${item.groupMemberCount}` : item.emailAddress}
               </CustomText>

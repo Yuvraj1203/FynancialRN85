@@ -247,6 +247,7 @@ function DashboardReminder(props: Props) {
       </View>
 
       <CustomBottomPopup
+        popupId="reminder-popup"
         shown={reminderBottomPopup}
         setShown={setReminderBottomPopup}
         onClose={() => setReminderItem(undefined)}

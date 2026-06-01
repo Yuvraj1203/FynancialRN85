@@ -1299,6 +1299,7 @@ function AddSchedulePost() {
                           type: ImageType.svg,
                           color: theme.colors.onSurfaceVariant,
                         }}
+                        labelVariant={TextVariants.bodyLarge}
                       />
                     </Tap>
                   )}
@@ -1347,7 +1348,7 @@ function AddSchedulePost() {
                     <View style={styles.keywordContainer}>
                       <CustomText
                         style={styles.targetAudLabel}
-                        variant={TextVariants.titleSmall}
+                        variant={TextVariants.bodyLarge}
                       >
                         {t('Keywords')}
                       </CustomText>
@@ -1476,7 +1477,7 @@ function AddSchedulePost() {
                   <View style={styles.dropDownSelect}>
                     <CustomText
                       style={styles.segmentB}
-                      variant={TextVariants.titleMedium}
+                      variant={TextVariants.bodyLarge}
                     >
                       {t('targetAudience')}
                     </CustomText>
@@ -1520,7 +1521,7 @@ function AddSchedulePost() {
                         <View>
                           <CustomText
                             style={styles.targetAudLabel}
-                            variant={TextVariants.titleSmall}
+                            variant={TextVariants.bodyMedium}
                           >
                             {t('SelectedContactType')}
                           </CustomText>
@@ -1545,7 +1546,7 @@ function AddSchedulePost() {
                         <View>
                           <CustomText
                             style={styles.targetAudLabel}
-                            variant={TextVariants.titleSmall}
+                            variant={TextVariants.bodyMedium}
                           >
                             {t('SelectedTags')}
                           </CustomText>
@@ -1571,7 +1572,7 @@ function AddSchedulePost() {
                         <View>
                           <CustomText
                             style={styles.targetAudLabel}
-                            variant={TextVariants.titleSmall}
+                            variant={TextVariants.bodyMedium}
                           >
                             {t('SelectedContacts')}
                           </CustomText>
@@ -1616,6 +1617,7 @@ function AddSchedulePost() {
                   </View>
 
                   <ScheduleDateTimePicker
+                    popupId="add-schedule-post-date-time-picker"
                     timezone={userDetails?.timeZoneName}
                     startDateTime={startDateTime}
                     showEndDate={false}
@@ -1642,6 +1644,7 @@ function AddSchedulePost() {
 
             {!selectedTemplate && (
               <CustomDropDownPopup
+                popupId="add-schedule-post-onbehalfof"
                 title={t('SelectOnBehalfOf')}
                 style={styles.PopUpStyle}
                 setShown={setShowOnBehalfOfPopUp}
@@ -1661,6 +1664,7 @@ function AddSchedulePost() {
               />
             )}
             <CustomImagePicker
+              popupId="add-schedule-post-image-picker"
               showPopup={showImageSelectionPopup}
               setShowPopup={setShowImageSelectionPopup}
               selectionLimit={
@@ -1878,7 +1882,7 @@ const makeStyles = (theme: CustomTheme) =>
       gap: 5, // nice gap between chips
       padding: 10,
       borderWidth: 1,
-      borderRadius: 12,
+      borderRadius: theme.roundness,
       borderColor: theme.colors.outline,
     },
     mailCommunityNote: {
@@ -1906,8 +1910,6 @@ const makeStyles = (theme: CustomTheme) =>
     targetAudLabel: {
       paddingBottom: 10,
       paddingLeft: 5,
-      fontSize: 14,
-      fontWeight: 'semibold',
     },
 
     content: { flex: 1, paddingVertical: 10, paddingHorizontal: 20 },

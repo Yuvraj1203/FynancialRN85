@@ -646,6 +646,7 @@ function ResourceSubCategory() {
         </View>
 
         <CustomActionSheetPoup
+          popupId="resource-sub-category-action-sheet"
           shown={showActionPopup}
           setShown={setShowActionPopup}
           hideIcons={false}

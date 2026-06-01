@@ -531,6 +531,7 @@ const ScheduledPostDetail = () => {
         </ScrollView>
 
         <CustomActionSheetPoup
+          popupId="schedule-post-detail-action-sheet"
           shown={showActionPopup}
           setShown={setShowActionPopup}
           hideIcons={false}

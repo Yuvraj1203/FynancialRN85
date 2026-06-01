@@ -5,7 +5,6 @@ import {
   GetBDAssetAllocationModel,
   GetClientBasicNetworthModel,
   GetClientBlackDiamondModel,
-  GetClientGoalsModel,
   GetClientNitrogenModel,
   GetClientTamaracModel,
   GetClientTotalNetworthModel,
@@ -31,8 +30,6 @@ interface DashboardCardsState {
   setEMoneyTotalNetWorth: (value?: GetClientTotalNetworthModel) => void;
   eMoneyBasicNetWorth?: GetClientBasicNetworthModel;
   setEMoneyBasicNetWorth: (value?: GetClientBasicNetworthModel) => void;
-  eMoneyClientGoal?: GetClientGoalsModel;
-  setEMoneyClientGoal: (value?: GetClientGoalsModel) => void;
   blackDiamond?: GetClientBlackDiamondModel;
   setBlackDiamond: (value?: GetClientBlackDiamondModel) => void;
   blackDiamonAssetAllocation?: GetBDAssetAllocationModel;
@@ -95,10 +92,6 @@ const useDashboardCardsStore = create<DashboardCardsState>()(
       setEMoneyBasicNetWorth: (value?: GetClientBasicNetworthModel) => {
         set({ eMoneyBasicNetWorth: value }); // set value
       },
-      eMoneyClientGoal: undefined,
-      setEMoneyClientGoal: (value?: GetClientGoalsModel) => {
-        set({ eMoneyClientGoal: value }); // set value
-      },
       blackDiamond: undefined,
       setBlackDiamond: (value?: GetClientBlackDiamondModel) => {
         set({ blackDiamond: value }); // set value
@@ -148,7 +141,6 @@ const useDashboardCardsStore = create<DashboardCardsState>()(
           orionPs: undefined,
           eMoneyTotalNetWorth: undefined,
           eMoneyBasicNetWorth: undefined,
-          eMoneyClientGoal: undefined,
           blackDiamond: undefined,
           addeparRORV2: undefined,
           addeparAUMV2: undefined,

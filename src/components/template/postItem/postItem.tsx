@@ -512,9 +512,7 @@ function PostItem({ item, ...props }: Props) {
                   props.isBookmarked ? Images.bookmarkFilled : Images.bookmark
                 }
                 label={t('Bookmark')}
-                color={
-                  props.isBookmarked ? theme.colors.primary : undefined
-                }
+                color={props.isBookmarked ? theme.colors.primary : undefined}
                 fillColor={
                   props.isBookmarked ? theme.colors.primary : undefined
                 }
@@ -647,6 +645,7 @@ function PostItem({ item, ...props }: Props) {
       )}
 
       <CustomActionSheetPoup
+        popupId="post-item-action-sheet"
         shown={showActionPopup}
         setShown={setShowActionPopup}
         hideIcons={false}

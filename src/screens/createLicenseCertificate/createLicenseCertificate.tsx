@@ -558,6 +558,7 @@ function CreateLicenseCertificate() {
         </KeyboardAvoidingView>
 
         <CustomImagePicker
+          popupId="create-license-image-picker"
           showPopup={showImageSelectionPopup}
           setShowPopup={setShowImageSelectionPopup}
           mediaList={handleMediaList}
@@ -567,6 +568,7 @@ function CreateLicenseCertificate() {
         />
 
         <CustomDatePicker
+          popupId="create-license-issue-date"
           showPopup={showIssueDatePicker}
           setShowPopup={setShowIssueDatePicker}
           title={t('SelectIssueDate')}

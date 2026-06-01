@@ -316,7 +316,11 @@ const ScheduleGroupMessageDetail = () => {
           </View>
         </ScrollView>
 
-        <CustomFullScreenPopup shown={showPdfPopup} setShown={setShowPdfPopup}>
+        <CustomFullScreenPopup
+          popupId="schedule-group-message-detail-fullscreen-popup"
+          shown={showPdfPopup}
+          setShown={setShowPdfPopup}
+        >
           <View style={styles.imageSendMain}>
             <View style={styles.main}>
               <PdfPreview

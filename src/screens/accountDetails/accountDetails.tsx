@@ -828,6 +828,7 @@ const AccountDetails = () => {
       </View>
 
       <CustomActionSheetPoup
+        popupId="account-details-filter-action-sheet"
         shown={filtersExpanded}
         setShown={setFiltersExpanded}
         children={handleOptions()}

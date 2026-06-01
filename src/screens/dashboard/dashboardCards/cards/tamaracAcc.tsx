@@ -191,6 +191,7 @@ function TamaracAcc(props: Props) {
       )}
 
       <CustomBottomPopup
+        popupId="tamarac-account-card-popup"
         shown={showBottomPopUp}
         setShown={setShowBottomPopUp}
         title={
@@ -198,6 +199,7 @@ function TamaracAcc(props: Props) {
             maxFontSizeMultiplier={maxFontSize}
             variant={TextVariants.titleLarge}
             style={{ width: '80%' }}
+            color={theme.colors.assetCardText}
           >
             {props.cardData.title}
           </CustomText>

@@ -381,6 +381,7 @@ function Featured(props: Props) {
         />
       )}
       <CustomActionSheetPoup
+        popupId="featured-resources-action-sheet"
         shown={showActionPopup}
         setShown={setShowActionPopup}
         hideIcons={false}

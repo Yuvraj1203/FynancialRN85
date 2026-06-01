@@ -31,12 +31,12 @@ import { HttpMethodApi, makeRequest } from '@/services/apiInstance';
 
 import {
   GetCalItemtagsModel,
+  GetExternalAttendeesModel,
   GetGlobalCalendarContactTypeModel,
   GetGlobalEventForEdit,
   GetScheduleTasksForGlobalCalendarModel,
   SaveGlobalCalendarAndEventDataModel,
   UploadFileListToS3Model,
-  UserRoleEnum,
 } from '@/services/models';
 import { EventListModel } from '@/services/models/eventListModel/eventListModel';
 import { GetAllUsersForGlobalCalendarModel } from '@/services/models/getAllUsersForGlobalCalendarModel/getAllUsersForGlobalCalendarModel';
@@ -127,10 +127,10 @@ function AddScheduleEvent() {
     GetAllUsersForGlobalCalendarModel[]
   >([]);
   const [externalAttendeesList, setExternalAttendeesList] = useState<
-    GetAllUsersForGlobalCalendarModel[]
+    GetExternalAttendeesModel[]
   >([]);
   const [selectedExternalAttendeesList, setSelectedExternalAttendeesList] =
-    useState<GetAllUsersForGlobalCalendarModel[]>([]);
+    useState<GetExternalAttendeesModel[]>([]);
   const [externalAttendeesPopup, setExternalAttendeesPopup] = useState(false);
 
   const [contactTypeList, setContactTypeList] = useState<
@@ -152,8 +152,7 @@ function AddScheduleEvent() {
   const [targetAudienceType, setTargetAudienceType] = useState<string>('');
 
   const [isOffice365, setIsOffice365] = useState(
-    route.params?.item?.eventType &&
-      userDetails.userDetails?.role == UserRoleEnum.Advisor
+    route.params?.item?.eventType && userDetails.userDetails?.isAdvisor
       ? route.params.item.eventType == 4
       : false,
   );
@@ -187,9 +186,9 @@ function AddScheduleEvent() {
     { id: 2, name: 'In-Person Meeting' },
     {
       id: 3,
-      name: !isOffice365 ? 'Office 365' : 'Online Meeting',
-      disabled: !isOffice365,
+      name: 'Online Meeting',
     },
+    { id: 4, name: 'Office 365', disabled: !isOffice365 },
   ];
 
   /**  Added by @Ajay 08-04-2025 (#6199) ---> State management for dropdown visibility and event type */
@@ -980,7 +979,7 @@ function AddScheduleEvent() {
   /**  Added by @Yuvraj 04-11-2025 () ---> fetch the external attendees */
   const GetExternalAttendeesApi = useMutation({
     mutationFn: (sendData: Record<string, any>) => {
-      return makeRequest<GetGlobalCalendarContactTypeModel[]>({
+      return makeRequest<GetExternalAttendeesModel[]>({
         endpoint: ApiConstants.GetExternalAttendees,
         method: HttpMethodApi.Get,
         data: sendData,
@@ -1084,6 +1083,7 @@ function AddScheduleEvent() {
                       ? { color: theme.colors.onSurfaceDisabled }
                       : undefined
                   }
+                  labelVariant={TextVariants.bodyLarge}
                 />
 
                 <Tap
@@ -1115,8 +1115,11 @@ function AddScheduleEvent() {
                         : undefined
                     }
                     extraInfoTxt={
-                      'Coming soon: You’ll be able to schedule Office 365 Meetings here once our two-way integration is ready.'
+                      route?.params?.taskIdentifier && isOffice365
+                        ? undefined
+                        : t('Office365Disclaimer')
                     }
+                    labelVariant={TextVariants.bodyLarge}
                   />
                 </Tap>
 
@@ -1127,6 +1130,7 @@ function AddScheduleEvent() {
                     inputMode={InputModes.phone}
                     placeholder={t('EnterPhoneNumber')}
                     label={t('Phone')}
+                    labelVariant={TextVariants.bodyLarge}
                   />
                 )}
 
@@ -1136,6 +1140,7 @@ function AddScheduleEvent() {
                     control={control}
                     placeholder={t('EnterLocation')}
                     label={t('Location')}
+                    labelVariant={TextVariants.bodyLarge}
                   />
                 )}
 
@@ -1154,6 +1159,7 @@ function AddScheduleEvent() {
                         ? { color: theme.colors.onSurfaceDisabled }
                         : undefined
                     }
+                    labelVariant={TextVariants.bodyLarge}
                   />
                 )}
 
@@ -1175,12 +1181,13 @@ function AddScheduleEvent() {
                       ? { color: theme.colors.onSurfaceDisabled }
                       : undefined
                   }
+                  labelVariant={TextVariants.bodyLarge}
                 />
 
                 {!isOffice365 && (
                   <>
                     <CustomText
-                      variant={TextVariants.bodyMedium}
+                      variant={TextVariants.bodyLarge}
                       style={styles.heading}
                     >
                       {t('CoverImage')}
@@ -1268,7 +1275,7 @@ function AddScheduleEvent() {
 
                 <CustomText
                   style={styles.segmentB}
-                  variant={TextVariants.titleMedium}
+                  variant={TextVariants.bodyLarge}
                 >
                   {t('targetAudience')}
                 </CustomText>
@@ -1409,6 +1416,7 @@ function AddScheduleEvent() {
                           type: ImageType.svg,
                           color: theme.colors.onSurfaceVariant,
                         }}
+                        labelVariant={TextVariants.bodyMedium}
                       />
                     </Tap>
                     {targetAudienceType === 'ContactType' &&
@@ -1416,7 +1424,7 @@ function AddScheduleEvent() {
                         <View>
                           <CustomText
                             style={styles.targetAudLabel}
-                            variant={TextVariants.titleSmall}
+                            variant={TextVariants.bodyMedium}
                           >
                             {t('SelectedContactType')}
                           </CustomText>
@@ -1441,7 +1449,7 @@ function AddScheduleEvent() {
                         <View>
                           <CustomText
                             style={styles.targetAudLabel}
-                            variant={TextVariants.titleSmall}
+                            variant={TextVariants.bodyMedium}
                           >
                             {t('SelectedTags')}
                           </CustomText>
@@ -1467,7 +1475,7 @@ function AddScheduleEvent() {
                         <View>
                           <CustomText
                             style={styles.targetAudLabel}
-                            variant={TextVariants.titleSmall}
+                            variant={TextVariants.bodyMedium}
                           >
                             {t('SelectedContacts')}
                           </CustomText>
@@ -1493,6 +1501,7 @@ function AddScheduleEvent() {
                 <View style={styles.divider} />
 
                 <ScheduleDateTimePicker
+                  popupId="add-schedule-event-date-time-picker"
                   timezone={userDetails?.userDetails?.timeZoneName}
                   startDateTime={startDateTime}
                   endDateTime={endDateTime}
@@ -1518,6 +1527,7 @@ function AddScheduleEvent() {
             </ScrollView>
           )}
           <CustomImagePicker
+            popupId="add-schedule-event-image-picker"
             showPopup={showImageSelectionPopup}
             setShowPopup={setShowImageSelectionPopup}
             mediaList={handleMediaList}
@@ -1526,6 +1536,7 @@ function AddScheduleEvent() {
             cropWidth={225}
           />
           <CustomDropDownPopup
+            popupId="add-schedule-event-type-dropdown"
             shown={showEventTypeDropdown}
             setShown={setShowEventTypeDropdown}
             title={t('SelectEventType')}
@@ -1578,12 +1589,14 @@ function AddScheduleEvent() {
             }}
           />
           <CustomBottomPopup
+            popupId="add-schedule-event-external-attendees-popup"
             shown={externalAttendeesPopup}
             setShown={setExternalAttendeesPopup}
             title={t('ExternalAttendees')}
             keyboardHandle
           >
             <CustomDropDownPopup
+              popupId="add-schedule-event-external-attendees-dropdown"
               // key={'Contacts'}
               loading={false}
               items={externalAttendeesList}
@@ -1594,7 +1607,7 @@ function AddScheduleEvent() {
               withPopup={false}
               onSave={value => {
                 setSelectedExternalAttendeesList(
-                  value as GetAllUsersForGlobalCalendarModel[],
+                  value as GetExternalAttendeesModel[],
                 );
 
                 setExternalAttendeesPopup(false);
@@ -1662,6 +1675,7 @@ const makeStyles = (theme: CustomTheme) =>
       height: '100%',
       width: '100%',
       backgroundColor: theme.colors.surface,
+      borderRadius: theme.roundness,
     },
     inputValueSkel: {
       height: 20,
@@ -1751,7 +1765,7 @@ const makeStyles = (theme: CustomTheme) =>
       gap: 5, // nice gap between chips
       padding: 10,
       borderWidth: 1,
-      borderRadius: 12,
+      borderRadius: theme.roundness,
       borderColor: theme.colors.outline,
     },
     divider: {
@@ -1773,8 +1787,6 @@ const makeStyles = (theme: CustomTheme) =>
     targetAudLabel: {
       paddingBottom: 10,
       paddingLeft: 5,
-      fontSize: 14,
-      fontWeight: 'semibold',
     },
     attendeeLabel: {
       paddingBottom: 10,

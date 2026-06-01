@@ -28,6 +28,7 @@ type Props = {
   enabled?: boolean;
   startDatePress?: (value?: string) => void;
   endDatePress?: (value?: string) => void;
+  popupId?: string;
 };
 
 /**  Added by @Ajay 08-04-2025 ---> Enum for date selection types */
@@ -233,6 +234,7 @@ const ScheduleDateTimePicker = ({ enabled = true, ...props }: Props) => {
         // minDate={new Date()}
         setDate={handleSelectedDate}
         mode={DatePickerMode.datetime}
+        popupId={props.popupId}
       />
     </View>
   );

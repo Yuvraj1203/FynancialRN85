@@ -177,6 +177,7 @@ const SettingsScreen = () => {
         </ScrollView>
 
         <CustomDropDownPopup
+          popupId="settings-theme-dropdown"
           shown={showPopup}
           setShown={setShowPopup}
           title={t('AppTheme')}

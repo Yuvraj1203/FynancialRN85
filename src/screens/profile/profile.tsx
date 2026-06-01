@@ -44,7 +44,7 @@ import {
   GetUserDetailForProfileModel,
   GetUserNotesModel,
   GetUserPersonalInfoModel,
-  UploadFileListToS3Model,
+  UploadAndUpdateProfilePictureModel,
   UserRoleEnum,
 } from '@/services/models';
 import { GetAllUserCertificatesModel } from '@/services/models/getAllUserCertificatesModel/getAllUserCertificatesModel';
@@ -219,6 +219,8 @@ function Profile() {
   /** Added by @Yuvraj 19-03-2025 -> loading state for button (FYN-5821) */
   const [loadingButtons, setLoadingButtons] = useState<string>();
 
+  const [isUrlLoading, setIsUrlLoading] = useState(false);
+
   /** Added by @Yuvraj 19-03-2025 -> state for accordian open and close (FYN-5821) */
   const [accordianTab, setAccordianTab] = useState<
     '' | 'personal' | 'contact' | 'templates' | 'notes' | 'licenses'
@@ -366,13 +368,7 @@ function Profile() {
       if (route?.params?.userId) {
         triggerRefreshForContact();
       } else {
-        getUserDetailForProfileApiCall.mutate({});
-        GetUserPersonalInfoApi.mutate({
-          userId: userDetails?.userID,
-        });
-        GetUserContactInfoApi.mutate({
-          userId: userDetails?.userID,
-        });
+        getUserDetailForProfileApiCall.mutate({ fromRefresh: true });
       }
     } else if (data.isCertCreateOrEdit) {
       getAllUserCertificatesApiCall.mutate({
@@ -630,17 +626,31 @@ function Profile() {
       ...(route?.params?.navigationFrom !==
         ContactVaultParentScreenType.fromMyTeamsAdvisor &&
       userDetails?.isAdvisor &&
-      !route?.params?.userId
+      !route?.params?.userId &&
+      userDetails.role !== UserRoleEnum.Admin
         ? [
             {
               label: t('Role'),
               value: userDetails.role,
               icon: Images.role,
             },
+          ]
+        : []),
+      ...((userDetails?.isAdvisor &&
+        userDetails.role !== UserRoleEnum.Admin &&
+        !route?.params?.userId) ||
+      route?.params?.navigationFrom ==
+        ContactVaultParentScreenType.fromMyTeamsAdvisor
+        ? [
             {
               label: t('JobTitle'),
-              value: data?.jobTitle,
+              value: data?.jobTitle ? data?.jobTitle : data?.userType,
               icon: Images.myDiary,
+            },
+            {
+              label: t('About'),
+              value: data?.aboutMe,
+              icon: Images.aboutUs,
             },
           ]
         : []),
@@ -676,18 +686,6 @@ function Profile() {
             },
           ]
         : []),
-
-      ...(route?.params?.navigationFrom ==
-      ContactVaultParentScreenType.fromMyTeamsAdvisor
-        ? [
-            {
-              label: t('JobTitle'),
-              value: data?.jobTitle ? data?.jobTitle : data?.userType,
-              icon: Images.myDiary,
-            },
-          ]
-        : []),
-
       ...(route?.params?.navigationFrom !==
         ContactVaultParentScreenType.fromMyTeamsAdvisor &&
       userDetails?.isAdvisor &&
@@ -886,19 +884,25 @@ function Profile() {
   };
 
   /** Added by @Yuvraj 19-03-2025 -> on selecting new picture from local device (FYN-5821) */
-  const handleMediaList = (mediaList: Asset[]) => {
+  const handleMediaList = (mediaList: Asset[] | string) => {
     const formData = new FormData();
     setShowActionSheet(false);
 
-    if (mediaList.length > 0) {
+    if (typeof mediaList == 'string') {
+      formData.append('imageUrl', mediaList); // Correctly append file object
+      UploadAndUpdateProfilePictureApi.mutate({
+        payload: formData,
+        fromUrl: true,
+      });
+    } else if (mediaList.length > 0) {
       const fileType = {
         uri: mediaList[0].uri,
         name: mediaList[0].fileName,
         type: mediaList[0].type,
       };
 
-      formData.append('files', fileType); // Correctly append file object
-      UploadFileListToS3Api.mutate(formData);
+      formData.append('file', fileType); // Correctly append file object
+      UploadAndUpdateProfilePictureApi.mutate({ payload: formData });
     }
   };
 
@@ -1072,62 +1076,41 @@ function Profile() {
   });
 
   /** Added by @Yuvraj 19-03-2025 -> Api for uploading picture and getting id (FYN-5821) */
-  const UploadFileListToS3Api = useMutation({
-    mutationFn: (sendData: Record<string, any>) => {
-      return makeRequest<UploadFileListToS3Model[]>({
-        endpoint: `${ApiConstants.UploadFileListToS3}?fromURL=feed`,
+  const UploadAndUpdateProfilePictureApi = useMutation({
+    mutationFn: (sendData: {
+      payload: Record<string, any>;
+      fromUrl?: boolean;
+    }) => {
+      return makeRequest<UploadAndUpdateProfilePictureModel>({
+        endpoint: ApiConstants.UploadAndUpdateProfilePicture,
         method: HttpMethodApi.Post,
-        data: sendData,
+        data: sendData.payload,
         byPassRefresh: true,
       }); // API Call
     },
     onMutate(variables) {
       setLoadingButtons('edit');
+      if (variables.fromUrl) {
+        setIsUrlLoading(true);
+      }
     },
     onSettled(data, error, variables, context) {
       if (error) {
         setLoadingButtons(undefined);
       }
+      setIsUrlLoading(false);
     },
     onSuccess(data, variables, context) {
       // Success Response
-      if (data.result != null) {
-        createOrEditUserProfileDataApi.mutate({
-          imageDataID: data.result.at(0)?.contentID,
-        });
+      if (data.result != null && data.result.status == 1) {
+        getUserDetailForProfileApiCall.mutate({ profileUpdate: true });
+        showSnackbar(t('ProfilePictureUpdated'), 'success');
       } else {
         showSnackbar(
-          data.error?.message ? data.error?.message : t('SomeErrorOccured'),
+          data.result?.message ? data.result.message : t('SomeErrorOccured'),
           'danger',
         );
         setLoadingButtons(undefined);
-      }
-    },
-    onError(error, variables, context) {
-      // Error Response
-      showSnackbar(error.message, 'danger');
-    },
-  });
-
-  /** Added by @Yuvraj 19-03-2025 -> Api for updating profile picture (FYN-5821) */
-  const createOrEditUserProfileDataApi = useMutation({
-    mutationFn: (sendData: Record<string, any>) => {
-      return makeRequest<string>({
-        endpoint: ApiConstants.createOrEditUserProfileData,
-        method: HttpMethodApi.Post,
-        data: sendData,
-      }); // API Call
-    },
-    onMutate(variables) {},
-    onSettled(data, error, variables, context) {
-      if (error) {
-        setLoadingButtons(undefined);
-      }
-    },
-    onSuccess(data, variables, context) {
-      // Success Response
-      if (data.result) {
-        getUserDetailForProfileApiCall.mutate({ profileUpdate: true });
       }
     },
     onError(error, variables, context) {
@@ -2654,15 +2637,20 @@ function Profile() {
       </View>
 
       <CustomImagePicker
+        popupId="profile-image-picker"
         showPopup={showImageSelectionPopup}
         setShowPopup={setShowImageSelectionPopup}
         mediaList={handleMediaList}
         crop={true}
         cropHeight={720}
         cropWidth={720}
+        url={userDetails?.isAdvisor ? true : false}
+        isUrlLoading={isUrlLoading}
+        onUrlSave={value => handleMediaList(value)}
       />
 
       <CustomPopup
+        popupId="profile-out-of-office-warning-popup"
         shown={showOutOfOfficeWarningPopUp}
         setShown={setShowOutOfOfficeWarningPopUp}
         compact
@@ -2681,6 +2669,7 @@ function Profile() {
       />
 
       <CustomActionSheetPoup
+        popupId="profile-action-sheet"
         shown={showActionSheet}
         setShown={setShowActionSheet}
         title={actionSheetItem == 'actionItem' ? t('ActionItem') : t('Feed')}
@@ -2734,6 +2723,7 @@ function Profile() {
       />
 
       <CustomActionSheetPoup
+        popupId="profile-status-action-sheet"
         shown={showStatusPopUp}
         setShown={setShowStatusPopUp}
         centered={false}
@@ -2804,6 +2794,7 @@ function Profile() {
           setValue('message', '');
         }}
         keyboardHandle={true}
+        popupId="profile-add-note-popup"
       >
         <View style={styles.notesAddBottomPopup}>
           <FormTextInput
@@ -2841,6 +2832,7 @@ function Profile() {
         onClose={() => {
           setValue('message', '');
         }}
+        popupId="profile-date-selection-popup"
       >
         <View style={styles.notesAddBottomPopup}>
           <Tap
@@ -2950,6 +2942,7 @@ function Profile() {
       </CustomBottomPopup>
 
       <CustomDatePicker
+        popupId="out-of-office-date"
         showPopup={showDatePicker}
         setShowPopup={setShowDatePicker}
         title={
@@ -2965,6 +2958,7 @@ function Profile() {
       />
 
       <CustomPopup
+        popupId="profile-logout-confirmation-popup"
         shown={showLogout}
         setShown={setShowLogout}
         compact
@@ -2991,6 +2985,7 @@ function Profile() {
         title={t('CertificateDetail')}
         dismissOnBackPress={true}
         dismissOnClosePress={true}
+        popupId="profile-certificate-detail-popup"
       >
         <View
           style={
@@ -3259,7 +3254,6 @@ const makeStyles = (theme: CustomTheme) =>
       alignItems: 'flex-start',
     },
     accordianLabelGroup: {
-      marginTop: 1,
       flexDirection: 'row',
       gap: 10,
       alignItems: 'center',

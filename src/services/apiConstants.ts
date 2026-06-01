@@ -262,6 +262,8 @@ export const ApiConstants = {
   SaveGlobalCalendarGroupMessageData:
     'api/services/app/GlobalCalendarDatas/saveGlobalCalendarGroupMessageData',
   UploadFileListToS3: 'api/services/app/ContentDatas/UploadFileListToS3',
+  UploadAndUpdateProfilePicture:
+    'api/services/app/profile/UploadAndUpdateProfilePicture',
   SendSlientNotificationOnLogin:
     'api/services/app/PushNotification/SendSlientNotificationOnLogin',
   getUserTeamListForTag: 'api/services/app/FeedDetails/getUserTeamListForTag',
@@ -322,5 +324,4 @@ export const ApiConstants = {
   GetConversation: 'api/Chat/GetConversation/',
   SubmitFeedback: 'api/Chat/SubmitFeedback',
   UploadFileToConversationUri: 'api/Chat/AddFileToConversation/:conversationId',
-  GetClientGoals: 'api/services/app/EMoneyApi/getClientGoals',
 };

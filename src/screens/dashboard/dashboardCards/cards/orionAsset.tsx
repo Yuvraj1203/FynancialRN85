@@ -170,6 +170,7 @@ function OrionAsset(props: Props) {
       </View>
 
       <CustomBottomPopup
+        popupId="orion-asset-card-popup"
         shown={chartPopup}
         setShown={setChartPopup}
         title={
@@ -177,11 +178,11 @@ function OrionAsset(props: Props) {
             maxFontSizeMultiplier={maxFontSize}
             variant={TextVariants.titleLarge}
             style={{ width: '80%' }}
+            color={theme.colors.assetCardText}
           >
             {props.cardData.title}
           </CustomText>
         }
-        titleColor={theme.colors.assetCardText}
         popUpBgcolor={theme.colors.assetCardBg}
       >
         <View>

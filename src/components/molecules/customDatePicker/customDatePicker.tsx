@@ -40,6 +40,7 @@ type Props = {
   minDate?: Date;
   maxDate?: Date;
   minYear?: number;
+  popupId?: string;
 };
 
 const CustomDatePicker = ({
@@ -93,6 +94,7 @@ const CustomDatePicker = ({
       setShown={props.setShowPopup}
       dismissOnBackPress={false} // on back press don't allow user to close poup till api get's called
       title={props.title}
+      popupId={props.popupId}
     >
       <View style={styles.main}>
         {mode == DatePickerMode.monthYear ? (

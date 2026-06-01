@@ -1149,6 +1149,7 @@ const ChatGroupMember = () => {
         </View>
 
         <CustomImagePicker
+          popupId="chat-group-member-image-picker"
           showPopup={showImageSelectionPopup}
           setShowPopup={setShowImageSelectionPopup}
           mediaList={handleProfilePic}
@@ -1158,6 +1159,7 @@ const ChatGroupMember = () => {
         />
 
         <CustomBottomPopup
+          popupId="chat-group-members-add-member-popup"
           shown={showAddMemberPopUp}
           setShown={setShowAddMemberPopUp}
           title={t('AddMember')}
@@ -1232,6 +1234,7 @@ const ChatGroupMember = () => {
         </CustomBottomPopup>
 
         <CustomActionSheetPoup
+          popupId="chat-group-members-action-sheet"
           shown={showAdminActionSheetPopUp}
           setShown={setShowAdminActionSheetPopUp}
           centered={false}
@@ -1259,6 +1262,7 @@ const ChatGroupMember = () => {
         />
 
         <CustomPopup
+          popupId="chat-group-members-delete-group-popup"
           shown={showDeletePopup}
           setShown={setShowDeletePopup}
           compact
@@ -1296,6 +1300,7 @@ const ChatGroupMember = () => {
         />
 
         <CustomPopup
+          popupId="chat-group-members-edit-group-popup"
           shown={showEditPopup}
           setShown={setShowEditPopup}
           compact

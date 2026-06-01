@@ -288,7 +288,10 @@ function Support() {
         const response = await UploadFileListToS3Api.mutateAsync(formData);
         if (response) {
           if (response.result != null && response.result.length > 0) {
-            response.result.forEach((item: UploadFileListToS3Model) => item?.contentID && imageIds.push(item.contentID));
+            response.result.forEach(
+              (item: UploadFileListToS3Model) =>
+                item?.contentID && imageIds.push(item.contentID),
+            );
           } else {
             showSnackbar(
               response.error?.message
@@ -446,6 +449,7 @@ function Support() {
               </CustomText>
 
               <CustomImagePicker
+                popupId="support-image-picker"
                 showPopup={showImageSelectionPopup}
                 setShowPopup={setShowImageSelectionPopup}
                 selectionLimit={
@@ -455,6 +459,7 @@ function Support() {
               />
 
               <CustomBottomPopup
+                popupId="support-popup"
                 shown={showSuccessPopup}
                 setShown={setShowSuccessPopup}
                 title={t('FeedbackSubmitted')}

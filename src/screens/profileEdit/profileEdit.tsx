@@ -28,6 +28,7 @@ import {
   StateObject,
   SystemTimeZoneList,
   TagList,
+  UserRoleEnum,
 } from '@/services/models';
 import { userStore } from '@/store';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
@@ -190,6 +191,7 @@ function ProfileEdit() {
       .refine(val => val === '' || urlRegex.test(val!), {
         message: t('InvalidCalendarUrl'),
       }),
+    aboutMe: z.string(),
     address1: z.string(),
     address2: z.string(),
     city: z.string(),
@@ -230,6 +232,7 @@ function ProfileEdit() {
         : '',
       calendarLink: userDetails?.calenderLink,
       secureUploadLink: route?.personalDetails?.secureUploadURL,
+      aboutMe: route?.personalDetails?.aboutMe,
       address1: elimateHtmlElement(userDetails?.address!),
       address2: userDetails?.addressLine2,
       city: userDetails?.city,
@@ -261,6 +264,11 @@ function ProfileEdit() {
         jobTitle: route.personalDetails?.jobTitleId?.toString(),
         calenderLink: data.calendarLink,
         secureUploadURL: data.secureUploadLink,
+        ...(userDetails?.isAdvisor && userDetails.role !== UserRoleEnum.Admin
+          ? {
+              aboutMe: data.aboutMe,
+            }
+          : {}),
       });
     } else {
       saveUserContactInfoApi.mutate({
@@ -1051,6 +1059,17 @@ function ProfileEdit() {
                         showLabel={true}
                         hidePreview={false}
                       />
+
+                      <FormTextInput
+                        control={control}
+                        name="aboutMe"
+                        placeholder={t('About')}
+                        label={t('About')}
+                        showLabel={true}
+                        hidePreview={false}
+                        multiLine={true}
+                        maxLines={5}
+                      />
                     </>
                   )}
                 </>
@@ -1153,6 +1172,7 @@ function ProfileEdit() {
         </KeyboardAvoidingView>
 
         <CustomDropDownPopup
+          popupId="profile-country-dropdown"
           loading={sectionLoader == 'countryLoader'}
           showSearchOption={true}
           shown={showCountryDropdown}
@@ -1168,6 +1188,7 @@ function ProfileEdit() {
         />
 
         <CustomDropDownPopup
+          popupId="profile-state-dropdown"
           loading={sectionLoader == 'stateLoader'}
           showSearchOption={true}
           shown={showStateDropdown}
@@ -1183,6 +1204,7 @@ function ProfileEdit() {
         />
 
         <CustomDropDownPopup
+          popupId="profile-country-flag-dropdown"
           loading={sectionLoader == 'countryLoader'}
           showSearchOption={true}
           shown={showFlagDropdown}
@@ -1198,6 +1220,7 @@ function ProfileEdit() {
         />
 
         <CustomDatePicker
+          popupId="dob"
           showPopup={showDatePicker}
           setShowPopup={setShowDatePicker}
           title={t('SelectDOB')}
@@ -1207,6 +1230,7 @@ function ProfileEdit() {
         />
 
         <CustomDropDownPopup
+          popupId="profile-tags-dropdown"
           loading={false}
           showSearchOption={true}
           shown={showTagsPopup}
@@ -1225,6 +1249,7 @@ function ProfileEdit() {
         />
 
         <CustomDropDownPopup
+          popupId="profile-timezone-dropdown"
           shown={showTimezonePopup}
           setShown={setShowTimezonePopup}
           title={t('SelectTimeZone')}

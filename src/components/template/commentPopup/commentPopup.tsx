@@ -1843,6 +1843,7 @@ function CommentPopup(props: CommentPopupProps) {
 
   return (
     <CustomBottomPopup
+      popupId="comment-popup"
       shown={props.shown}
       setShown={props.setShown}
       title="Comments"

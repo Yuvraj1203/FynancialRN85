@@ -1,3 +1,4 @@
+import { usePopupManagerStore } from '@/store';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -20,6 +21,11 @@ function Loader(props: Props) {
 
   const [showPopup, setShowPopup] = useState(false); // show global popup
 
+  const registerPopup = usePopupManagerStore(state => state.registerPopup);
+  const unregisterPopup = usePopupManagerStore(state => state.unregisterPopup);
+
+  const popupId = 'loader-popup';
+
   useEffect(() => {
     showLoader = () => {
       setShowPopup(true);
@@ -31,6 +37,21 @@ function Loader(props: Props) {
       }, 100);
     };
   }, []);
+
+  // Register popup when shown, unregister when hidden
+  useEffect(() => {
+    if (showPopup) {
+      registerPopup(popupId, () => {
+        setShowPopup(false);
+        unregisterPopup(popupId);
+      });
+      return () => {
+        unregisterPopup(popupId);
+      };
+    } else {
+      unregisterPopup(popupId);
+    }
+  }, [showPopup, popupId, registerPopup, unregisterPopup]);
 
   /** added by @YUvraj 10-10-2025 --> dismiss the popup when security minimize popup shows */
   //handlePopupDismiss(showPopup, () => setShowPopup(false));

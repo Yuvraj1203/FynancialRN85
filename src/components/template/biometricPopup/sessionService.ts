@@ -1,12 +1,7 @@
 // SessionService.ts
 import { storage } from '@/App';
 import { LoginWith } from '@/services/models';
-import {
-  biometricStore,
-  tenantDetailStore,
-  useLogoutStore,
-  userStore,
-} from '@/store';
+import { biometricStore, useLogoutStore, userStore } from '@/store';
 import { UserBiometricOption } from '@/store/biometricStore/biometricStore';
 import i18n from '@/translations';
 import Log from '@/utils/logger';
@@ -15,7 +10,7 @@ import {
   NotificationUtilsProps,
   sessionOutNotification,
 } from '@/utils/notificationUtils';
-import { checkIntervalTime, isEmpty } from '@/utils/utils';
+import { checkIntervalTime } from '@/utils/utils';
 import { AppState, AppStateStatus, Platform } from 'react-native';
 
 export const biometricSessionExpireTime = 5;
@@ -113,19 +108,11 @@ class SessionService {
       cancelNotification(notificationProps);
       return;
     }
-    if (!tenantDetailStore.getState().tenantDetails?.isSessionTimeoutAllowed) {
-      // don't show session out notification
-      return;
-    }
     //if (!loginScreenOpened(navigation)) {
     sessionOutNotification({
       ...notificationProps,
       scheduleTime,
-      body: !isEmpty(
-        tenantDetailStore.getState().tenantDetails?.sessionTimeoutNotifBody,
-      )
-        ? tenantDetailStore.getState().tenantDetails?.sessionTimeoutNotifBody
-        : i18n.t('UserLoggedOut'),
+      body: i18n.t('UserLoggedOutDynamic', { time: sessionExpireTime }),
     });
     //}
   };

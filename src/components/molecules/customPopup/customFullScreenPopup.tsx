@@ -1,4 +1,5 @@
 import { SafeScreen } from '@/components/template';
+import { usePopupManagerStore } from '@/store';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
 import { handlePopupDismiss } from '@/utils/utils';
 import { useTranslation } from 'react-i18next';
@@ -6,6 +7,7 @@ import { Modal, StyleProp, StyleSheet, ViewStyle } from 'react-native';
 import { Portal } from 'react-native-paper';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useEffect } from 'react';
 
 // options for component
 type Props = {
@@ -16,6 +18,7 @@ type Props = {
   dismissOnBackPress?: boolean;
   onClose?: () => void;
   style?: StyleProp<ViewStyle>;
+  popupId?: string;
 };
 
 function CustomFullScreenPopup({
@@ -31,10 +34,32 @@ function CustomFullScreenPopup({
 
   const { t } = useTranslation(); //translation
 
+  const registerPopup = usePopupManagerStore(state => state.registerPopup);
+  const unregisterPopup = usePopupManagerStore(state => state.unregisterPopup);
+
+  const popupId = props.popupId || 'custom-fullscreen-popup';
+
+  const dimiss = () => {
+    props.setShown(false);
+    unregisterPopup(popupId);
+    if (props.onClose) {
+      props.onClose();
+    }
+  };
+
+  useEffect(() => {
+    if (props.shown) {
+      registerPopup(popupId, dimiss);
+      return () => {
+        unregisterPopup(popupId);
+      };
+    } else {
+      unregisterPopup(popupId);
+    }
+  }, [props.shown, popupId, registerPopup, unregisterPopup]);
+
   /** added by @YUvraj 10-10-2025 --> dismiss the popup when security minimize popup shows */
-  handlePopupDismiss(props.shown, () =>
-    props.setShown ? props.setShown(false) : undefined,
-  );
+  handlePopupDismiss(props.shown, dimiss);
 
   return (
     <Portal>

@@ -25,6 +25,7 @@ import { HttpMethodApi, makeRequest } from '@/services/apiInstance';
 import {
   Events,
   GetEventsForEditModel,
+  GetExternalAttendeesModel,
   GetGlobalScheduleDetailForEditModel,
   GetScheduleTasksForGlobalCalendarModel,
   GetUserProgramSessionEventsModel,
@@ -82,6 +83,10 @@ const ScheduleEventDetail = () => {
   const [status, setStatus] = useState({ message: '', color: '' });
   const [eventData, setEventData] = useState<Events>();
 
+  /** Added by @Yuvraj 29-05-2026 ---> FOR external attendeed if any (FYN-14640)*/
+  const [externalAttendeesList, setExternalAttendeesList] =
+    useState<string>('');
+
   const eventList: EventListModel[] = [
     { id: 1, name: 'Phone Call' },
     { id: 2, name: 'In-Person Meeting' },
@@ -105,6 +110,11 @@ const ScheduleEventDetail = () => {
           ? ApiConstants.GetGlobalO365EventForEdit
           : ApiConstants.GetGlobalEventForEdit,
       });
+      if (item.isOffice365) {
+        GetExternalAttendeesApi.mutate({
+          EventId: item.taskIdentifier,
+        });
+      }
     } else {
       getEventsForEditApi.mutate({ Id: route?.id });
     }
@@ -241,12 +251,39 @@ const ScheduleEventDetail = () => {
             })!,
             returnFormat: DateFormats.ScheduleUIDateFormat,
           }),
+          description:
+            data.result.events.eventTypeName == 'O365'
+              ? data.result.events?.description?.replace(/<[^>]+>/g, '').trim()
+              : data.result.events?.description,
         });
 
         computeStatus({ type: 'NON_ADVISOR_EVENT', event: data.result.events });
       }
     },
     onError(error, variables, context) {
+      showSnackbar(error.message, 'danger');
+    },
+  });
+
+  //external attendeed for o365 events
+  const GetExternalAttendeesApi = useMutation({
+    mutationFn: (sendData: Record<string, any>) => {
+      return makeRequest<GetExternalAttendeesModel[]>({
+        endpoint: ApiConstants.GetExternalAttendees,
+        method: HttpMethodApi.Get,
+        data: sendData,
+      });
+    },
+    onMutate(variables) {},
+    onSettled(data, error, variables, context) {},
+    onSuccess(data, variables, context) {
+      /** Handle success response */
+      if (data?.result && data.result.length > 0) {
+        setExternalAttendeesList(data.result.map(item => item.name).join(', '));
+      }
+    },
+    onError(error, variables, context) {
+      /** Handle error response */
       showSnackbar(error.message, 'danger');
     },
   });
@@ -421,7 +458,8 @@ const ScheduleEventDetail = () => {
                     )}
 
                     {!!eventDetail?.events?.link &&
-                      eventDetail?.events.eventType == 3 &&
+                      (eventDetail?.events.eventType == 3 ||
+                        eventDetail?.events.eventType == 4) &&
                       status.message != 'Expired' && (
                         <Shadow
                           onPress={() => openUrl(eventDetail?.events?.link)}
@@ -492,34 +530,80 @@ const ScheduleEventDetail = () => {
                   {(eventDetail?.tags ||
                     eventDetail?.programs ||
                     eventDetail?.users ||
-                    eventDetail?.contactType) && (
-                    <>
-                      <CustomText
-                        style={styles.bottomInfoText}
-                        variant={TextVariants.bodyLarge}
-                      >
-                        {eventDetail?.tags
-                          ? t('AudienceTags')
-                          : eventDetail?.programs
-                          ? t('AudienceExperiences')
-                          : eventDetail?.users
-                          ? t('AudienceContacts')
-                          : t('AudienceContactType')}
-                      </CustomText>
-                      <CustomText
-                        style={styles.details}
-                        color={theme.colors.outline}
-                      >
-                        {eventDetail?.tags
-                          ? eventDetail?.tags
-                          : eventDetail?.programs
-                          ? eventDetail?.programs
-                          : eventDetail?.users
-                          ? eventDetail?.users
-                          : eventDetail?.contactType}
-                      </CustomText>
-                    </>
-                  )}
+                    eventDetail?.contactType) &&
+                    !item?.isOffice365 && (
+                      <>
+                        <CustomText
+                          style={styles.bottomInfoText}
+                          variant={TextVariants.bodyLarge}
+                        >
+                          {eventDetail?.tags
+                            ? t('AudienceTags')
+                            : eventDetail?.programs
+                            ? t('AudienceExperiences')
+                            : eventDetail?.users
+                            ? t('AudienceContacts')
+                            : t('AudienceContactType')}
+                        </CustomText>
+                        <CustomText
+                          style={styles.details}
+                          color={theme.colors.outline}
+                        >
+                          {eventDetail?.tags
+                            ? eventDetail?.tags
+                            : eventDetail?.programs
+                            ? eventDetail?.programs
+                            : eventDetail?.users
+                            ? eventDetail?.users
+                            : eventDetail?.contactType}
+                        </CustomText>
+                      </>
+                    )}
+                  {item?.isOffice365 &&
+                    (externalAttendeesList.length > 0 ||
+                      eventDetail?.users) && (
+                      <>
+                        <CustomText
+                          style={styles.bottomInfoText}
+                          variant={TextVariants.bodyLarge}
+                        >
+                          {t('Audience')}
+                        </CustomText>
+                        {eventDetail?.users && (
+                          <>
+                            <CustomText
+                              style={styles.subAudienceText}
+                              variant={TextVariants.bodyMedium}
+                            >
+                              {`- ${t('Contacts')}`}
+                            </CustomText>
+                            <CustomText
+                              style={styles.details}
+                              color={theme.colors.outline}
+                            >
+                              {eventDetail?.users}
+                            </CustomText>
+                          </>
+                        )}
+                        {externalAttendeesList.length > 0 && (
+                          <>
+                            <CustomText
+                              style={styles.subAudienceText}
+                              variant={TextVariants.bodyMedium}
+                            >
+                              {`- ${t('ExternalAttendees')}`}
+                            </CustomText>
+
+                            <CustomText
+                              style={styles.details}
+                              color={theme.colors.outline}
+                            >
+                              {externalAttendeesList}
+                            </CustomText>
+                          </>
+                        )}
+                      </>
+                    )}
                 </View>
               ) : (
                 <EmptyView label={t('EventNotExist')} />
@@ -648,7 +732,8 @@ const ScheduleEventDetail = () => {
                     )}
 
                     {eventData?.link &&
-                      eventData?.eventType == 3 &&
+                      (eventData?.eventType == 3 ||
+                        eventData?.eventType == 4) &&
                       status.message != 'Expired' && (
                         <Shadow
                           onPress={() => openUrl(eventData?.link)}
@@ -758,6 +843,10 @@ const makeStyles = (theme: CustomTheme) =>
 
     bottomInfoText: { marginTop: 5 },
     details: { marginTop: 5, marginBottom: 10 },
+    subAudienceText: {
+      marginTop: 5,
+      fontWeight: 'bold',
+    },
 
     skeletonMain: { width: '100%', padding: 20 },
 

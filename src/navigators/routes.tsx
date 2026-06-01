@@ -279,8 +279,8 @@ export function BottomTabNavigator() {
     },
     {
       name: 'EventViewAll',
-      title: t('Schedule'),
-      image: Images.myGroup,
+      title: t('Outreach'),
+      image: Images.mousePointer,
       imageType: ImageType.svg,
     },
     ...(TenantInfo.TenancyName === 'newhorizonsdemo' ||
@@ -311,8 +311,8 @@ export function BottomTabNavigator() {
   var contentEditorScreens: BottomTabModel[] = [
     {
       name: 'EventViewAll',
-      title: t('Schedule'),
-      image: Images.myGroup,
+      title: t('Outreach'),
+      image: Images.mousePointer,
       imageType: ImageType.svg,
     },
     {

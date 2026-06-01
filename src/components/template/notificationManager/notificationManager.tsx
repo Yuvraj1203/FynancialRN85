@@ -22,6 +22,7 @@ import {
   notificationPermissionStore,
   templateStore,
   useLogoutStore,
+  usePopupManagerStore,
   userStore,
 } from '@/store';
 import { Images } from '@/theme/assets/images';
@@ -290,6 +291,7 @@ function NotificationManager() {
     const permissionStatus = await checkNotificationPermission(true);
     if (showReminder && !permissionStatus) {
       // Show the reminder pop-up
+      usePopupManagerStore.getState().dismissAllPopups();
       setShowAllowNotiReminderPopup(true);
     } else {
       handleAllowedNotif();
@@ -995,6 +997,7 @@ function NotificationManager() {
   return (
     <>
       <CustomPopup
+        popupId="allow-notification-dialog-popup"
         shown={showNotificationPermissionPopup}
         setShown={setShowNotificationPermissionPopup}
         title={t('AllowNotification')}
@@ -1011,6 +1014,7 @@ function NotificationManager() {
         }}
       />
       <CustomPopup
+        popupId="alarm-notification-dialog-popup"
         shown={showNotificationAlarmPermissionPopup}
         setShown={setShowNotificationAlarmPermissionPopup}
         title={t('SecurityNotification')}
@@ -1029,6 +1033,7 @@ function NotificationManager() {
       />
 
       <CustomBottomPopup
+        popupId="allow-notification-reminder-popup"
         shown={showAllowNotiReminderPopup}
         setShown={setShowAllowNotiReminderPopup}
         title={t('AllowNotification')}

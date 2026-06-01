@@ -251,6 +251,7 @@ function TimeZone() {
         <View style={{ flex: 1, height: '100%', marginTop: 10 }}>
           {userTimeZoneList?.length > 0 ? (
             <CustomDropDownPopup
+              popupId="timezone-list-dropdown"
               style={styles.PopUpStyle}
               buttonLoading={ButtonLoading}
               loading={loading}
@@ -295,6 +296,7 @@ function TimeZone() {
         </View>
 
         <CustomPopup
+          popupId="timezone-logout-confirmation-popup"
           shown={showLogout}
           setShown={setShowLogout}
           compact

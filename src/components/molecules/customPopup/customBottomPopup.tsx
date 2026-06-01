@@ -3,6 +3,7 @@ import { ImageType } from '@/components/atoms/customImage/customImage';
 import { TextVariants } from '@/components/atoms/customText/customText';
 import { Images } from '@/theme/assets/images';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
+import { usePopupManagerStore } from '@/store';
 import { handlePopupDismiss } from '@/utils/utils';
 import { ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -40,6 +41,7 @@ type Props = {
   popUpBgcolor?: string;
   titleColor?: string;
   keyboardHandle?: boolean;
+  popupId?: string;
 };
 
 function CustomBottomPopup({
@@ -56,6 +58,11 @@ function CustomBottomPopup({
   const { t } = useTranslation(); //translation
 
   const [keyboardHeight, setKeyboardHeight] = useState(14);
+
+  const registerPopup = usePopupManagerStore(state => state.registerPopup);
+  const unregisterPopup = usePopupManagerStore(state => state.unregisterPopup);
+
+  const popupId = props.popupId || 'custom-bottom-popup';
 
   useEffect(() => {
     const keyboardWillShowListener = Keyboard.addListener(
@@ -84,11 +91,26 @@ function CustomBottomPopup({
     };
   }, [props.shown]);
 
+  // Register popup when shown, unregister when hidden
+  useEffect(() => {
+    if (props.shown) {
+      registerPopup(popupId, dimiss);
+      return () => {
+        unregisterPopup(popupId);
+      };
+    } else {
+      unregisterPopup(popupId);
+    }
+  }, [props.shown, popupId, registerPopup, unregisterPopup]);
+
   // dismiss bottom card
   const dimiss = () => {
     props.setShown(false);
     if (props.onClose) {
       props.onClose();
+    }
+    if (popupId) {
+      unregisterPopup(popupId);
     }
   };
 

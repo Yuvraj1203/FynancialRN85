@@ -1,17 +1,17 @@
-import {ImageType} from '@/components/atoms/customImage/customImage';
-import {CustomActionSheetPoup} from '@/components/molecules';
-import {ApiConstants} from '@/services/apiConstants';
-import {HttpMethodApi, makeRequest} from '@/services/apiInstance';
-import {ActionSheetModel, GetAllModel, ItemsArray} from '@/services/models';
-import {userStore} from '@/store';
-import {Images} from '@/theme/assets/images';
-import {CustomTheme, useTheme} from '@/theme/themeProvider/paperTheme';
-import {useAppNavigation} from '@/utils/navigationUtils';
-import {showSnackbar} from '@/utils/utils';
-import {useMutation} from '@tanstack/react-query';
-import {useEffect, useState} from 'react';
-import {useTranslation} from 'react-i18next';
-import {StyleProp, StyleSheet, ViewStyle} from 'react-native';
+import { ImageType } from '@/components/atoms/customImage/customImage';
+import { CustomActionSheetPoup } from '@/components/molecules';
+import { ApiConstants } from '@/services/apiConstants';
+import { HttpMethodApi, makeRequest } from '@/services/apiInstance';
+import { ActionSheetModel, GetAllModel, ItemsArray } from '@/services/models';
+import { userStore } from '@/store';
+import { Images } from '@/theme/assets/images';
+import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
+import { useAppNavigation } from '@/utils/navigationUtils';
+import { showSnackbar } from '@/utils/utils';
+import { useMutation } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { StyleProp, StyleSheet, ViewStyle } from 'react-native';
 
 type Props = {
   id?: number;
@@ -48,7 +48,7 @@ function SupportPopup(props: Props) {
   const styles = makeStyles(theme);
 
   /** Added by @Yuvraj 31-01-2025 -> translations for labels (FYN-4299) */
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   /** Added by @Yuvraj 31-01-2025 -> state for action list popup data (FYN-4299) */
   const [actionList, setActionList] = useState<ActionSheetModel[]>([]);
@@ -128,6 +128,7 @@ function SupportPopup(props: Props) {
 
   return (
     <CustomActionSheetPoup
+      popupId="support-action-sheet"
       title={t('Support')}
       shown={props.shown}
       setShown={props.setShown}

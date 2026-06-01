@@ -170,6 +170,7 @@ function TemplatePopup() {
   return (
     <>
       <CustomBottomPopup
+        popupId="user-template-selector-popup"
         shown={showPopup}
         setShown={setShowPopup}
         dismissOnBackPress={!loading}

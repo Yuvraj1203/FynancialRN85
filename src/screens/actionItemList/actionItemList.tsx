@@ -638,6 +638,7 @@ function ActionItemList() {
           selected={selectedStatus}
           setSelected={handleSelectedSegmentedButton}
           style={styles.segmentedBtn}
+          textVariant={TextVariants.labelLarge}
         />
         {loading ? (
           <Skeleton>
@@ -708,6 +709,7 @@ function ActionItemList() {
         )}
 
         <CustomActionSheetPoup
+          popupId="action-item-action-sheet"
           shown={showActionSheet}
           setShown={setShowActionSheet}
           children={handleOptions()}

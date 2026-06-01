@@ -174,6 +174,7 @@ function BlackDiamondAsset(props: Props) {
       </View>
 
       <CustomBottomPopup
+        popupId="black-diamond-asset-popup"
         shown={chartPopup}
         setShown={setChartPopup}
         title={
@@ -181,11 +182,12 @@ function BlackDiamondAsset(props: Props) {
             maxFontSizeMultiplier={maxFontSize}
             variant={TextVariants.titleLarge}
             style={{ width: '80%' }}
+            color={theme.colors.assetCardText}
           >
             {props.cardData.title}
           </CustomText>
         }
-        titleColor={theme.colors.assetCardText}
+        // titleColor={theme.colors.assetCardText}
         popUpBgcolor={theme.colors.assetCardBg}
       >
         <View>

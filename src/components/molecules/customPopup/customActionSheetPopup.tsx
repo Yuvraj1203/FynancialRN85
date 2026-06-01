@@ -2,9 +2,11 @@ import { CustomImage, CustomText, Tap } from '@/components/atoms';
 import { ImageType } from '@/components/atoms/customImage/customImage';
 import { TextVariants } from '@/components/atoms/customText/customText';
 import { ActionSheetModel } from '@/services/models';
+import { usePopupManagerStore } from '@/store';
 import { Images } from '@/theme/assets/images';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
 import { handlePopupDismiss } from '@/utils/utils';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Modal,
@@ -35,6 +37,7 @@ type Props = {
   hideIcons?: boolean;
   loading?: boolean;
   style?: StyleProp<ViewStyle>;
+  popupId?: string;
 };
 
 function CustomActionSheetPoup({
@@ -52,12 +55,30 @@ function CustomActionSheetPoup({
 
   const { t } = useTranslation(); //translation
 
+  const registerPopup = usePopupManagerStore(state => state.registerPopup);
+  const unregisterPopup = usePopupManagerStore(state => state.unregisterPopup);
+
+  const popupId = props.popupId || 'custom-action-sheet-popup';
+
+  // Register popup when shown, unregister when hidden
+  useEffect(() => {
+    if (props.shown) {
+      registerPopup(popupId, dimiss);
+      return () => {
+        unregisterPopup(popupId);
+      };
+    } else {
+      unregisterPopup(popupId);
+    }
+  }, [props.shown, popupId, registerPopup, unregisterPopup]);
+
   // dismiss bottom card
   const dimiss = () => {
     props.setShown(false);
     if (props.onCancelClick) {
       props.onCancelClick();
     }
+    unregisterPopup(popupId);
   };
 
   /** added by @Yuvraj 10-10-2025 --> dismiss the popup when security minimize popup shows */

@@ -1180,6 +1180,7 @@ function CreatePost() {
           </KeyboardAvoidingView>
         )}
         <CustomImagePicker
+          popupId="create-post-image-picker"
           showPopup={showImageSelectionPopup}
           setShowPopup={setShowImageSelectionPopup}
           selectionLimit={mediaList.length == 0 ? 10 : 11 - mediaList.length}

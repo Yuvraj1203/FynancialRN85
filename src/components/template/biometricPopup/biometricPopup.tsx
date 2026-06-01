@@ -45,6 +45,7 @@ import {
   useAuth0,
   WebAuthorizeParameters,
 } from 'react-native-auth0';
+import { showAlertPopup } from '../alertPopup/alertPopup';
 import { sessionExpireTime, sessionService } from './sessionService';
 
 /**
@@ -225,7 +226,10 @@ function BiometricPopup() {
     }
   }, [sessionOutPopup]);
 
-  const setSessionOut = (cred?: Record<string, any>) => {
+  const setSessionOut = (
+    cred?: Record<string, any>,
+    noSessionOut?: boolean,
+  ) => {
     const sessionOutData = {
       title: 'Session Out',
       data: {
@@ -248,12 +252,24 @@ function BiometricPopup() {
 
     setBiometricLoading(false); //biometric loading false on session out
 
-    logout({ noNavigation: true, hardLogout: true });
+    if (noSessionOut) {
+      showAlertPopup({
+        title: t('Message'),
+        msg: t('AccessDeniedMsg'),
+        PositiveText: t('Done'),
+        dismissOnBackPress: false,
+        onPositivePress: () => {
+          logout({ hardLogout: true });
+        },
+      });
+    } else {
+      logout({ noNavigation: true, hardLogout: true });
 
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'SessionOutScreen' }],
-    });
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'SessionOutScreen' }],
+      });
+    }
   };
 
   const handleNavigation = async (fromResumeApp?: boolean) => {
@@ -387,6 +403,16 @@ function BiometricPopup() {
 
             // Any other error: keep UI responsive; bail out as undefined
             Log('Auth0: non-timeout error; returning undefined.');
+            if (JSON.stringify(err).includes('access_denied')) {
+              showAlertPopup({
+                title: t('Message'),
+                msg: t('AccessDeniedMsg'),
+                PositiveText: t('Done'),
+                dismissOnBackPress: false,
+                onPositivePress: () => {},
+              });
+            }
+
             return undefined;
           }
 
@@ -472,10 +498,19 @@ function BiometricPopup() {
         })
         .catch(error => {
           Log('refresh auth0 Token Error=>' + JSON.stringify(error));
-          setSessionOut({
-            auth0TokenErrorCredCatch:
-              'Unable to refresh Auth0 token via getCredentials catch',
-          });
+          if (JSON.stringify(error).includes('access_denied')) {
+            setSessionOut(
+              {
+                auth0Unauthorize: 'User is not authorized',
+              },
+              true,
+            );
+          } else {
+            setSessionOut({
+              auth0TokenErrorCredCatch:
+                'Unable to refresh Auth0 token via getCredentials catch',
+            });
+          }
         });
     } else {
       const access = await getAccessTokenFromKeychain();

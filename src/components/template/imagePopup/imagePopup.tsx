@@ -79,7 +79,11 @@ function ImagePopup() {
 
   return (
     <>
-      <CustomFullScreenPopup shown={showPopup} setShown={setShowPopup}>
+      <CustomFullScreenPopup
+        popupId="image-gallery-fullscreen-popup"
+        shown={showPopup}
+        setShown={setShowPopup}
+      >
         <View style={styles.main}>
           {popupProps.imageList ? (
             <View style={styles.container}>

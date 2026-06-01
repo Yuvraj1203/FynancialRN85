@@ -129,6 +129,7 @@ type Props = {
   showErrorIcon?: boolean;
   onLinkPreviewChange?: (data?: GetLinkPreviewHTMLModel) => void;
   hidePreview?: boolean;
+  labelVariant?: TextVariants;
 };
 
 const FormTextInput = forwardRef<RNTextInput, Props>(
@@ -149,6 +150,7 @@ const FormTextInput = forwardRef<RNTextInput, Props>(
       showErrorIcon = true,
       preserveSuffixIconOnError = false,
       hidePreview = true,
+      labelVariant = TextVariants.bodyMedium,
       ...props
     },
     ref,
@@ -316,10 +318,7 @@ const FormTextInput = forwardRef<RNTextInput, Props>(
         }) => (
           <View style={props.style}>
             {showLabel ? (
-              <CustomText
-                variant={TextVariants.bodyMedium}
-                style={styles.heading}
-              >
+              <CustomText variant={labelVariant} style={styles.heading}>
                 {props.label}
               </CustomText>
             ) : (

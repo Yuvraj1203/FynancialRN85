@@ -162,4 +162,6 @@ export const Images = {
   bookmark: require('../images/images/bookmark.svg'),
   bookmarkFilled: require('../images/images/bookmarkFilled.svg'),
   tickCircle: require('../images/images/tickCircle.svg'),
+  aboutUs: require('../images/images/aboutUs.svg'),
+  mousePointer: require('../images/images/mousePointer.svg'),
 };

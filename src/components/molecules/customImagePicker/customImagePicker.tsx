@@ -1,3 +1,4 @@
+import { CustomButton, CustomImage, CustomText, Tap } from '@/components/atoms';
 import { ImageType } from '@/components/atoms/customImage/customImage';
 import { SelectResourcePopup } from '@/components/template';
 import { showAlertPopup } from '@/components/template/alertPopup/alertPopup';
@@ -15,7 +16,7 @@ import {
 import { keepLocalCopy, pick, types } from '@react-native-documents/picker';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Image, Platform, StyleSheet } from 'react-native';
+import { Image, Platform, StyleSheet, View } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 import {
   Asset,
@@ -24,6 +25,8 @@ import {
   launchImageLibrary,
 } from 'react-native-image-picker';
 import CustomActionSheetPoup from '../customPopup/customActionSheetPopup';
+import CustomBottomPopup from '../customPopup/customBottomPopup';
+import CustomTextInput from '../customTextInput/customTextInput';
 
 export type Props = {
   showPopup: boolean;
@@ -34,6 +37,7 @@ export type Props = {
   cropWidth?: number;
   showFile?: boolean;
   showAllFile?: boolean;
+  url?: boolean;
   showResource?: boolean;
   mediaList?: (value: Asset[]) => void;
   onClose?: () => void;
@@ -43,6 +47,9 @@ export type Props = {
   onResourceListChange?: (value: DocumentDetails[]) => void;
   selectOneItemAtATime?: boolean; //toggle validation that enforces choosing only ONE of image/pdf/resource at a time
   IsManualCrop?: boolean; // NEW - controls whether to skip automatic cropping
+  popupId?: string;
+  onUrlSave?: (value: string) => void;
+  isUrlLoading?: boolean;
 };
 
 // ✅ EXPORT this function — place it outside your component file (bottom or top)
@@ -119,6 +126,31 @@ const CustomImagePicker = ({
   );
 
   const [originalUri, setOriginalUri] = useState<string | null>(null);
+
+  //bottom popup state for image url input
+  const [showUrlModal, setShowUrlModal] = useState(false);
+  const [urlInput, setUrlInput] = useState<string>('');
+  const [isValidImage, setIsValidImage] = useState<boolean | null>(null);
+
+  const validateImageUrl = async (url: string) => {
+    // Basic URL validation
+    const isValidUrl = /^https?:\/\/.+/i.test(url);
+
+    if (!isValidUrl) {
+      setIsValidImage(false);
+      return;
+    }
+
+    Image.getSize(
+      url,
+      () => {
+        setIsValidImage(true);
+      },
+      () => {
+        setIsValidImage(false);
+      },
+    );
+  };
 
   // mirror incoming array into our local state
   useEffect(() => {
@@ -458,6 +490,7 @@ const CustomImagePicker = ({
   return (
     <>
       <CustomActionSheetPoup
+        popupId={props.popupId}
         shown={props.showPopup}
         setShown={props.setShowPopup}
         centered={false}
@@ -494,6 +527,24 @@ const CustomImagePicker = ({
               ? theme.colors.onSurfaceDisabled
               : theme.colors.onSurfaceVariant,
           },
+          ...(props.url
+            ? [
+                {
+                  title: t('ImageURL'),
+                  image: Images.link,
+                  imageType: ImageType.svg,
+                  onPress: () => {
+                    setShowUrlModal(true);
+                  },
+                  titleColor: blockFileActions
+                    ? theme.colors.onSurfaceDisabled
+                    : theme.colors.onSurfaceVariant,
+                  imageColor: blockFileActions
+                    ? theme.colors.onSurfaceDisabled
+                    : theme.colors.onSurfaceVariant,
+                },
+              ]
+            : []),
           ...(props.showFile
             ? [
                 {
@@ -561,6 +612,74 @@ const CustomImagePicker = ({
         initialSelectedDocs={resourceListState}
         onSelection={handleResourceSelection}
       />
+
+      <CustomBottomPopup
+        title={t('ImageURL')}
+        shown={showUrlModal}
+        setShown={setShowUrlModal}
+        onClose={() => setUrlInput('')}
+        keyboardHandle
+      >
+        <View style={styles.imageUrlContainer}>
+          <CustomTextInput
+            text={urlInput}
+            onChangeText={value => {
+              setUrlInput(value);
+              validateImageUrl(value);
+            }}
+            placeholder={t('EnterImageURL')}
+            suffixIcon={
+              urlInput
+                ? {
+                    source: Images.closeCircle,
+                    type: ImageType.svg,
+                    tap: () => setUrlInput(''),
+                  }
+                : {}
+            }
+          />
+
+          {urlInput ? (
+            isValidImage ? (
+              <View style={styles.urlImage}>
+                <CustomImage
+                  source={{ uri: urlInput }}
+                  style={styles.urlImage}
+                />
+                <Tap
+                  onPress={() => setUrlInput('')}
+                  style={styles.closeContainer}
+                >
+                  <CustomImage
+                    source={Images.closeCircle}
+                    style={styles.closeStyle}
+                    type={ImageType.svg}
+                    color={theme.colors.onPrimary}
+                  />
+                </Tap>
+              </View>
+            ) : (
+              <CustomText style={styles.errorText} color={theme.colors.danger}>
+                {t('InvalidImageUrl')}
+              </CustomText>
+            )
+          ) : null}
+
+          <CustomButton
+            loading={props.isUrlLoading}
+            style={styles.saveButton}
+            onPress={() => {
+              if (isValidImage) {
+                setShowUrlModal(false);
+                props.onUrlSave && props.onUrlSave(urlInput);
+                setUrlInput('');
+              }
+            }}
+          >
+            {t('Save')}
+          </CustomButton>
+        </View>
+      </CustomBottomPopup>
     </>
   );
 };
@@ -573,7 +692,37 @@ const makeStyles = (theme: CustomTheme) =>
       justifyContent: 'center',
     },
     emptyIcon: { height: 50, width: 50 },
+    urlImage: {
+      height: 150,
+      width: 150,
+      alignSelf: 'center',
+      borderRadius: theme.roundness,
+      marginBottom: 15,
+    },
+    closeStyle: {
+      height: 30,
+      width: 30,
+    },
+    closeContainer: {
+      position: 'absolute',
+      top: -10,
+      right: -8,
+      backgroundColor: theme.colors.primary,
+      borderRadius: theme.roundness,
+    },
     emptyLabel: { marginTop: 10 },
+    imageUrlContainer: {
+      flex: 1,
+      paddingTop: 0,
+      paddingHorizontal: 15,
+      marginBottom: 10,
+    },
+    errorText: {
+      marginBottom: 20,
+    },
+    saveButton: {
+      marginTop: 5,
+    },
   });
 
 export default CustomImagePicker;

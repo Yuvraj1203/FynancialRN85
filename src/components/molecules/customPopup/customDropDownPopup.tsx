@@ -50,6 +50,8 @@ type Props<T> = {
   validationMessage?: string;
   IsValidationRequired?: boolean;
   withFixedHeight?: boolean;
+  itemTextVariant?: TextVariants;
+  popupId?: string;
 };
 
 function CustomDropDownPopup<T>({
@@ -58,6 +60,7 @@ function CustomDropDownPopup<T>({
   withPopup = true,
   showSearchOption = true,
   withFixedHeight = true,
+  itemTextVariant = TextVariants.bodyLarge,
   ...props
 }: Props<T>) {
   const theme = useTheme();
@@ -127,7 +130,7 @@ function CustomDropDownPopup<T>({
                 : theme.colors.onSurfaceVariant
             }
             style={styles.flexOne}
-            variant={TextVariants.bodyLarge}
+            variant={itemTextVariant}
           >
             {String(item[props.displayKey])}
           </CustomText>
@@ -175,7 +178,7 @@ function CustomDropDownPopup<T>({
     return (
       <CustomCheckBox
         label={String(item[props.displayKey])}
-        labelVariant={TextVariants.bodyLarge}
+        labelVariant={itemTextVariant}
         value={isSelected ? true : false}
         color={theme.colors.primary}
         onClick={handleOnPress}
@@ -275,6 +278,7 @@ function CustomDropDownPopup<T>({
       dismissOnBackPress={dismissOnBackPress}
       title={props.title}
       keyboardHandle
+      popupId={props.popupId}
     >
       {renderContent()}
     </CustomBottomPopup>
@@ -289,6 +293,9 @@ const makeStyles = (theme: CustomTheme) =>
     searchInput: { marginHorizontal: 10 },
     flatList: { flex: 1, height: 300 },
     flatListWithoutHeight: { flex: 1 },
+    disabledLabel: {
+      color: theme.colors.outline,
+    },
     skeletonHeader: {
       width: '90%',
       flexDirection: 'row',

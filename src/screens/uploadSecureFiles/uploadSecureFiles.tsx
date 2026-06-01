@@ -306,6 +306,7 @@ function UploadSecureFiles() {
       </View>
 
       <CustomImagePicker
+        popupId="upload-secure-files-image-picker"
         showPopup={showFileSelectionPopup}
         setShowPopup={setShowFileSelectionPopup}
         mediaList={(files: Asset[]) => handleMediaList(files)}

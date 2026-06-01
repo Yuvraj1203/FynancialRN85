@@ -750,6 +750,7 @@ function AddScheduleActionItem() {
                       type: ImageType.svg,
                       color: theme.colors.onSurfaceVariant,
                     }}
+                    labelVariant={TextVariants.bodyLarge}
                   />
                 </Tap>
               )}
@@ -772,6 +773,7 @@ function AddScheduleActionItem() {
                     type: ImageType.svg,
                     color: theme.colors.onSurfaceVariant,
                   }}
+                  labelVariant={TextVariants.bodyLarge}
                 />
               </Tap>
 
@@ -783,6 +785,7 @@ function AddScheduleActionItem() {
                   showLabel={true}
                   placeholder={t('CustomActionItem')}
                   enabled={true}
+                  labelVariant={TextVariants.bodyLarge}
                 />
               )}
 
@@ -804,6 +807,7 @@ function AddScheduleActionItem() {
                     type: ImageType.svg,
                     color: theme.colors.onSurfaceVariant,
                   }}
+                  labelVariant={TextVariants.bodyLarge}
                 />
               </Tap>
 
@@ -857,7 +861,7 @@ function AddScheduleActionItem() {
                     <View>
                       <CustomText
                         style={styles.targetAudLabel}
-                        variant={TextVariants.titleSmall}
+                        variant={TextVariants.bodyMedium}
                       >
                         {t('SelectedContactType')}
                       </CustomText>
@@ -882,7 +886,7 @@ function AddScheduleActionItem() {
                     <View>
                       <CustomText
                         style={styles.targetAudLabel}
-                        variant={TextVariants.titleSmall}
+                        variant={TextVariants.bodyMedium}
                       >
                         {t('SelectedTags')}
                       </CustomText>
@@ -908,7 +912,7 @@ function AddScheduleActionItem() {
                     <View>
                       <CustomText
                         style={styles.targetAudLabel}
-                        variant={TextVariants.titleSmall}
+                        variant={TextVariants.bodyMedium}
                       >
                         {t('SelectedContacts')}
                       </CustomText>
@@ -952,6 +956,7 @@ function AddScheduleActionItem() {
               </View>
 
               <ScheduleDateTimePicker
+                popupId="add-schedule-action-item-date-time-picker"
                 timezone={userDetails?.userDetails?.timeZoneName}
                 startDateTime={startDateTime}
                 showEndDate={false}
@@ -1009,6 +1014,7 @@ function AddScheduleActionItem() {
           />
           {!selectedTemplate && (
             <CustomDropDownPopup
+              popupId="add-schedule-action-item-onbehalfof"
               title={t('SelectOnBehalfOf')}
               style={styles.PopUpStyle}
               setShown={setShowOnBehalfOfPopUp}
@@ -1028,6 +1034,7 @@ function AddScheduleActionItem() {
             />
           )}
           <CustomDatePicker
+            popupId="add-schedule-action-item-due-date"
             showPopup={showDatePicker}
             setShowPopup={setShowDatePicker}
             title={t('SelectDueDate')}
@@ -1037,6 +1044,7 @@ function AddScheduleActionItem() {
           />
 
           <CustomDropDownPopup
+            popupId="add-schedule-action-item-list-dropdown"
             loading={loading}
             shown={showActionItemDropdown}
             setShown={setShowActionItemDropdown}
@@ -1165,8 +1173,6 @@ const makeStyles = (theme: CustomTheme) =>
     targetAudLabel: {
       paddingBottom: 10,
       paddingLeft: 5,
-      fontSize: 14,
-      fontWeight: 'semibold',
     },
     chipsContainer: {
       flexDirection: 'row', // arrange chips horizontally
@@ -1175,7 +1181,7 @@ const makeStyles = (theme: CustomTheme) =>
       gap: 5, // nice gap between chips
       padding: 10,
       borderWidth: 1,
-      borderRadius: 12,
+      borderRadius: theme.roundness,
       borderColor: theme.colors.outline,
     },
     orLayout: {

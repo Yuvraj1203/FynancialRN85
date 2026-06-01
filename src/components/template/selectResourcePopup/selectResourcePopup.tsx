@@ -200,6 +200,7 @@ export default function DocumentSelectorPopup({
 
   return (
     <CustomBottomPopup
+      popupId="select-resource-popup"
       shown={shown}
       setShown={setShown}
       title={'Select Document'}
@@ -315,6 +316,7 @@ export default function DocumentSelectorPopup({
             </Skeleton>
           ) : docs?.items && docs?.items.length > 0 ? (
             <CustomDropDownPopup
+              popupId="select-resource"
               withPopup={false}
               mode={DropdownModes.multiple}
               items={docs?.items}

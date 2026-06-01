@@ -1160,6 +1160,7 @@ const EventViewAll = () => {
         )}
 
         <CustomActionSheetPoup
+          popupId="events-viewAll-action-sheet"
           shown={showActionSheet}
           setShown={setShowActionSheet}
           centered={false}

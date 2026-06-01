@@ -849,6 +849,7 @@ function BookmarkCollectionScreen() {
       )}
 
       <CustomImagePicker
+        popupId="bookmark-image-picker"
         showPopup={showImagePicker}
         setShowPopup={setShowImagePicker}
         mediaList={value => {
@@ -858,6 +859,7 @@ function BookmarkCollectionScreen() {
       />
 
       <CustomActionSheetPoup
+        popupId="bookmark-collection-action-sheet"
         shown={showPostActions}
         setShown={setShowPostActions}
         hideIcons={false}
@@ -942,6 +944,7 @@ function BookmarkCollectionScreen() {
       />
 
       <CustomBottomPopup
+        popupId="bookmark-collection-popup"
         shown={showCollectionPicker}
         setShown={setShowCollectionPicker}
         title={t('MoveToCollection')}

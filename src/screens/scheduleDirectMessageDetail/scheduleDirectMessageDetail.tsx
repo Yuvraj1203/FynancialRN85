@@ -313,7 +313,11 @@ const ScheduleDirectMessageDetail = () => {
           </View>
         </ScrollView>
 
-        <CustomFullScreenPopup shown={showPdfPopup} setShown={setShowPdfPopup}>
+        <CustomFullScreenPopup
+          popupId="schedule-direct-message-detail-fullscreen-popup"
+          shown={showPdfPopup}
+          setShown={setShowPdfPopup}
+        >
           <View style={styles.imageSendMain}>
             <View style={styles.main}>
               <PdfPreview

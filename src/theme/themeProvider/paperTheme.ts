@@ -83,6 +83,7 @@ export const AppTheme = () => {
       green: '#51A351',
       outOfOfcLevel2: '#A066F6',
       outOfOfcLevel1: '#F5EDFF',
+      lightPrimaryContainer: '#85f9c025',
     },
   };
   const CombinedDarkTheme: CustomTheme = {
@@ -128,6 +129,7 @@ export const AppTheme = () => {
       green: '#51A351',
       outOfOfcLevel2: '#A066F6',
       outOfOfcLevel1: '#F5EDFF',
+      lightPrimaryContainer: '#85f9c025',
     },
   };
 

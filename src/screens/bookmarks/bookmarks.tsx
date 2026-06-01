@@ -22,6 +22,7 @@ import { ApiConstants } from '@/services/apiConstants';
 import { HttpMethodApi, makeRequest } from '@/services/apiInstance';
 import {
   BookmarkReturnProp,
+  CreateCollectionResult,
   UserCollectionDto,
 } from '@/services/models/bookmarkModel/bookmarkModel';
 import { Images } from '@/theme/assets/images';
@@ -70,6 +71,7 @@ function BookmarksScreen({
   const [newCollectionName, setNewCollectionName] = useState('');
   const [showRenamePopup, setShowRenamePopup] = useState(false);
   const [renameValue, setRenameValue] = useState('');
+  const [createError, setCreateError] = useState('');
 
   useEffect(() => {
     if (!isActive) return;
@@ -147,20 +149,31 @@ function BookmarksScreen({
 
   const createCollectionApi = useMutation({
     mutationFn: (sendData: Record<string, any>) => {
-      return makeRequest<null>({
+      return makeRequest<CreateCollectionResult>({
         endpoint: ApiConstants.CreateCollection,
         method: HttpMethodApi.Post,
         data: sendData,
       });
     },
+    onMutate(variables) {
+      setCreateError('');
+    },
     onSuccess(data, variables, context) {
+      if (!data?.result?.success) {
+        setCreateError(
+          data?.result?.errorMessage
+            ? data?.result?.errorMessage
+            : t('CollectionAlreadyExistsValidMsg'),
+        );
+        return;
+      }
       setShowNewPopup(false);
       setNewCollectionName('');
       showSnackbar(t('CollectionCreated'), 'success');
       fetchCollectionsApi.mutate({ sessionId, groupId });
     },
     onError(error, variables, context) {
-      showSnackbar(error.message, 'danger');
+      setCreateError(error.message);
     },
   });
 
@@ -323,6 +336,7 @@ function BookmarksScreen({
         <Tap
           onPress={() => {
             setNewCollectionName('');
+            setCreateError('');
             setShowNewPopup(true);
           }}
         >
@@ -353,6 +367,7 @@ function BookmarksScreen({
       )}
 
       <CustomActionSheetPoup
+        popupId="bookmarks-action-sheet"
         shown={showRowMenu}
         setShown={setShowRowMenu}
         hideIcons={false}
@@ -385,19 +400,27 @@ function BookmarksScreen({
       />
 
       <CustomBottomPopup
+        popupId="bookmarks-new-collection-popup"
         shown={showNewPopup}
         setShown={setShowNewPopup}
         title={t('NewCollection')}
         keyboardHandle
-        onClose={() => setNewCollectionName('')}
+        onClose={() => {
+          setNewCollectionName('');
+          setCreateError('');
+        }}
       >
         <View style={styles.inputPopupContent}>
           <CustomTextInput
             label={t('CollectionName')}
             text={newCollectionName}
-            onChangeText={setNewCollectionName}
             placeholder={t('CreateNewCollection')}
             maxLength={255}
+            onChangeText={v => {
+              setNewCollectionName(v);
+              if (createError) setCreateError('');
+            }}
+            errorMsg={createError}
           />
 
           <CustomButton
@@ -424,6 +447,7 @@ function BookmarksScreen({
       </CustomBottomPopup>
 
       <CustomBottomPopup
+        popupId="bookmarks-rename-collection-popup"
         shown={showRenamePopup}
         setShown={setShowRenamePopup}
         title={t('RenameCollection')}

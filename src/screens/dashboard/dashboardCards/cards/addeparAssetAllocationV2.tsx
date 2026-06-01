@@ -172,18 +172,20 @@ function AddeparAssetAllocationV2(props: Props) {
       </View>
 
       <CustomBottomPopup
+        popupId="addepar-asset-allocation-card-popup"
         shown={chartPopup}
         setShown={setChartPopup}
         title={
           <CustomText
             maxFontSizeMultiplier={maxFontSize}
             variant={TextVariants.titleLarge}
+            color={theme.colors.assetCardText}
             style={{ width: '80%' }}
           >
             {props.cardData.title}
           </CustomText>
         }
-        titleColor={theme.colors.assetCardText}
+        // titleColor={theme.colors.assetCardText}
         popUpBgcolor={theme.colors.assetCardBg}
       >
         <View>

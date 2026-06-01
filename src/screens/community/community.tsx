@@ -1446,6 +1446,7 @@ function Community() {
           />
         )}
         <CustomActionSheetPoup
+          popupId="community-action-sheet"
           shown={showActionPopup}
           setShown={setShowActionPopup}
           hideIcons={false}
@@ -1460,6 +1461,7 @@ function Community() {
 
         {selectedComment && selectedComment.isOwner ? (
           <CustomActionSheetPoup
+            popupId="community-comment-action-sheet"
             shown={showCommentActionPopup}
             setShown={setShowCommentActionPopup}
             hideIcons={false}
@@ -1534,6 +1536,7 @@ function Community() {
           )}
 
         <CustomImagePicker
+          popupId="community-image-picker"
           showPopup={showImagePicker}
           setShowPopup={setShowImagePicker}
           mediaList={value => {
@@ -1542,6 +1545,7 @@ function Community() {
           }}
         />
         <CustomBottomPopup
+          popupId="community-experience-popup"
           shown={showTemplateSelectPopup}
           setShown={setShowTemplateSelectPopup}
           dismissOnBackPress={!templateLoading}
@@ -1581,6 +1585,7 @@ function Community() {
           )}
         </CustomBottomPopup>
         <CustomPopup
+          popupId="community-comment-status-popup"
           shown={showCommentTurningPopup}
           setShown={setShowCommentTurningPopup}
           compact

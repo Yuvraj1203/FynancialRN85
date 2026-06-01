@@ -695,15 +695,20 @@ function AddScheduleReminder() {
                         type: ImageType.svg,
                         color: theme.colors.onSurfaceVariant,
                       }}
+                      labelVariant={TextVariants.bodyLarge}
                     />
                   </Tap>
                 )}
-                <CustomText style={styles.headingLabel}>
+                <CustomText
+                  variant={TextVariants.bodyLarge}
+                  style={styles.headingLabel}
+                >
                   {t('ReminderType')}
                 </CustomText>
 
                 {reminderList?.length > 0 ? (
                   <CustomDropDownPopup
+                    popupId="add-schedule-reminder-list-dropdown"
                     // loading={loadingCountryList}
                     withPopup={false}
                     items={reminderList}
@@ -714,6 +719,7 @@ function AddScheduleReminder() {
                     onItemSelected={handleReminderSelect}
                     mode={DropdownModes.single}
                     withFixedHeight={false}
+                    itemTextVariant={TextVariants.bodyMedium}
                   />
                 ) : (
                   <View style={{ height: 300 }}>
@@ -743,6 +749,8 @@ function AddScheduleReminder() {
                     multiLine={true}
                     maxLines={1.5}
                     height={60}
+                    labelVariant={TextVariants.bodyLarge}
+                    style={styles.reminderTitle}
                   />
                 )}
 
@@ -791,7 +799,7 @@ function AddScheduleReminder() {
                       <View>
                         <CustomText
                           style={styles.targetAudLabel}
-                          variant={TextVariants.titleSmall}
+                          variant={TextVariants.bodyMedium}
                         >
                           {t('SelectedContactType')}
                         </CustomText>
@@ -816,7 +824,7 @@ function AddScheduleReminder() {
                       <View>
                         <CustomText
                           style={styles.targetAudLabel}
-                          variant={TextVariants.titleSmall}
+                          variant={TextVariants.bodyMedium}
                         >
                           {t('SelectedTags')}
                         </CustomText>
@@ -843,7 +851,7 @@ function AddScheduleReminder() {
                       <View>
                         <CustomText
                           style={styles.targetAudLabel}
-                          variant={TextVariants.titleSmall}
+                          variant={TextVariants.bodyMedium}
                         >
                           {t('SelectedContacts')}
                         </CustomText>
@@ -886,6 +894,7 @@ function AddScheduleReminder() {
                 </View>
 
                 <ScheduleDateTimePicker
+                  popupId="add-schedule-reminder-date-time-picker"
                   timezone={userDetails?.userDetails?.timeZoneName}
                   startDateTime={startDateTime}
                   showEndDate={false}
@@ -944,6 +953,7 @@ function AddScheduleReminder() {
 
           {!selectedTemplate && (
             <CustomDropDownPopup
+              popupId="add-schedule-reminder-onbehalfof"
               title={t('SelectOnBehalfOf')}
               style={styles.PopUpStyle}
               setShown={setShowOnBehalfOfPopUp}
@@ -1051,14 +1061,10 @@ const makeStyles = (theme: CustomTheme) =>
 
     headingLabel: {
       paddingBottom: 10,
-      fontSize: 17,
-      fontWeight: 'semibold',
     },
     targetAudLabel: {
       paddingBottom: 10,
       paddingLeft: 5,
-      fontSize: 14,
-      fontWeight: 'semibold',
     },
     buttonView: {
       flexDirection: 'row',
@@ -1073,15 +1079,19 @@ const makeStyles = (theme: CustomTheme) =>
       gap: 5, // nice gap between chips
       padding: 10,
       borderWidth: 1,
-      borderRadius: 12,
+      borderRadius: theme.roundness,
       borderColor: theme.colors.outline,
     },
     dividerOne: {
-      marginTop: 20,
+      marginTop: 10,
       marginBottom: 30,
       height: 1.5,
       width: '100%',
       backgroundColor: theme.colors.border,
+    },
+    reminderTitle: {
+      paddingTop: 20,
+      gap: 10,
     },
     divider: {
       marginVertical: 30,

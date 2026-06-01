@@ -196,6 +196,7 @@ function ScheduleTargetAudiencePopup<T>({
 
   return (
     <CustomBottomPopup
+      popupId="schedule-target-audience-popup"
       shown={props.shown}
       setShown={props.setShown}
       title={t('SelectTargeAudience')}
@@ -248,6 +249,7 @@ function ScheduleTargetAudiencePopup<T>({
         {SelectedAudienceType?.value === SegmentedButtonsValues.Tags ? (
           tagList.length > 0 ? (
             <CustomDropDownPopup
+              popupId="schedule-target-audience-tags"
               key={'Tags'}
               loading={false}
               items={tagList}
@@ -282,6 +284,7 @@ function ScheduleTargetAudiencePopup<T>({
         ) : SelectedAudienceType?.value === SegmentedButtonsValues.Contacts ? (
           contactList.length > 0 ? (
             <CustomDropDownPopup
+              popupId="schedule-target-audience-contacts"
               key={'Contacts'}
               loading={false}
               items={contactList}
@@ -320,6 +323,7 @@ function ScheduleTargetAudiencePopup<T>({
         ) : SelectedAudienceType?.value === SegmentedButtonsValues.Templates ? (
           templateList.length > 0 ? (
             <CustomDropDownPopup
+              popupId="schedule-target-audience-template"
               key={'Template'}
               loading={false}
               items={templateList}
@@ -359,6 +363,7 @@ function ScheduleTargetAudiencePopup<T>({
           SegmentedButtonsValues.ContactType ? (
           contactTypeList.length > 0 ? (
             <CustomDropDownPopup
+              popupId="schedule-target-audience-contact-type"
               key={'ContactType'}
               loading={false}
               items={contactTypeList}

@@ -24,9 +24,14 @@ type Props = {
   lableStyle?: StyleProp<TextStyle>;
   allowFontScaling?: boolean;
   maxFontSizeMultiplier?: number;
+  textVariant?: TextVariants;
 };
 
-function CustomSegmentedButton({ allowFontScaling = false, ...props }: Props) {
+function CustomSegmentedButton({
+  allowFontScaling = false,
+  textVariant = TextVariants.labelMedium,
+  ...props
+}: Props) {
   const theme = useTheme();
 
   const styles = makeStyles(theme);
@@ -58,7 +63,7 @@ function CustomSegmentedButton({ allowFontScaling = false, ...props }: Props) {
             <Shadow style={styles.shadow}>
               <CustomText
                 maxFontSizeMultiplier={props.maxFontSizeMultiplier}
-                variant={TextVariants.labelMedium}
+                variant={textVariant}
                 style={props.lableStyle ? props.lableStyle : styles.label}
                 allowFontScaling={allowFontScaling}
                 color={theme.colors.onSurfaceVariant}
@@ -69,7 +74,7 @@ function CustomSegmentedButton({ allowFontScaling = false, ...props }: Props) {
           ) : (
             <CustomText
               maxFontSizeMultiplier={props.maxFontSizeMultiplier}
-              variant={TextVariants.labelMedium}
+              variant={textVariant}
               color={theme.colors.onSurfaceVariant}
               allowFontScaling={allowFontScaling}
               style={props.lableStyle ? props.lableStyle : styles.label}

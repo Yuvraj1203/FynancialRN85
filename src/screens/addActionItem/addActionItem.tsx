@@ -411,6 +411,7 @@ function AddActionItem() {
         )}
 
         <CustomDropDownPopup
+          popupId="action-item-dropdown"
           loading={loading}
           shown={showActionItemDropdown}
           setShown={setShowActionItemDropdown}
@@ -425,6 +426,7 @@ function AddActionItem() {
         />
 
         <CustomDatePicker
+          popupId="action-item-date-time-picker"
           showPopup={showDatePicker}
           setShowPopup={setShowDatePicker}
           title={t('SelectDueDate')}

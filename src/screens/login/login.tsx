@@ -275,188 +275,6 @@ function Login() {
     setLoading(false);
   };
 
-  // /** Added by @Tarun 05-02-2025 -> login user in auth0 login (FYN-4204) */
-  // const loginWithAuth0 = async (type?: string, okta?: boolean) => {
-  //   /** Added by @Tarun 05-02-2025 -> to show loading on specific button (FYN-4204) */
-  //   if (okta) {
-  //     setOktaLoading(true);
-  //   } else {
-  //     if (type == 'sms') {
-  //       setSmsLoading(true);
-  //     } else {
-  //       setAuth0EmailLoading(true);
-  //     }
-  //   }
-
-  //   /** Added by @Tarun 05-02-2025 -> auth0 login (FYN-4204) */
-  //   if (TenantInfo.Auth0Organization) {
-  //     useLogoutStore.getState().setIsLoggingOut(true);
-  //     Log('isLoggingOut=>Auth0 with organisation = true');
-  //     await authorize(
-  //       {
-  //         scope: 'openid profile email offline_access',
-  //         connection: type,
-  //         audience: `https://${TenantInfo.Auth0Domain}/api/v2/`,
-  //         organization: TenantInfo.Auth0Organization ?? undefined,
-  //         additionalParameters: { prompt: 'login' },
-  //       },
-  //       Platform.OS == 'ios'
-  //         ? {
-  //             //ephemeralSession: true,
-  //             useSFSafariViewController: true,
-  //           }
-  //         : undefined,
-  //     )
-  //       .then(async credentials => {
-  //         Log('accessToken=>' + JSON.stringify(credentials));
-
-  //         if (credentials) {
-  //           if (userInfo?.userID) {
-  //             await resetUser();
-  //           }
-
-  //           await saveAccessTokenInKeychain(JSON.stringify(credentials));
-  //           authenticationTokenDetails.setAuth0Type(type);
-
-  //           storage.set('browserTokenRefresh', new Date().getTime()); //for browser token refresh
-  //           /**
-  //            * Added by @Tarun 05-02-2025 -> auth0 logged in successfully
-  //            * call authenticateViaAuth0Api to get server token (FYN-4204)
-  //            */
-  //           userData.setUserDetails({
-  //             loginWith: okta ? LoginWith.oktaWithAuth0 : LoginWith.auth0,
-  //           });
-
-  //           if (okta) {
-  //             try {
-  //               const decoded: { sub: string } = jwtDecode(
-  //                 credentials.accessToken,
-  //               );
-  //               oktaAuthenticateApiCall.mutate(decoded.sub);
-  //             } catch (e) {
-  //               console.error('Invalid token', e);
-  //               handleLoading();
-  //               useLogoutStore.getState().setIsLoggingOut(false);
-  //               Log('isLoggingOut=>Auth0 with organisation okta = false');
-  //               logout({});
-  //             }
-  //           } else {
-  //             /** Added by @Tarun 05-02-2025 -> call getUserDetailForProfileApiCall to get user details(FYN-4204) */
-  //             getUserDetailForProfileApiCall.mutate({
-  //               apiPayload: {},
-  //               loginWith: okta ? LoginWith.oktaWithAuth0 : LoginWith.auth0,
-  //             });
-  //           }
-  //         } else {
-  //           /** Added by @Tarun 05-02-2025 -> auth0 logged failed hide loading (FYN-4204) */
-  //           handleLoading();
-  //         }
-  //         useLogoutStore.getState().setIsLoggingOut(false);
-  //         Log('isLoggingOut=>Auth0 with organisation end = false');
-  //       })
-  //       .catch(error => {
-  //         /**
-  //          * Added by @Tarun 05-02-2025 -> auth0 login failed show snackbar and
-  //          * hide loading(FYN-4204)
-  //          */
-  //         if (error.code == 'TRANSACTION_ACTIVE_ALREADY') {
-  //           cancelWebAuth();
-  //           loginWithAuth0(type, okta);
-  //         }
-  //         Log('auth0 error=>' + JSON.stringify(error));
-
-  //         // showSnackbar(error.message, 'danger');
-
-  //         handleLoading();
-  //         useLogoutStore.getState().setIsLoggingOut(false);
-  //         Log('isLoggingOut=>Auth0 with organisation catch = false');
-  //       });
-  //   } else {
-  //     useLogoutStore.getState().setIsLoggingOut(true);
-  //     Log('isLoggingOut=>Auth0 = true');
-  //     await authorize(
-  //       {
-  //         scope: 'openid profile email offline_access',
-  //         connection: type,
-  //         audience: `https://${TenantInfo.Auth0Domain}/api/v2/`,
-  //         additionalParameters: { prompt: 'login' },
-  //       },
-  //       Platform.OS == 'ios'
-  //         ? {
-  //             //ephemeralSession: true,
-  //             useSFSafariViewController: true,
-  //           }
-  //         : undefined,
-  //     )
-  //       .then(async credentials => {
-  //         Log('accessToken=>' + JSON.stringify(credentials));
-
-  //         if (credentials) {
-  //           if (userInfo?.userID) {
-  //             await resetUser();
-  //           }
-
-  //           await saveAccessTokenInKeychain(JSON.stringify(credentials));
-  //           authenticationTokenDetails.setAuth0Type(type);
-
-  //           storage.set('browserTokenRefresh', new Date().getTime()); //for browser token refresh
-  //           /**
-  //            * Added by @Tarun 05-02-2025 -> auth0 logged in successfully
-  //            * call authenticateViaAuth0Api to get server token (FYN-4204)
-  //            */
-  //           userData.setUserDetails({
-  //             loginWith: okta ? LoginWith.oktaWithAuth0 : LoginWith.auth0,
-  //           });
-
-  //           if (okta) {
-  //             try {
-  //               const decoded: { sub: string } = jwtDecode(
-  //                 credentials.accessToken,
-  //               );
-  //               oktaAuthenticateApiCall.mutate(decoded.sub);
-  //             } catch (e) {
-  //               console.error('Invalid token', e);
-  //               handleLoading();
-  //               useLogoutStore.getState().setIsLoggingOut(false);
-  //               Log('isLoggingOut=>Auth0 okta = false');
-  //               logout({});
-  //             }
-  //           } else {
-  //             /** Added by @Tarun 05-02-2025 -> call getUserDetailForProfileApiCall to get user details(FYN-4204) */
-  //             getUserDetailForProfileApiCall.mutate({
-  //               apiPayload: {},
-  //               loginWith: okta ? LoginWith.oktaWithAuth0 : LoginWith.auth0,
-  //             });
-  //           }
-  //         } else {
-  //           /** Added by @Tarun 05-02-2025 -> auth0 logged failed hide loading (FYN-4204) */
-  //           handleLoading();
-  //         }
-  //         useLogoutStore.getState().setIsLoggingOut(false);
-  //         Log('isLoggingOut=>Auth0 end = false');
-  //       })
-  //       .catch(error => {
-  //         /**
-  //          * Added by @Tarun 05-02-2025 -> auth0 login failed show snackbar and
-  //          * hide loading(FYN-4204)
-  //          */
-
-  //         if (error.code == 'TRANSACTION_ACTIVE_ALREADY') {
-  //           cancelWebAuth();
-  //           loginWithAuth0(type, okta);
-  //         }
-
-  //         Log('auth0 error=>' + JSON.stringify(error));
-
-  //         // showSnackbar(error.message, 'danger');
-
-  //         handleLoading();
-  //         useLogoutStore.getState().setIsLoggingOut(false);
-  //         Log('isLoggingOut=>Auth0 catch = false');
-  //       });
-  //   }
-  // };
-
   const loginWithAuth0 = async (type?: string, okta?: boolean) => {
     try {
       // ✅ Start: set loading states clearly
@@ -551,6 +369,15 @@ function Login() {
       handleLoading();
       useLogoutStore.getState().setIsLoggingOut(false);
       Log('isLoggingOut => Auth0 catch = false');
+      if (JSON.stringify(error).includes('access_denied')) {
+        showAlertPopup({
+          title: t('Message'),
+          msg: t('AccessDeniedMsg'),
+          PositiveText: t('Done'),
+          dismissOnBackPress: false,
+          onPositivePress: () => {},
+        });
+      }
     }
   };
 
@@ -1461,6 +1288,7 @@ function Login() {
         </KeyboardAvoidingView>
 
         <CustomDropDownPopup
+          popupId="login-select-tenant"
           loading={emailLoading}
           shown={showTenantDropDown}
           setShown={setShowTenantDropdown}

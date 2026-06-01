@@ -3,9 +3,11 @@ import { CustomImageProps } from '@/components/atoms/customImage/customImage';
 import CustomText, {
   TextVariants,
 } from '@/components/atoms/customText/customText';
+import { usePopupManagerStore } from '@/store';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
 import { handlePopupDismiss } from '@/utils/utils';
 import { useTranslation } from 'react-i18next';
+import { useEffect } from 'react';
 import { Modal, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { Divider, Portal } from 'react-native-paper';
 
@@ -24,6 +26,7 @@ type Props = {
   setShown: (value: boolean) => void;
   statusIcon?: CustomImageProps;
   style?: StyleProp<ViewStyle>;
+  popupId?: string;
 };
 
 function CustomPopup({ dismissOnBackPress = true, ...props }: Props) {
@@ -31,9 +34,26 @@ function CustomPopup({ dismissOnBackPress = true, ...props }: Props) {
   const styles = makeStyles(theme); // access StylesSheet with theme implemented
   const { t } = useTranslation(); //translation
 
+  const registerPopup = usePopupManagerStore(state => state.registerPopup);
+  const unregisterPopup = usePopupManagerStore(state => state.unregisterPopup);
+
+  const popupId = props.popupId || 'custom-popup';
+
   const dimiss = () => {
     props.setShown(false);
+    unregisterPopup(popupId);
   };
+
+  useEffect(() => {
+    if (props.shown) {
+      registerPopup(popupId, dimiss);
+      return () => {
+        unregisterPopup(popupId);
+      };
+    } else {
+      unregisterPopup(popupId);
+    }
+  }, [props.shown, popupId, registerPopup, unregisterPopup]);
 
   /** added by @YUvraj 10-10-2025 --> dismiss the popup when security minimize popup shows */
   handlePopupDismiss(props.shown, dimiss);

@@ -171,6 +171,7 @@ function TamaracS(props: Props) {
       )}
 
       <CustomBottomPopup
+        popupId="tamaracs-card-popup"
         shown={showBottomPopUp}
         setShown={setShowBottomPopUp}
         title={t('Accounts')}

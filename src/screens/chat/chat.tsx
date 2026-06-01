@@ -3031,6 +3031,7 @@ function Chat() {
         )}
 
         <CustomImagePicker
+          popupId="chat-image-picker"
           showPopup={showImageSelectionPopup}
           setShowPopup={setShowImageSelectionPopup}
           mediaList={handleMediaList}
@@ -3040,6 +3041,7 @@ function Chat() {
         />
 
         <CustomActionSheetPoup
+          popupId="chat-action-sheet"
           shown={showAdminActionSheetPopUp}
           setShown={setShowAdminActionSheetPopUp}
           centered={false}
@@ -3100,6 +3102,7 @@ function Chat() {
         />
 
         <CustomPopup
+          popupId="chat-delete-group-popup"
           shown={showDeletePopup}
           setShown={setShowDeletePopup}
           compact
@@ -3137,6 +3140,7 @@ function Chat() {
         />
 
         <CustomBottomPopup
+          popupId="chat-out-of-office-popup"
           shown={showOutOfOfcPopUp}
           setShown={setShowOutOfOfcPopUp}
           title={t('OutOfOffice')}

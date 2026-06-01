@@ -94,6 +94,7 @@ function ContactListing() {
     { statusName: t('Assigned'), statusId: 1 },
     { statusName: t('NotAssigned'), statusId: 0 },
     { statusName: t('Invited'), statusId: 2 },
+    { statusName: t('Disabled'), statusId: 4 },
   ];
 
   /** Added by @Yuvraj 29-03-2025 -> loading state for whole ui (FYN-5908) */
@@ -533,6 +534,8 @@ function ContactListing() {
                         ? theme.colors.outlineVariant
                         : item.status == 2
                         ? theme.colors.blue
+                        : item.status == 4
+                        ? theme.colors.danger
                         : undefined,
                   }}
                 >
@@ -884,6 +887,7 @@ function ContactListing() {
           </View>
         )}
         <CustomActionSheetPoup
+          popupId="contact-listing-action-sheet"
           shown={showActionSheet}
           setShown={setShowActionSheet}
           centered={false}
@@ -936,6 +940,7 @@ function ContactListing() {
           ]}
         />
         <CustomActionSheetPoup
+          popupId="contact-listing-delete-action-sheet"
           shown={showActionSheetDelete}
           setShown={setShowActionSheetDelete}
           centered={false}

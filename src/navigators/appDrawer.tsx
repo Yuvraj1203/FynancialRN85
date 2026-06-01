@@ -186,8 +186,8 @@ function AppDrawer(props: any) {
 
   var DrawerContentEditorList = [
     {
-      title: t('Schedule'),
-      image: Images.myGroup,
+      title: t('Outreach'),
+      image: Images.mousePointer,
       imageType: ImageType.svg,
       onPress: () => {
         navigation.navigate('DrawerRoutes', {
@@ -304,6 +304,7 @@ function AppDrawer(props: any) {
           ))}
 
           <CustomPopup
+            popupId="logout-popup"
             shown={showLogout}
             setShown={setShowLogout}
             compact

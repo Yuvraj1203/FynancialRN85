@@ -939,6 +939,7 @@ function Vault() {
         )}
       </View>
       <CustomActionSheetPoup
+        popupId="vault-action-sheet"
         shown={showActionSheetPopUp}
         setShown={setShowActionSheetPopUp}
         centered={false}

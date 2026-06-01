@@ -326,6 +326,7 @@ function SettingSetup() {
         )}
 
         <CustomPopup
+          popupId="setting-setup-logout-confirmation-popup"
           shown={showLogout}
           setShown={setShowLogout}
           compact
@@ -335,7 +336,7 @@ function SettingSetup() {
           dismissOnBackPress={!logoutLoading}
           onPositivePress={() => {
             setLogoutLoading(true);
-            logout({}).then(value => {
+            logout({ hardLogout: true }).then(value => {
               setLogoutLoading(false);
               setShowLogout(false);
             });

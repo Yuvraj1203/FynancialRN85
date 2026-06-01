@@ -20,6 +20,7 @@ import {
   templateStore,
   useFailedMessageStore,
   useLogoutStore,
+  usePopupManagerStore,
   userStore,
 } from '@/store';
 import { UserBiometricOption } from '@/store/biometricStore/biometricStore.ts';
@@ -2008,6 +2009,7 @@ export const useLogout = () => {
         UserBiometricOption.enabled
     ) {
       cancelAllRequests();
+      usePopupManagerStore.getState().dismissAllPopups();
       //await resetAccessToken();
       await saveAccessTokenInKeychain(JSON.stringify({ loggedIn: true }));
 
@@ -2029,6 +2031,7 @@ export const useLogout = () => {
       sessionService.stop();
 
       cancelAllRequests();
+      usePopupManagerStore.getState().dismissAllPopups();
 
       //commented by @Shivang 29-01-26 Notification handling for multiple user logins on same device - FYN-12272
 

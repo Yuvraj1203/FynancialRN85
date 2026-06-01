@@ -60,18 +60,11 @@ function CustomDashboardCard(props: Props) {
           </CustomText>
         </View>
       )}
-      {props.cardData.customLink ||
-        (props.cardData.destination && (
-          <CustomLinkIconCard
-            url={
-              props.cardData.customLink
-                ? props.cardData.customLink
-                : props.cardData.destination
-                ? props.cardData.destination
-                : ''
-            }
-          />
-        ))}
+      {(props.cardData.customLink || props.cardData.destination) && (
+        <CustomLinkIconCard
+          url={props.cardData.customLink || props.cardData.destination || ''}
+        />
+      )}
     </View>
   );
 }

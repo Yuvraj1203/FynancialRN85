@@ -8,6 +8,7 @@ import { CustomBottomPopup, CustomTextInput } from '@/components/molecules';
 import { ApiConstants } from '@/services/apiConstants';
 import { HttpMethodApi, makeRequest } from '@/services/apiInstance';
 import {
+  CreateCollectionResult,
   ToggleCollectionMembershipResult,
   UserCollectionDto,
 } from '@/services/models/bookmarkModel/bookmarkModel';
@@ -98,6 +99,14 @@ function BookmarkPopup() {
       .then(res => {
         setIsDefaultSaved(true);
         popupProps.onSaved?.(res?.result ?? '', null);
+        sendDataBack('Feed', {
+          bookmarkUpdate: {
+            postDetailId: popupProps.feedDetailId,
+            isBookmarked: true,
+            bookmarkId: res?.result ?? '',
+            collectionId: null,
+          },
+        });
         sendDataBack('Bookmarks', { refreshRequired: true });
         sendDataBack('BookmarkCollection', { refreshRequired: true });
       })
@@ -142,15 +151,31 @@ function BookmarkPopup() {
     onSuccess(data, variables, context) {
       const newState = variables.isBookmarked as boolean;
       setIsDefaultSaved(newState);
-      if (!newState) {
+      if (newState) {
+        popupProps?.onSaved?.(data?.result ?? '', null);
+        sendDataBack('Feed', {
+          bookmarkUpdate: {
+            postDetailId: popupProps?.feedDetailId ?? '',
+            isBookmarked: true,
+            bookmarkId: data?.result ?? '',
+            collectionId: null,
+          },
+        });
+      } else {
         setActiveCollectionIds(new Set());
+        popupProps?.onRemoved?.();
+        sendDataBack('Feed', {
+          bookmarkUpdate: {
+            postDetailId: popupProps?.feedDetailId ?? '',
+            isBookmarked: false,
+          },
+        });
       }
-      popupProps?.onSaved?.(data?.result ?? '', null);
       sendDataBack('Bookmarks', { refreshRequired: true });
       dismiss();
       showSnackbar(
         newState ? t('BookmarkSaved') : t('BookmarkRemoved'),
-        newState ? 'success' : 'danger',
+        'success',
       );
     },
     onError(error, variables, context) {
@@ -215,11 +240,20 @@ function BookmarkPopup() {
         isFromCreateCollectionRef.current = false;
       }
       if (isIn) {
+        const bmId = data?.result?.bookmarkId ?? popupProps?.bookmarkId ?? '';
         setActiveCollectionIds(new Set([variables.collectionId as string]));
         popupProps?.onCollectionChanged?.(
-          data?.result?.bookmarkId ?? popupProps?.bookmarkId ?? '',
+          bmId,
           variables.collectionId as string,
         );
+        sendDataBack('Feed', {
+          bookmarkUpdate: {
+            postDetailId: popupProps?.feedDetailId ?? '',
+            isBookmarked: true,
+            bookmarkId: bmId,
+            collectionId: variables.collectionId as string,
+          },
+        });
         sendDataBack('Bookmarks', { refreshRequired: true });
         sendDataBack('BookmarkCollection', { refreshRequired: true });
         dismiss();
@@ -232,10 +266,18 @@ function BookmarkPopup() {
       } else {
         setActiveCollectionIds(new Set());
         popupProps?.onCollectionChanged?.(popupProps?.bookmarkId ?? '', null);
+        sendDataBack('Feed', {
+          bookmarkUpdate: {
+            postDetailId: popupProps?.feedDetailId ?? '',
+            isBookmarked: true,
+            bookmarkId: popupProps?.bookmarkId ?? '',
+            collectionId: null,
+          },
+        });
         sendDataBack('Bookmarks', { refreshRequired: true });
         sendDataBack('BookmarkCollection', { refreshRequired: true });
         dismiss();
-        showSnackbar(t('BookmarkRemovedFromCollection'), 'danger');
+        showSnackbar(t('BookmarkRemovedFromCollection'), 'success');
       }
     },
     onError(error) {
@@ -253,7 +295,7 @@ function BookmarkPopup() {
 
   const createCollectionApi = useMutation({
     mutationFn: (sendData: Record<string, any>) => {
-      return makeRequest<UserCollectionDto>({
+      return makeRequest<CreateCollectionResult>({
         endpoint: ApiConstants.CreateCollection,
         method: HttpMethodApi.Post,
         data: sendData,
@@ -267,15 +309,23 @@ function BookmarkPopup() {
       setCreateLoading(false);
     },
     onSuccess(data, variables, context) {
+      if (!data?.result?.success) {
+        setCreateError(
+          data?.result?.errorMessage
+            ? data?.result?.errorMessage
+            : t('CollectionAlreadyExistsValidMsg'),
+        );
+        return;
+      }
       setNewCollectionName('');
       setViewMode('main');
       isFromCreateCollectionRef.current = true;
       toggleCollectionApi.mutate(
         {
           feedDetailId: popupProps?.feedDetailId,
-          collectionId: data?.result?.id,
+          collectionId: data?.result?.collection?.id,
           action: 'add',
-          collectionName: data?.result?.collectionName,
+          collectionName: data?.result?.collection?.collectionName,
         },
         {
           onSuccess: () => {
@@ -404,7 +454,10 @@ function BookmarkPopup() {
             {t('Collections')}
           </CustomText>
           <Tap
-            onPress={() => setViewMode('createCollection')}
+            onPress={() => {
+              setViewMode('createCollection');
+              setCreateError('');
+            }}
             disableRipple={perRowLoading !== undefined}
           >
             <View>
@@ -517,6 +570,7 @@ function BookmarkPopup() {
 
   return (
     <CustomBottomPopup
+      popupId="bookmark-popup"
       shown={shown}
       keyboardHandle
       setShown={setShown}

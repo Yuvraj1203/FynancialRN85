@@ -1012,6 +1012,7 @@ function AddScheduleMessage() {
                       type: ImageType.svg,
                       color: theme.colors.onSurfaceVariant,
                     }}
+                    labelVariant={TextVariants.bodyLarge}
                   />
                 </Tap>
               )}
@@ -1192,7 +1193,7 @@ function AddScheduleMessage() {
                     <View>
                       <CustomText
                         style={styles.targetAudLabel}
-                        variant={TextVariants.titleSmall}
+                        variant={TextVariants.bodyMedium}
                       >
                         {t('SelectedContactType')}
                       </CustomText>
@@ -1217,7 +1218,7 @@ function AddScheduleMessage() {
                     <View>
                       <CustomText
                         style={styles.targetAudLabel}
-                        variant={TextVariants.titleSmall}
+                        variant={TextVariants.bodyMedium}
                       >
                         {t('SelectedTags')}
                       </CustomText>
@@ -1242,7 +1243,7 @@ function AddScheduleMessage() {
                     <View>
                       <CustomText
                         style={styles.targetAudLabel}
-                        variant={TextVariants.titleSmall}
+                        variant={TextVariants.bodyMedium}
                       >
                         {t('SelectedContacts')}
                       </CustomText>
@@ -1287,6 +1288,7 @@ function AddScheduleMessage() {
               </View>
 
               <ScheduleDateTimePicker
+                popupId="add-schedule-message-date-time-picker"
                 timezone={userDetails?.userDetails?.timeZoneName}
                 startDateTime={startDateTime}
                 showEndDate={false}
@@ -1310,6 +1312,7 @@ function AddScheduleMessage() {
           )}
           {!selectedTemplate && (
             <CustomDropDownPopup
+              popupId="add-schedule-message-onbehalfof"
               title={t('SelectOnBehalfOf')}
               style={styles.PopUpStyle}
               setShown={setShowOnBehalfOfPopUp}
@@ -1329,6 +1332,7 @@ function AddScheduleMessage() {
             />
           )}
           <CustomImagePicker
+            popupId="add-schedule-message-image-picker"
             showPopup={showImageSelectionPopup}
             setShowPopup={setShowImageSelectionPopup}
             mediaList={handleMediaList}
@@ -1598,8 +1602,6 @@ const makeStyles = (theme: CustomTheme) =>
     targetAudLabel: {
       paddingBottom: 10,
       paddingLeft: 5,
-      fontSize: 14,
-      fontWeight: 'semibold',
     },
     chipsContainer: {
       flexDirection: 'row',
@@ -1608,7 +1610,7 @@ const makeStyles = (theme: CustomTheme) =>
       gap: 5,
       padding: 10,
       borderWidth: 1,
-      borderRadius: 12,
+      borderRadius: theme.roundness,
       borderColor: theme.colors.outline,
     },
     sendNowButton: {

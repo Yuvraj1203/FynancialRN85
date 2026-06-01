@@ -292,6 +292,7 @@ const ChatHistory: React.FC<Props> = props => {
           shown={props.openHistory ? true : false}
           setShown={props.setOpenHistory}
           dismissOnBackPress={!templateLoading}
+          popupId="chatbot-chat-history-fullscreen-popup"
         >
           <View style={{ flex: 1 }}>
             <View
@@ -390,6 +391,7 @@ const ChatHistory: React.FC<Props> = props => {
         shown={props.openHistory ? true : false}
         setShown={props.setOpenHistory}
         dismissOnBackPress={!templateLoading}
+        popupId="chatbot-chat-history-fullscreen-popup"
       >
         <View style={{ flex: 1 }}>
           <View

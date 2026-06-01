@@ -83,7 +83,6 @@ export { type GetAddeparModel } from './getAddeparModel/getAddeparModel';
 export { type GetClientBasicNetworthModel } from './getClientBasicNetworthModel/getClientBasicNetworthModel';
 export { type GetClientBlackDiamondModel } from './getClientBlackDiamondModel/getClientBlackDiamondModel';
 
-export { type GetClientGoalsModel } from './/getClientGoalModel/getClientGoalModel';
 export { type GetClientTamaracModel } from './/getClientTamaracModel/getClientTamaracModel';
 
 export { type GetClientNitrogenModel } from './getClientNitrogenModel/getClientNitrogenModel';
@@ -195,6 +194,7 @@ export {
 export { type GetAllFeedPlaceholderFieldsModel } from './getAllFeedPlaceholderFieldsModel/getAllFeedPlaceholderFieldsModel';
 export { type GetAllUserCertificatesModel } from './getAllUserCertificatesModel/getAllUserCertificatesModel';
 export { type GetConnectionModel } from './getConnectionModel/getConnectionModel';
+export * from './getExternalAttendeesModel/getExternalAttendeesModel';
 export { type GetFileAndBreadcrumbModel } from './getFileAndBreadcrumbModel/getFileAndBreadcrumbModel';
 export {
   type CombinedItem,
@@ -207,5 +207,6 @@ export { type ResetPasswordModel } from './resetPasswordModel/resetPasswordModel
 export { type SaveAdvisorPersonalDetailsModel } from './saveAdvisorPersonalDetails/saveAdvisorPersonalDetails';
 export { type SignalRMessageReadModel } from './signalRMessageReadModel/signalRMessageReadModel';
 export { type ThemeModel } from './themeModel/themeModel';
+export * from './uploadAndUpdateProfilePictureModel/uploadAndUpdateProfilePictureModel';
 export { type UploadFileListToS3Model } from './uploadFileListToS3Model/uploadFileListToS3Model';
 export { type UserTimeZoneModel } from './userTimeZoneModel/userTimeZoneModel';

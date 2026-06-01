@@ -1091,6 +1091,7 @@ function ContactVault() {
         </View>
 
         <CustomActionSheetPoup
+          popupId="contact-vault-action-sheet"
           shown={showActionPopup}
           setShown={setShowActionPopup}
           hideIcons={false}
@@ -1129,6 +1130,7 @@ function ContactVault() {
         />
 
         <CustomPopup
+          popupId="contact-vault-delete-popup"
           shown={showDeletePopup}
           setShown={setShowDeletePopup}
           compact

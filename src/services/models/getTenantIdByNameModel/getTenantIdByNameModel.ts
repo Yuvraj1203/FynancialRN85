@@ -11,6 +11,4 @@ export type GetTenantIdByNameModel = {
   secureFilesContactAccess?: boolean;
   secureFilesContactUpload?: boolean;
   useManagedPackage?: boolean;
-  isSessionTimeoutAllowed?: boolean;
-  sessionTimeoutNotifBody?: string;
 };
