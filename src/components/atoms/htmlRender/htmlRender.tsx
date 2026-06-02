@@ -3,6 +3,12 @@ import { Images } from '@/theme/assets/images';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
 import { getVideoThumbnail } from '@/utils/utils';
 import { iframeModel, useHtmlIframeProps } from '@native-html/iframe-plugin';
+import RenderHTML, {
+  HTMLContentModel,
+  HTMLElementModel,
+  defaultHTMLElementModels,
+  useInternalRenderer,
+} from '@native-html/render';
 import React, { memo, useState } from 'react';
 import {
   Platform,
@@ -12,12 +18,6 @@ import {
   ViewStyle,
   useWindowDimensions,
 } from 'react-native';
-import RenderHTML, {
-  HTMLContentModel,
-  HTMLElementModel,
-  defaultHTMLElementModels,
-  useInternalRenderer,
-} from 'react-native-render-html';
 import WebView from 'react-native-webview';
 import CustomImage from '../customImage/customImage';
 import CustomText, { TextVariants } from '../customText/customText';

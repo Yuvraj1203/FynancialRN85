@@ -8,6 +8,7 @@
     "@likashefqet/react-native-image-zoom": "^4.3.0",
     "@microsoft/signalr": "^10.0.0",
     "@native-html/iframe-plugin": "^2.6.1",
+    "@native-html/render": "^1.0.3",
     "@notifee/react-native": "^9.1.8",
     "@react-native-clipboard/clipboard": "^1.16.3",
     "@react-native-community/datetimepicker": "^9.1.0",
@@ -67,7 +68,6 @@
     "react-native-permissions": "^5.5.1",
     "react-native-reanimated": "^4.3.0",
     "react-native-reanimated-carousel": "^4.0.3",
-    "react-native-render-html": "^6.3.4",
     "react-native-safe-area-context": "^5.7.0",
     "react-native-screens": "^4.24.0",
     "react-native-share": "^12.2.6",
@@ -110,7 +110,7 @@
   "engines": {
     "node": ">= 22.11.0"
   },
-  "name": "developers",
+  "name": "offshore",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
