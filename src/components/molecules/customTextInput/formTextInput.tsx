@@ -18,7 +18,7 @@ import {
 } from '@/utils/utils';
 import { useMutation } from '@tanstack/react-query';
 import React, { forwardRef, memo, useEffect, useMemo, useState } from 'react';
-import { Control, Controller, useWatch } from 'react-hook-form';
+import { Controller, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
   ImageSourcePropType,
@@ -85,7 +85,7 @@ export type InputIcon = {
 
 type Props = {
   ref?: React.Ref<RNTextInput>;
-  control?: Control<any>;
+  control?: any; //has to be control
   name: string;
   label?: string;
   text?: string;
