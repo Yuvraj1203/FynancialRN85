@@ -97,6 +97,7 @@ export enum UserRoleEnum {
   Operations = 'Operations',
   SupportStaff = 'SupportStaff',
   ContentEditor = 'ContentEditor',
+  ContentEditorSpace = 'Content Editor',
   OfficeAdminSpace = 'Office Admin',
   SupportStaffSpace = 'Support Staff',
 }

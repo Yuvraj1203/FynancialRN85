@@ -1163,26 +1163,36 @@ function AddScheduleEvent() {
                   />
                 )}
 
-                <FormTextInput
-                  name={'description'}
-                  control={control}
-                  placeholder={t('EnterDescription')}
-                  label={t('Description')}
-                  multiLine={true}
-                  height={70}
-                  maxLines={2}
-                  hidePreview={false}
-                  enabled={!isOffice365}
-                  fillColor={
-                    isOffice365 ? theme.colors.surfaceDisabled : undefined
-                  }
-                  contentStyle={
-                    isOffice365
-                      ? { color: theme.colors.onSurfaceDisabled }
-                      : undefined
-                  }
-                  labelVariant={TextVariants.bodyLarge}
-                />
+                {isOffice365 ? (
+                  <>
+                    <CustomText
+                      variant={TextVariants.bodyLarge}
+                      style={styles.heading}
+                    >
+                      {t('Description')}
+                    </CustomText>
+                    <ScrollView style={styles.o365DescriptionContainer}>
+                      <CustomText
+                        variant={TextVariants.labelLarge}
+                        color={theme.colors.onSurfaceDisabled}
+                      >
+                        {getValues('description') || t('EnterDescription')}
+                      </CustomText>
+                    </ScrollView>
+                  </>
+                ) : (
+                  <FormTextInput
+                    name={'description'}
+                    control={control}
+                    placeholder={t('EnterDescription')}
+                    label={t('Description')}
+                    multiLine={true}
+                    height={70}
+                    maxLines={2}
+                    hidePreview={false}
+                    labelVariant={TextVariants.bodyLarge}
+                  />
+                )}
 
                 {!isOffice365 && (
                   <>
@@ -1798,6 +1808,15 @@ const makeStyles = (theme: CustomTheme) =>
     timeZone: {
       alignSelf: 'flex-start',
       backgroundColor: theme.colors.surfaceVariant,
+    },
+    o365DescriptionContainer: {
+      borderRadius: theme.roundness,
+      padding: 10,
+      borderWidth: 1,
+      borderColor: theme.colors.outline,
+      backgroundColor: theme.colors.surfaceDisabled,
+      height: 70,
+      marginTop: 5,
     },
   });
 

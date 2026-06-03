@@ -325,7 +325,8 @@ export function BottomTabNavigator() {
 
   const [tabList, setTabList] = useState<BottomTabModel[]>(
     userDetails && userDetails?.userDetails?.isAdvisor
-      ? userDetails.userDetails.role == UserRoleEnum.ContentEditor
+      ? userDetails.userDetails.role == UserRoleEnum.ContentEditor ||
+        userDetails.userDetails.role == UserRoleEnum.ContentEditorSpace
         ? contentEditorScreens
         : advisorScreens
       : contactScreens,
@@ -335,7 +336,8 @@ export function BottomTabNavigator() {
     if (userDetails.userDetails) {
       setTabList(
         userDetails && userDetails?.userDetails?.isAdvisor
-          ? userDetails.userDetails.role == UserRoleEnum.ContentEditor
+          ? userDetails.userDetails.role == UserRoleEnum.ContentEditor ||
+            userDetails.userDetails.role == UserRoleEnum.ContentEditorSpace
             ? contentEditorScreens
             : advisorScreens
           : contactScreens,
@@ -349,7 +351,8 @@ export function BottomTabNavigator() {
       tabBar={props => <AppBottomTabBar bottomTabs={tabList} {...props} />}
       initialRouteName={
         userDetails && userDetails.userDetails?.isAdvisor
-          ? userDetails.userDetails.role == UserRoleEnum.ContentEditor
+          ? userDetails.userDetails.role == UserRoleEnum.ContentEditor ||
+            userDetails.userDetails.role == UserRoleEnum.ContentEditorSpace
             ? 'EventViewAll'
             : 'ContactListing'
           : 'Dashboard'

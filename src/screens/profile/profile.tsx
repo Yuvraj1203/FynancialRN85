@@ -288,6 +288,9 @@ function Profile() {
   /** Added by @Akshita 27-03-2025 -> tags popup state (FYN-6900)  */
   const [statusLoading, setStatusLoading] = useState(false);
 
+  /** Added by @Yuvraj 1-06-2026 -> toggle for see more (FYN-6900)  */
+  const [seeMoreToggle, setSeeMoreToggle] = useState(false);
+
   /**
    *  Added by @Akshita 27-03-2025 -> handle warning popup when user tries to change the state from out of office
    * to any other state without turning it off at the first place(FYN-6900)
@@ -481,7 +484,10 @@ function Profile() {
       });
     } else if (userDetails?.isAdvisor && !route?.params?.userId) {
       getCurrentStatusApi.mutate({});
-      if (userDetails?.role !== UserRoleEnum.ContentEditor) {
+      if (
+        userDetails?.role !== UserRoleEnum.ContentEditor &&
+        userDetails?.role !== UserRoleEnum.ContentEditorSpace
+      ) {
         getAllUserCertificatesApiCall.mutate({
           Id: userDetails?.userID,
         });
@@ -694,7 +700,7 @@ function Profile() {
         ? [
             {
               label: t('SecureUploadUrl'),
-              value: '-',
+              value: data?.secureUploadURL,
               icon: Images.secureLink,
             },
           ]
@@ -1164,7 +1170,8 @@ function Profile() {
             data.result.role == UserRoleEnum.Operations ||
             data.result.role == UserRoleEnum.SupportStaff ||
             data.result.role == UserRoleEnum.SupportStaffSpace ||
-            data.result.role == UserRoleEnum.ContentEditor
+            data.result.role == UserRoleEnum.ContentEditor ||
+            data.result.role == UserRoleEnum.ContentEditorSpace
               ? true
               : false,
         };
@@ -1767,7 +1774,7 @@ function Profile() {
           keyboardShouldPersistTaps={'always'}
           style={styles.container}
         >
-          <View style={{ flex: 1 }}>
+          <View style={styles.main}>
             <ProfileHeader
               route={route?.params?.userId}
               individualContactLoading={individualLoading.contactDetails}
@@ -1825,7 +1832,7 @@ function Profile() {
                         !route.params?.userId &&
                         setShowStatusPopUp(true)
                       }
-                      tapStyle={{ padding: 0 }}
+                      tapStyle={styles.tapPaddingZero}
                       style={styles.accordianContainer}
                     >
                       {individualLoading.UserStatus ? (
@@ -1987,9 +1994,37 @@ function Profile() {
                                 {`${Item.label}`}
                               </CustomText>
                             </View>
-                            <CustomText style={styles.valueText}>
-                              {Item.value?.trim() ? Item.value : ''}
-                            </CustomText>
+                            {Item.label == 'About' ? (
+                              <View style={styles.main}>
+                                <CustomText style={styles.valueText}>
+                                  {Item.value?.trim()
+                                    ? seeMoreToggle
+                                      ? Item.value
+                                      : Item.value.length > 65
+                                      ? `${Item.value.slice(0, 65)}...`
+                                      : Item.value
+                                    : ''}
+                                </CustomText>
+                                {Item.value && Item.value?.length > 65 && (
+                                  <Tap
+                                    onPress={() =>
+                                      setSeeMoreToggle(prev => !prev)
+                                    }
+                                    style={styles.tapPaddingZero}
+                                  >
+                                    <CustomText color={theme.colors.links}>
+                                      {seeMoreToggle
+                                        ? t('SeeLess')
+                                        : t('SeeMore')}
+                                    </CustomText>
+                                  </Tap>
+                                )}
+                              </View>
+                            ) : (
+                              <CustomText style={styles.valueText}>
+                                {Item.value?.trim() ? Item.value : ''}
+                              </CustomText>
+                            )}
                           </View>
                         ))}
                       </Animated.View>
@@ -2329,7 +2364,8 @@ function Profile() {
                   ContactVaultParentScreenType.fromMyTeamsAdvisor &&
                   AllUserCertificates.length > 0) ||
                   (!route?.params?.userId && userDetails?.isAdvisor)) &&
-                  userDetails?.role !== UserRoleEnum.ContentEditor && (
+                  userDetails?.role !== UserRoleEnum.ContentEditor &&
+                  userDetails?.role !== UserRoleEnum.ContentEditorSpace && (
                     <Shadow style={styles.accordianContainer}>
                       <Tap
                         style={styles.accordianTap}
@@ -2836,7 +2872,7 @@ function Profile() {
       >
         <View style={styles.notesAddBottomPopup}>
           <Tap
-            style={{ padding: 0 }}
+            style={styles.tapPaddingZero}
             onPress={() => {
               if (isEmpty(startDateTime)) {
                 setStartDateTime(
@@ -2866,7 +2902,7 @@ function Profile() {
           </Tap>
 
           <Tap
-            style={{ padding: 0 }}
+            style={styles.tapPaddingZero}
             onPress={() => {
               if (isEmpty(endDateTime)) {
                 setEndDateTime(

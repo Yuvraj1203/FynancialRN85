@@ -652,7 +652,8 @@ function BiometricPopup() {
             data.result.role == UserRoleEnum.Operations ||
             data.result.role == UserRoleEnum.SupportStaff ||
             data.result.role == UserRoleEnum.SupportStaffSpace ||
-            data.result.role == UserRoleEnum.ContentEditor
+            data.result.role == UserRoleEnum.ContentEditor ||
+            data.result.role == UserRoleEnum.ContentEditorSpace
               ? true
               : false,
         };

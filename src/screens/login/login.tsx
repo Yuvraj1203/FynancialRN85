@@ -601,7 +601,8 @@ function Login() {
           data.result.role != UserRoleEnum.SupportStaff &&
           data.result.role != UserRoleEnum.SupportStaffSpace &&
           data.result.role != UserRoleEnum.Client &&
-          data.result.role != UserRoleEnum.ContentEditor
+          data.result.role != UserRoleEnum.ContentEditor &&
+          data.result.role != UserRoleEnum.ContentEditorSpace
         ) {
           /** Added by @Tarun 05-02-2025 -> user is not allowed to login in app (FYN-4204) */
 
@@ -630,7 +631,8 @@ function Login() {
               data.result.role == UserRoleEnum.Operations ||
               data.result.role == UserRoleEnum.SupportStaff ||
               data.result.role == UserRoleEnum.SupportStaffSpace ||
-              data.result.role == UserRoleEnum.ContentEditor
+              data.result.role == UserRoleEnum.ContentEditor ||
+              data.result.role == UserRoleEnum.ContentEditorSpace
                 ? true
                 : false,
           };

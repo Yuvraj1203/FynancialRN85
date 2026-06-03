@@ -168,29 +168,38 @@ function ProfileEdit() {
   }, []);
 
   /** Added by @Yuvraj 27-03-2025 -> schema for input validation (FYN-6016) */
-  const urlRegex = /^(https?:\/\/)[\w.-]+\.[a-zA-Z]{2,}(\/\S*)?$/;
+  const urlRegex = /^(https?:\/\/)[\w.-]+\.[a-zA-Z]{2,}(\/\S*)?$/i;
   const maxUrlLength = 1000;
 
   const schema = z.object({
     firstName: z.string().min(1, { message: t('FirstNameReq') }),
     lastName: z.string().min(1, { message: t('LastNameReq') }),
-    dob: z.string().refine(val => !val || isPastDay, {
-      message: t('DateOfBirthValidationMsg'),
-    }),
-    calendarLink: z
-      .string()
-      .max(maxUrlLength, { message: t('UrlExceedsMaxLength') })
-      .optional()
-      .refine(val => val === '' || urlRegex.test(val!), {
-        message: t('InvalidCalendarUrl'),
-      }),
-    secureUploadLink: z
-      .string()
-      .max(maxUrlLength, { message: t('UrlExceedsMaxLength') })
-      .optional()
-      .refine(val => val === '' || urlRegex.test(val!), {
-        message: t('InvalidCalendarUrl'),
-      }),
+    dob:
+      route?.subSection == 'personal'
+        ? z.string().refine(val => !val || isPastDay, {
+            message: t('DateOfBirthValidationMsg'),
+          })
+        : z.string(),
+    calendarLink:
+      route?.subSection == 'personal'
+        ? z
+            .string()
+            .max(maxUrlLength, { message: t('UrlExceedsMaxLength') })
+            .optional()
+            .refine(val => val === '' || urlRegex.test(val!), {
+              message: t('InvalidCalendarUrl'),
+            })
+        : z.string(),
+    secureUploadLink:
+      route?.subSection == 'personal'
+        ? z
+            .string()
+            .max(maxUrlLength, { message: t('UrlExceedsMaxLength') })
+            .optional()
+            .refine(val => val === '' || urlRegex.test(val!), {
+              message: t('InvalidCalendarUrl'),
+            })
+        : z.string(),
     aboutMe: z.string(),
     address1: z.string(),
     address2: z.string(),
@@ -198,13 +207,16 @@ function ProfileEdit() {
     state: z.string(),
     country: z.string(),
     timezone: z.string(),
-    websiteUrl: z
-      .string()
-      .max(maxUrlLength, { message: t('UrlExceedsMaxLength') })
-      .optional()
-      .refine(val => val === '' || urlRegex.test(val!), {
-        message: t('InvalidCalendarUrl'),
-      }),
+    websiteUrl:
+      route?.subSection == 'personal'
+        ? z.string()
+        : z
+            .string()
+            .max(maxUrlLength, { message: t('UrlExceedsMaxLength') })
+            .optional()
+            .refine(val => val === '' || urlRegex.test(val!), {
+              message: t('InvalidCalendarUrl'),
+            }),
   });
 
   /** Added by @Yuvraj 27-03-2025 -> schema type generator (FYN-6016) */
@@ -1069,6 +1081,7 @@ function ProfileEdit() {
                         hidePreview={false}
                         multiLine={true}
                         maxLines={5}
+                        contentStyle={styles.aboutContent}
                       />
                     </>
                   )}
@@ -1385,6 +1398,9 @@ const makeStyles = (theme: CustomTheme) =>
     },
     disabledText: {
       color: theme.colors.outline,
+    },
+    aboutContent: {
+      marginTop: 5,
     },
   });
 

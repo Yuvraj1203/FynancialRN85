@@ -1220,17 +1220,18 @@ const EventViewAll = () => {
                   title: selectedItem?.isOffice365 ? t('Remove') : t('Delete'),
                   msg: selectedItem?.isOffice365
                     ? t('RemoveMsgSchedule')
-                    : `${t('DeleteMsgSchedule')} ${
-                        selectedItem?.scheduleTaskTypeId == 1
-                          ? t('Post')
-                          : selectedItem?.scheduleTaskTypeId == 2
-                          ? t('Event')
-                          : selectedItem?.scheduleTaskTypeId == 3
-                          ? t('Reminder')
-                          : selectedItem?.scheduleTaskTypeId == 4
-                          ? t('ActionItem')
-                          : t('Item')
-                      }`,
+                    : t('DeleteMsgSchedule', {
+                        eventName:
+                          selectedItem?.scheduleTaskTypeId == 1
+                            ? t('Post')
+                            : selectedItem?.scheduleTaskTypeId == 2
+                            ? t('Event')
+                            : selectedItem?.scheduleTaskTypeId == 3
+                            ? t('Reminder')
+                            : selectedItem?.scheduleTaskTypeId == 4
+                            ? t('ActionItem')
+                            : t('Item'),
+                      }),
                   PositiveText: t('Yes'),
                   NegativeText: t('No'),
                   onPositivePress: () => {

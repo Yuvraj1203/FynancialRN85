@@ -248,7 +248,8 @@ function AppDrawer(props: any) {
 
   const addDynamicItem = async () => {
     const currentDrawerList = userData.userDetails?.isAdvisor
-      ? userData.userDetails.role == UserRoleEnum.ContentEditor
+      ? userData.userDetails.role == UserRoleEnum.ContentEditor ||
+        userData.userDetails.role == UserRoleEnum.ContentEditorSpace
         ? DrawerContentEditorList
         : DrawerAdvisorList
       : DrawerContactsList;

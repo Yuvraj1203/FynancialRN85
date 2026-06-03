@@ -190,6 +190,10 @@ const ScheduleDateTimePicker = ({ enabled = true, ...props }: Props) => {
             type: ImageType.svg,
             color: theme.colors.onSurfaceVariant,
           }}
+          fillColor={enabled ? undefined : theme.colors.surfaceDisabled}
+          contentStyle={
+            enabled ? undefined : { color: theme.colors.onSurfaceDisabled }
+          }
         />
       </Tap>
       {props.showEndDate && (
@@ -217,6 +221,10 @@ const ScheduleDateTimePicker = ({ enabled = true, ...props }: Props) => {
               type: ImageType.svg,
               color: theme.colors.onSurfaceVariant,
             }}
+            fillColor={enabled ? undefined : theme.colors.surfaceDisabled}
+            contentStyle={
+              enabled ? undefined : { color: theme.colors.onSurfaceDisabled }
+            }
           />
         </Tap>
       )}
